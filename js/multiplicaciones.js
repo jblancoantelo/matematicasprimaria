@@ -81,22 +81,26 @@
       function rend(){
         const SA = String(A);
         const SB = String(B);
+        const esSimple = lb === 1;
         let html = '<div class="mul-wrap">';
 
-        html += '<div class="mul-fila mul-titulo"><span>Escribe cada producto en su fila y después la suma final</span></div>';
+        html += '<div class="mul-fila mul-titulo"><span>' + (esSimple ? 'Escribe el resultado' : 'Escribe cada producto en su fila y después la suma final') + '</span></div>';
 
         html += filaOp(cellsNumero(SA, da, 'mul-cel-num'), '');
         html += filaOp(cellsNumero(SB, db, 'mul-cel-num'), '×');
         html += filaGuion();
 
-        for (let j = 0; j < lb; j++) {
-          const digit = parseInt(SB[lb - 1 - j], 10);
-          const nCajas = String(A * digit).length;
-          html += filaOp(cellsParcialInput(j, nCajas, j), '');
+        if (esSimple) {
+          html += filaOp(cellsSumaInput(), '');
+        } else {
+          for (let j = 0; j < lb; j++) {
+            const digit = parseInt(SB[lb - 1 - j], 10);
+            const nCajas = String(A * digit).length;
+            html += filaOp(cellsParcialInput(j, nCajas, j), '');
+          }
+          html += filaGuion();
+          html += filaOp(cellsSumaInput(), '');
         }
-
-        html += filaGuion();
-        html += filaOp(cellsSumaInput(), '');
         html += '</div>';
 
         document.getElementById('mu-operacion').innerHTML = html;
@@ -149,7 +153,7 @@
         const resultado = document.getElementById('mu-resultado');
         let todoBien = true;
 
-        for (let j = 0; j < lb; j++) {
+        for (let j = 0; j < lb && lb > 1; j++) {
           const digit = parseInt(String(B)[lb - 1 - j], 10);
           const esperado = A * digit;
           const obtenido = leerFila(j);

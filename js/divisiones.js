@@ -133,11 +133,36 @@
             : '🌟 ¡División completada!') +
           '</span></div>';
 
-        // fila superior: dividendo │ divisor / línea / cociente
-        html += '<div class="dv-fila dv-fila-top">';
+        // dos columnas: izquierda (dividendo + operaciones) y derecha (divisor/cociente)
+        html += '<div class="dv-columnas">';
+
+        // columna izquierda: dividendo y operaciones
+        html += '<div class="dv-izquierda">';
+
+        // dividendo
+        html += '<div class="dv-fila">';
         dgs.forEach(function(d){
           html += '<span class="dv-cel dv-cel-dvd">' + d + '</span>';
         });
+        html += '</div>';
+
+        // pasos ya resueltos
+        for (let k = 0; k < pasoActual; k++) {
+          const p = pasos[k];
+          html += filaNumero(p.nem, p.colEnd, '');
+          html += filaNumero(p.typedResto, p.colEnd, 'dv-cel-rest');
+        }
+
+        // paso actual (en curso): solo el número y las cajas para el resto
+        if (pasoActual < pasos.length) {
+          const p = pasos[pasoActual];
+          html += filaNumero(p.nem, p.colEnd, '');
+          html += filaRestoCajasEdit(pasoActual, String(p.nem).length);
+        }
+
+        html += '</div>';
+
+        // columna derecha: divisor / línea / cociente
         html += '<div class="dv-derecha">';
 
         // divisor (encima de la línea, sin caja)
@@ -162,23 +187,8 @@
           }
         }
         html += '</div>';
+
         html += '</div>';
-        html += '</div>';
-
-        // pasos ya resueltos
-        for (let k = 0; k < pasoActual; k++) {
-          const p = pasos[k];
-          html += filaNumero(p.nem, p.colEnd, '');
-          html += filaNumero(p.typedResto, p.colEnd, 'dv-cel-rest');
-        }
-
-        // paso actual (en curso): solo el número y las cajas para el resto
-        if (pasoActual < pasos.length) {
-          const p = pasos[pasoActual];
-          html += filaNumero(p.nem, p.colEnd, '');
-          html += filaRestoCajasEdit(pasoActual, String(p.nem).length);
-        }
-
         html += '</div>';
         document.getElementById('dv-operacion').innerHTML = html;
 

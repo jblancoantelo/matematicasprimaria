@@ -71,7 +71,8 @@
       font-family: Consolas, monospace; font-size: 1.5rem; color: #0f172a;
     }
     .dv-cel-dvd { font-weight: 700; color: #0f172a; }
-    .dv-fila-top { align-items: flex-start; }
+    .dv-columnas { display: inline-flex; align-items: flex-start; }
+    .dv-izquierda { display: flex; flex-direction: column; }
     .dv-derecha {
       display: inline-flex;
       flex-direction: column;
