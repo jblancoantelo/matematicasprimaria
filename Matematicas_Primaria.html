@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Matemáticas para Primaria</title>
+  <link rel="stylesheet" href="css/base.css">
+
+
+  <!-- ============ ESTILOS: Sumas y Restas ============ -->
+  <link rel="stylesheet" href="css/sumas.css">
+
+
+  <!-- ============ ESTILOS: Tablas de Multiplicar ============ -->
+  <link rel="stylesheet" href="css/tablas.css">
+
+
+  <!-- ============ ESTILOS: Unidades Métricas ============ -->
+  <link rel="stylesheet" href="css/unidades.css">
+
+
+  <!-- ============ ESTILOS: Problemas de Matemáticas ============ -->
+  <link rel="stylesheet" href="css/problemas.css">
+
+
+  <!-- ============ ESTILOS: Fracciones ============ -->
+  <link rel="stylesheet" href="css/fracciones.css">
+
+
+  <!-- ============ ESTILOS: Decimales y dinero ============ -->
+  <link rel="stylesheet" href="css/decimales.css">
+
+
+  <!-- ============ ESTILOS: Reloj / Romanos / Perímetro / Múltiplos ============ -->
+  <link rel="stylesheet" href="css/reloj.css">
+
+
+  <!-- ============ ESTILOS: Descomponer / Divisiones / Aproximaciones ============ -->
+  <link rel="stylesheet" href="css/descomponer.css">
+
+
+<!-- ============ ESTILOS GLOBALES V3 ============ -->
+  <link rel="stylesheet" href="css/global.css">
+
+  <!-- ============ MULTIPLICACIONES ============ -->
+  <link rel="stylesheet" href="css/multiplicaciones.css">
+
+</head>
+<body>
+  <header class="app-header">
+    <div class="cabecera-top">
+      <div class="cabecera-titulo">
+        <button id="btn-inicio" class="btn-abaco" title="Volver al panel de inicio" type="button">🧮</button>
+        <h1>Aventuras Matemáticas</h1>
+      </div>
+      <div class="cabecera-der">
+        <div class="pill-estado" title="Tus puntos, racha y medallas">
+          ⭐ <b id="hdr-puntos">0</b> · 🔥 <b id="hdr-racha">0</b> · 🏅 <b id="hdr-medallas">0</b> · ✅ <b id="hdr-aciertos">0</b>
+        </div>
+      </div>
+    </div>
+    <div id="toast" role="status" aria-live="polite"></div>
+  </header>
+
+  <main class="wrap-app">
+
+    <!-- ============================================================
+         MÓDULO 0: INICIO (PANEL DE PROGRESO)
+         ============================================================ -->
+    <section id="tab-inicio" class="tab-panel active">
+      <div class="inicio-module">
+        <h1>🏠 Mi Panel</h1>
+        <p>Elige un juego y gana puntos. Cuantos más seguidos, más bonus. 🚀</p>
+
+        <div class="inicio-datos">
+          <div class="stat-card" title="Puntos: se ganan al acertar. Cuantos más aciertos seguidos, más puntos por respuesta.">⭐ Puntos<b id="ini-puntos">0</b></div>
+          <div class="stat-card" title="Racha: aciertos seguidos sin fallar. Si fallas, vuelve a cero.">🔥 Racha<b id="ini-racha">0</b></div>
+          <div class="stat-card" title="Medallas: se consiguen al acertar mucho en un juego (5, 15 y 40 aciertos).">🏅 Medallas<b id="ini-medallas">0</b></div>
+          <div class="stat-card" title="Aciertos: total de respuestas correctas que has hecho.">✅ Aciertos<b id="ini-aciertos">0</b></div>
+        </div>
+
+        <h2>🎮 Elige un juego</h2>
+        <div class="grid-modulos">
+          <button class="card-modulo c-1" data-ir="sumas" type="button"><span class="gran">🧮</span>Sumas y Restas<span class="mini">Sumas y restas de 1 a 6 cifras (vertical)</span></button>
+          <button class="card-modulo c-2" data-ir="tablas" type="button"><span class="gran">✖️</span>Tablas de Multiplicar<span class="mini">Hasta 12, aleatorio y contrarreloj</span></button>
+          <button class="card-modulo c-3" data-ir="unidades" type="button"><span class="gran">📏</span>Unidades Métricas<span class="mini">Longitud, masa, capacidad y tiempo</span></button>
+          <button class="card-modulo c-4" data-ir="fracciones" type="button"><span class="gran">🍕</span>Fracciones<span class="mini">Pintar, sumar, restar y comparar</span></button>
+          <button class="card-modulo c-5" data-ir="decimales" type="button"><span class="gran">💰</span>Decimales y dinero<span class="mini">Céntimos, euros y cambio</span></button>
+          <button class="card-modulo c-6" data-ir="reloj" type="button"><span class="gran">🕐</span>El Reloj<span class="mini">Leer la hora en el reloj de agujas</span></button>
+          <button class="card-modulo c-7" data-ir="romanos" type="button"><span class="gran">🏛️</span>Números Romanos<span class="mini">Convertir a romano y a número</span></button>
+          <button class="card-modulo c-8" data-ir="figuras" type="button"><span class="gran">📐</span>Perímetro y Área<span class="mini">Rectángulos y cuadrados</span></button>
+          <button class="card-modulo c-9" data-ir="multiplos" type="button"><span class="gran">🔢</span>Múltiplos y Divisores<span class="mini">m.c.m., m.c.d. y divisibilidad</span></button>
+          <button class="card-modulo c-10" data-ir="problemas" type="button"><span class="gran">🤔</span>Problemas<span class="mini">1-5 operaciones, niveles 3º y 4º</span></button>
+          <button class="card-modulo c-11" data-ir="descomponer" type="button"><span class="gran">🧩</span>Descomponer Números<span class="mini">U, D, C, UM, DM, CM…</span></button>
+<button class="card-modulo c-12" data-ir="divisiones" type="button"><span class="gran">➗</span>Divisiones<span class="mini">Cociente y resto con cajitas</span></button>
+          <button class="card-modulo c-14" data-ir="multiplicaciones" type="button"><span class="gran">✖️</span>Multiplicaciones<span class="mini">En columna: filas de productos y suma final</span></button>
+          <button class="card-modulo c-13" data-ir="aproximar" type="button"><span class="gran">🎯</span>Aproximaciones<span class="mini">Redondear a la unidad, decena, centena…</span></button>
+        </div>
+
+        <h2>🏆 Progreso y medallas</h2>
+        <p class="mini-note">🥉 5 aciertos · 🥈 15 · 🥇 40 aciertos en cada juego.</p>
+        <div class="ini-logros" id="ini-logros"></div>
+        <p style="margin-top:16px;">
+          <button class="btn-reset" id="btn-reset" type="button">🗑️ Reiniciar puntos</button>
+        </p>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         MÓDULO 1: SUMAS Y RESTAS
+         ============================================================ -->
+    <section id="tab-sumas" class="tab-panel">
+      <div class="sy-module">
+        <h1>🧮 Sumas y Restas Verticales por Cifras</h1>
+
+        <label for="sy-tipo">Operación:</label>
+        <select id="sy-tipo">
+          <option value="" disabled selected>Selecciona</option>
+          <option value="suma">Suma</option>
+          <option value="resta">Resta</option>
+        </select>
+
+        <div id="sy-vecesBox" style="display:none;">
+          <label for="sy-veces" id="sy-vecesLab">¿Cuántos números vas a sumar?</label>
+          <select id="sy-veces">
+            <option value="2" selected>2 números</option>
+            <option value="3">3 números</option>
+            <option value="4">4 números</option>
+            <option value="5">5 números</option>
+          </select>
+        </div>
+
+        <div id="sy-cifraSelects"></div>
+
+        <br/>
+        <button onclick="sy_generarPregunta()">Generar</button>
+
+        <div id="sy-operacion"></div>
+
+        <div id="sy-respuestaContainer" style="margin-top: 1rem;"></div>
+        <button onclick="sy_verificar()">Verificar</button>
+
+        <div id="sy-resultado"></div>
+
+        <div id="sy-contador">
+          ✅ Aciertos: <span id="sy-aciertos">0</span> |
+          ❌ Errores: <span id="sy-errores">0</span>
+        </div>
+
+        <div id="sy-historial">
+          <h3>📋 Historial de Respuestas</h3>
+          <ul id="sy-listaHistorial"></ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         MÓDULO 2: TABLAS DE MULTIPLICAR
+         ============================================================ -->
+    <section id="tab-tablas" class="tab-panel">
+      <div class="tm-module">
+        <h1>🧠 Práctica de Tablas de Multiplicar</h1>
+
+        <label for="tm-tabla">Elige una tabla:</label>
+        <select id="tm-tabla">
+          <option value="" disabled selected>Selecciona</option>
+          <option value="aleatorio">Aleatorio</option>
+          <option value="dificil">Aleatorio difícil (sin 0, 1 y 10)</option>
+        </select>
+
+        <div id="tm-pregunta" style="margin-top: 2rem; font-size: 1.2rem;"></div>
+        <input type="number" id="tm-respuesta" placeholder="Tu respuesta" />
+        <button onclick="tm_verificar()">Verificar</button>
+
+        <div>
+          <input type="number" id="tm-segs" min="5" max="300" value="60" style="width:80px;" />
+          segundos
+          <button onclick="tm_iniciarContrarreloj()">Iniciar cronómetro</button>
+          <span id="tm-reloj" style="font-weight:bold; margin-left:.5rem;"></span>
+        </div>
+
+        <div id="tm-resultado"></div>
+
+        <div id="tm-contador">
+          ✅ Aciertos: <span id="tm-aciertos">0</span> |
+          ❌ Errores: <span id="tm-errores">0</span>
+        </div>
+
+        <div id="tm-historial">
+          <h3>📋 Historial de Respuestas</h3>
+          <ul id="tm-listaHistorial"></ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         MÓDULO 3: UNIDADES MÉTRICAS
+         ============================================================ -->
+    <section id="tab-unidades" class="tab-panel">
+      <div class="um-module">
+        <div class="um-wrap">
+          <h1>Práctica de Medidas: Longitud, Masa, Capacidad y Tiempo</h1>
+          <p class="um-sub" id="um-sub">Convierte unidades. Ideal para 4º de primaria, con historial para familias.</p>
+
+          <!-- Controles -->
+          <section class="um-panel" aria-label="Controles">
+            <div class="um-controls">
+              <div>
+                <label for="um-tipo">Tipo de medida</label>
+                <select id="um-tipo">
+                  <option value="longitud">Longitud</option>
+                  <option value="masa">Masa</option>
+                  <option value="capacidad">Capacidad</option>
+                  <option value="tiempo">Tiempo</option>
+                </select>
+              </div>
+              <div>
+                <label for="um-count">¿Cuántos ejercicios?</label>
+                <input id="um-count" type="number" min="1" max="50" value="10" />
+              </div>
+              <div>
+                <label for="um-maxJump">Salto máximo entre unidades</label>
+                <select id="um-maxJump">
+                  <option value="1">1 paso (muy fácil)</option>
+                  <option value="2">2 pasos</option>
+                  <option value="3" selected>3 pasos</option>
+                  <option value="4">4 pasos</option>
+                  <option value="5">5 pasos</option>
+                  <option value="6">6 pasos (cualquiera)</option>
+                </select>
+              </div>
+              <div>
+                  <label for="um-decimals" class="um-dec-label">
+                  <input type="checkbox" id="um-decimals" /> Incluir decimales en los valores
+                </label>
+              </div>
+            </div>
+            <div class="um-row-btns">
+              <button id="um-genBtn" title="Generar nuevos ejercicios">🎲 Generar ejercicios</button>
+              <button id="um-checkBtn" class="secondary" disabled title="Comprueba tus respuestas">✅ Comprobar resultados</button>
+              <button id="um-toggleHintBtn" class="ghost" title="Muestra/oculta la pista">💡 Mostrar pista</button>
+              <span class="um-pill" id="um-scorePill" style="display:none;"></span>
+            </div>
+
+            <!-- PISTA GLOBAL (oculta por defecto, visible con el botón) -->
+            <div id="um-globalHint" class="um-help" aria-live="polite">
+              <div id="um-hintText"></div>
+              <div class="um-ladder" id="um-ladder" aria-label="Escalera de unidades"></div>
+            </div>
+          </section>
+
+          <!-- Ejercicios -->
+          <section class="um-panel" aria-label="Ejercicios">
+            <div class="um-row-btns" style="margin-bottom:6px;">
+              <span class="um-small">Escribe tu respuesta. Puedes usar coma (,) o punto (.) decimal.</span>
+            </div>
+            <div id="um-exerciseList" class="um-ex-list" aria-live="polite"></div>
+            <div class="um-row-btns" style="margin-top:10px;">
+              <button id="um-checkBtn2" class="secondary" disabled>✅ Comprobar resultados</button>
+              <button id="um-newRoundBtn" class="ghost" title="Empezar otra tanda" disabled>🔁 Nueva tanda</button>
+            </div>
+          </section>
+
+          <!-- Historial -->
+          <section class="um-panel" aria-label="Historial para familias">
+            <h2 style="margin-top:0;">Historial de tandas</h2>
+            <div class="um-row-btns">
+              <button id="um-exportCSV" class="ghost" title="Descarga el historial como CSV">⬇️ Exportar historial (CSV)</button>
+              <button id="um-clearHistory" class="danger" title="Borra todo el historial del navegador">🗑️ Borrar historial</button>
+            </div>
+            <div id="um-history" style="margin-top:10px;"></div>
+            <p class="um-footer-note">El historial se guarda <strong>solo</strong> en este dispositivo (navegador) mediante <em>almacenamiento local</em>.</p>
+          </section>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         MÓDULO 4: PROBLEMAS DE MATEMÁTICAS
+         ============================================================ -->
+    <section id="tab-problemas" class="tab-panel">
+      <div class="pr-wrap">
+        <section class="pr-hero">
+          <h1>🧮 Problemas de Matemáticas para 4º de Primaria</h1>
+          <p>
+            Genera problemas con <strong>suma, resta, multiplicación y división</strong>.
+            Puedes elegir cuántas operaciones hacen falta para resolverlos. Después,
+            pulsa los botones para ver <strong>la solución</strong> y <strong>cómo se resuelve</strong>,
+            separando <strong>Datos</strong> y <strong>Operaciones</strong>.
+          </p>
+        </section>
+
+        <section class="pr-panel">
+          <div class="pr-controls">
+            <div>
+              <label for="pr-nivel">Nivel</label>
+              <select id="pr-nivel">
+                <option value="basico">3º (repaso)</option>
+                <option value="nivel4" selected>4º de Primaria</option>
+              </select>
+            </div>
+            <div>
+              <label for="pr-opsCount">Número de operaciones</label>
+              <select id="pr-opsCount">
+                <option value="1">1 operación</option>
+                <option value="2" selected>2 operaciones</option>
+                <option value="3">3 operaciones</option>
+                <option value="4">4 operaciones</option>
+              </select>
+            </div>
+            <div>
+              <label for="pr-theme">Tipo de problema</label>
+              <select id="pr-theme">
+                <option value="todos" selected>Mezclado</option>
+                <option value="dinero">Dinero</option>
+                <option value="colegio">Colegio</option>
+                <option value="juguetes">Juguetes</option>
+                <option value="comida">Comida</option>
+              </select>
+            </div>
+            <div>
+              <button class="pr-btn-primary" id="pr-generateBtn">Generar problema nuevo</button>
+            </div>
+          </div>
+          <p class="pr-footer-note">
+            El historial se guarda en el navegador y marca en rojo los problemas en los que hubo al menos un fallo.
+          </p>
+        </section>
+
+        <section class="pr-panel">
+          <div class="pr-problem-box">
+            <div class="pr-problem-title" id="pr-problemTag">Problema generado</div>
+            <p class="pr-problem-text" id="pr-problemText">Pulsa <strong>Generar problema nuevo</strong> para empezar.</p>
+
+            <div class="pr-student-area">
+              <div>
+                <label for="pr-studentAnswer">Tu respuesta</label>
+                <input type="number" id="pr-studentAnswer" placeholder="Escribe aquí tu resultado" />
+              </div>
+              <button class="pr-btn-light" id="pr-checkBtn">Comprobar respuesta</button>
+            </div>
+            <div class="pr-feedback" id="pr-feedback"></div>
+
+            <div class="pr-actions">
+              <button class="pr-btn-secondary" id="pr-showAnswerBtn">Mostrar solución</button>
+              <button class="pr-btn-accent" id="pr-showMethodBtn">Mostrar cómo se resuelve</button>
+              <button class="pr-btn-light" id="pr-hideBtn">Ocultar ayuda</button>
+            </div>
+
+            <div class="pr-answer pr-hidden" id="pr-answerBox"></div>
+
+            <div class="pr-method pr-hidden" id="pr-methodBox">
+              <div class="pr-box">
+                <h3>Datos</h3>
+                <ul id="pr-dataList"></ul>
+              </div>
+              <div class="pr-box">
+                <h3>Operaciones realizadas</h3>
+                <ol id="pr-stepsList"></ol>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="pr-panel pr-history-panel">
+          <h3>Historial</h3>
+          <p class="pr-history-note">
+            Cada elemento muestra una línea resumida y se puede abrir para ver el enunciado completo, los datos, las operaciones y la solución.
+          </p>
+          <div class="pr-history-actions">
+            <button class="pr-btn-light" id="pr-expandAllBtn">Abrir todo</button>
+            <button class="pr-btn-light" id="pr-collapseAllBtn">Cerrar todo</button>
+            <button class="pr-btn-light" id="pr-clearHistoryBtn">Borrar historial</button>
+          </div>
+          <div id="pr-historyEmpty" class="pr-history-empty">Todavía no hay problemas en el historial.</div>
+          <div id="pr-historyList" class="pr-history-list"></div>
+        </section>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         MÓDULO 5: FRACCIONES
+         ============================================================ -->
+    <section id="tab-fracciones" class="tab-panel">
+      <div class="fr-module">
+        <h1>🍕 Fracciones</h1>
+        <p style="margin:0.5rem 0;">Pinta, suma, resta y compara fracciones con apoyo visual.</p>
+
+        <label for="fr-tipo">Tipo de ejercicio:</label>
+        <select id="fr-tipo">
+          <option value="identificar">¿Qué fracción está coloreada?</option>
+          <option value="operar">Suma y resta (mismo denominador)</option>
+          <option value="comparar">Comparar (&gt; , &lt; , =)</option>
+        </select>
+        <button id="fr-generar">🎲 Generar pregunta</button>
+
+        <div id="fr-visual" class="fr-visual"></div>
+        <div id="fr-enunciado" class="fr-enunciado"></div>
+
+        <div>
+          <input type="text" id="fr-respuesta" placeholder="Tu respuesta" autocomplete="off" />
+          <button id="fr-verificar">Verificar</button>
+        </div>
+        <div id="fr-resultado"></div>
+
+        <div id="fr-contador">
+          ✅ Aciertos: <span id="fr-aciertos">0</span> |
+          ❌ Errores: <span id="fr-errores">0</span>
+        </div>
+
+        <div id="fr-historial">
+          <h3>📋 Historial de Respuestas</h3>
+          <ul id="fr-listaHistorial"></ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         MÓDULO 6: DECIMALES Y DINERO
+         ============================================================ -->
+    <section id="tab-decimales" class="tab-panel">
+      <div class="de-module">
+        <h1>💰 Decimales y dinero</h1>
+        <p style="margin:0.5rem 0;">Décimas, centésimas, céntimos y euros con apoyo visual.</p>
+
+        <label for="de-tipo">Tipo de ejercicio:</label>
+        <select id="de-tipo">
+          <option value="cuadricula">Leer la cuadrícula (centésimas)</option>
+          <option value="centimos">Céntimos ↔ euros</option>
+          <option value="suma">Suma de decimales</option>
+          <option value="cambio">Devolución con €</option>
+        </select>
+        <button id="de-generar">🎲 Generar pregunta</button>
+
+        <div id="de-visual"></div>
+        <div id="de-enunciado" class="de-enunciado"></div>
+
+        <div>
+          <input type="text" id="de-respuesta" placeholder="Tu respuesta" autocomplete="off" />
+          <button id="de-verificar">Verificar</button>
+        </div>
+        <div id="de-resultado"></div>
+
+        <div id="de-contador">
+          ✅ Aciertos: <span id="de-aciertos">0</span> |
+          ❌ Errores: <span id="de-errores">0</span>
+        </div>
+
+        <div id="de-historial">
+          <h3>📋 Historial de Respuestas</h3>
+          <ul id="de-listaHistorial"></ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         MÓDULO 7: EL RELOJ
+         ============================================================ -->
+    <section id="tab-reloj" class="tab-panel">
+      <div class="re-module">
+        <h1>🕐 El Reloj</h1>
+        <p style="margin:0.5rem 0;">Lee la hora y calcula horas en el reloj de agujas.</p>
+
+        <label for="re-tipo">Tipo de ejercicio:</label>
+        <select id="re-tipo">
+          <option value="leer">¿Qué hora marca el reloj?</option>
+          <option value="adelantar">¿Qué hora será dentro de un rato?</option>
+        </select>
+        <button id="re-generar">🎲 Generar hora</button>
+
+        <div id="re-visual"></div>
+        <div id="re-enunciado" class="re-enunciado"></div>
+        <div id="re-opciones"></div>
+        <div id="re-resultado"></div>
+
+        <div id="re-contador">
+          ✅ Aciertos: <span id="re-aciertos">0</span> |
+          ❌ Errores: <span id="re-errores">0</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         MÓDULO 8: NÚMEROS ROMANOS
+         ============================================================ -->
+    <section id="tab-romanos" class="tab-panel">
+      <div class="nr-module">
+        <h1>🏛️ Números Romanos</h1>
+        <p style="margin:0.5rem 0;">Convierte entre números romanos y números normales.</p>
+
+        <label for="nr-tipo">Tipo de ejercicio:</label>
+        <select id="nr-tipo">
+          <option value="aromano">De número normal a romano</option>
+          <option value="anormal">De romano a número normal</option>
+        </select>
+        <button id="nr-generar">🎲 Generar pregunta</button>
+
+        <div id="nr-enunciado" class="nr-enunciado"></div>
+
+        <div>
+          <input type="text" id="nr-respuesta" placeholder="Tu respuesta" autocomplete="off" />
+          <button id="nr-verificar">Verificar</button>
+        </div>
+        <div id="nr-resultado"></div>
+
+        <div id="nr-contador">
+          ✅ Aciertos: <span id="nr-aciertos">0</span> |
+          ❌ Errores: <span id="nr-errores">0</span>
+        </div>
+
+        <div id="nr-historial">
+          <h3>📋 Historial de Respuestas</h3>
+          <ul id="nr-listaHistorial"></ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         MÓDULO 9: PERÍMETRO Y ÁREA
+         ============================================================ -->
+    <section id="tab-figuras" class="tab-panel">
+      <div class="pa-module">
+        <h1>📐 Perímetro y Área</h1>
+        <p style="margin:0.5rem 0;">Calcula el contorno y la superficie que ocupan las figuras.</p>
+
+        <label for="pa-tipo">Tipo de ejercicio:</label>
+        <select id="pa-tipo">
+          <option value="perimetro">Perímetro</option>
+          <option value="area">Área</option>
+        </select>
+        <button id="pa-generar">🎲 Generar figura</button>
+
+        <div id="pa-visual"></div>
+        <div id="pa-enunciado"></div>
+
+        <div>
+          <input type="text" id="pa-respuesta" placeholder="Tu respuesta" autocomplete="off" />
+          <button id="pa-verificar">Verificar</button>
+        </div>
+        <div id="pa-resultado"></div>
+
+        <div id="pa-contador">
+          ✅ Aciertos: <span id="pa-aciertos">0</span> |
+          ❌ Errores: <span id="pa-errores">0</span>
+        </div>
+
+        <div id="pa-historial">
+          <h3>📋 Historial de Respuestas</h3>
+          <ul id="pa-listaHistorial"></ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         MÓDULO 10: MÚLTIPLOS Y DIVISORES
+         ============================================================ -->
+    <section id="tab-multiplos" class="tab-panel">
+      <div class="md-module">
+        <h1>🔢 Múltiplos y Divisores</h1>
+        <p style="margin:0.5rem 0;">Piensa en múltiplos, divisores, m.c.m. y m.c.d.</p>
+
+        <label for="md-tipo">Tipo de ejercicio:</label>
+        <select id="md-tipo">
+          <option value="mcm">Mínimo común múltiplo (m.c.m.)</option>
+          <option value="mcd">Máximo común divisor (m.c.d.)</option>
+          <option value="esdivisor">¿Es divisor?</option>
+        </select>
+        <button id="md-generar">🎲 Generar pregunta</button>
+
+        <div id="md-enunciado"></div>
+        <div id="md-opciones"></div>
+        <div id="md-resultado"></div>
+
+        <div id="md-contador">
+          ✅ Aciertos: <span id="md-aciertos">0</span> |
+          ❌ Errores: <span id="md-errores">0</span>
+        </div>
+
+        <div id="md-historial">
+          <h3>📋 Historial de Respuestas</h3>
+          <ul id="md-listaHistorial"></ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         MÓDULO 11: DESCOMPONER NÚMEROS
+         ============================================================ -->
+    <section id="tab-descomponer" class="tab-panel">
+      <div class="dm-module">
+        <h1>🧩 Descomponer números</h1>
+        <p style="margin:0.5rem 0;">Escribe cuántas unidades vale cada cifra del número.</p>
+
+        <label for="dm-cifras">Cifras del número:</label>
+        <select id="dm-cifras">
+          <option value="3">3 cifras (hasta 999)</option>
+          <option value="4" selected>4 cifras (hasta 9.999)</option>
+          <option value="5">5 cifras (hasta 99.999)</option>
+          <option value="6">6 cifras (hasta 999.999)</option>
+          <option value="7">7 cifras (hasta 9.999.999)</option>
+          <option value="8">8 cifras (hasta 99.999.999)</option>
+          <option value="9">9 cifras (hasta 999.999.999)</option>
+          <option value="10">10 cifras (hasta 9.999.999.999)</option>
+          <option value="11">11 cifras (hasta 99.999.999.999)</option>
+          <option value="12">12 cifras (hasta 999.999.999.999)</option>
+        </select>
+        <button id="dm-generar">🎲 Nuevo número</button>
+
+        <div id="dm-numero" class="dm-numero"></div>
+        <div id="dm-rows"></div>
+        <button id="dm-comprobar">✔️ Comprobar</button>
+
+        <div id="dm-resultado"></div>
+
+        <div id="dm-contador">
+          ✅ Aciertos: <span id="dm-aciertos">0</span> |
+          ❌ Errores: <span id="dm-errores">0</span>
+        </div>
+
+        <div id="dm-historial">
+          <h3>📋 Historial de Respuestas</h3>
+          <ul id="dm-listaHistorial"></ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         MÓDULO 12: DIVISIONES
+         ============================================================ -->
+    <section id="tab-divisiones" class="tab-panel">
+      <div class="dv-module">
+        <h1>➗ Divisiones por cifras</h1>
+        <p style="margin:0.5rem 0;">Resuelve la división y escribe el cociente y el resto en las cajitas.</p>
+
+        <label for="dv-dvdCifras">Cifras del dividendo:</label>
+        <select id="dv-dvdCifras">
+          <option value="2">2 cifras</option>
+          <option value="3">3 cifras</option>
+          <option value="4" selected>4 cifras</option>
+          <option value="5">5 cifras</option>
+          <option value="6">6 cifras</option>
+        </select>
+
+        <label for="dv-dvsCifras">Cifras del divisor:</label>
+        <select id="dv-dvsCifras">
+          <option value="1">1 cifra</option>
+          <option value="2" selected>2 cifras</option>
+          <option value="3">3 cifras</option>
+        </select>
+
+        <button id="dv-generar">🎲 Nueva división</button>
+
+        <div id="dv-operacion"></div>
+
+        <div id="dv-acciones" class="dv-acciones">
+          <button id="dv-paso">✔️ Comprobar paso</button>
+        </div>
+
+        <div id="dv-resultado"></div>
+
+        <div id="dv-contador">
+          ✅ Aciertos: <span id="dv-aciertos">0</span> |
+          ❌ Errores: <span id="dv-errores">0</span>
+        </div>
+
+        <div id="dv-historial">
+          <h3>📋 Historial de Respuestas</h3>
+          <ul id="dv-listaHistorial"></ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         MÓDULO 13: APROXIMACIONES (REDONDEO)
+         ============================================================ -->
+    <section id="tab-aproximar" class="tab-panel">
+      <div class="ap-module">
+        <h1>🎯 Aproximaciones (redondeo)</h1>
+        <p style="margin:0.5rem 0;">Aproxima números enteros a la unidad, decena, centena…</p>
+
+        <label for="ap-cifras">Cifras del número:</label>
+        <select id="ap-cifras">
+          <option value="3">3 cifras</option>
+          <option value="4" selected>4 cifras</option>
+          <option value="5">5 cifras</option>
+          <option value="6">6 cifras</option>
+        </select>
+
+        <label for="ap-orden">Redondear a la…</label>
+        <select id="ap-orden">
+          <option value="1">Unidad</option>
+          <option value="10" selected>Decena</option>
+          <option value="100">Centena</option>
+          <option value="1000">Unidad de millar</option>
+          <option value="10000">Decena de millar</option>
+          <option value="100000">Centena de millar</option>
+        </select>
+
+        <button id="ap-generar">🎲 Nuevo número</button>
+
+        <div id="ap-enunciado" class="ap-enunciado"></div>
+        <div>
+          <input type="text" id="ap-respuesta" placeholder="Tu respuesta" autocomplete="off" />
+          <button id="ap-comprobar">✔️ Comprobar</button>
+        </div>
+        <div id="ap-resultado"></div>
+
+        <div id="ap-contador">
+          ✅ Aciertos: <span id="ap-aciertos">0</span> |
+          ❌ Errores: <span id="ap-errores">0</span>
+        </div>
+
+<div id="ap-historial">
+          <h3>📋 Historial de Respuestas</h3>
+          <ul id="ap-listaHistorial"></ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         MÓDULO 14: MULTIPLICACIONES (CUENTA EN COLUMNA)
+         ============================================================ -->
+    <section id="tab-multiplicaciones" class="tab-panel">
+      <div class="mu-module">
+        <h1>✖️ Multiplicaciones en columna</h1>
+        <p style="margin:0.5rem 0;">Elige las cifras y multiplica como en el papel: escribe cada producto en su fila de casillas y luego haz la suma final.</p>
+
+        <p style="margin:0.7rem 0 0.2rem;">Multiplicando (primer número):</p>
+        <label for="mu-ce-1">Cifras enteras:</label>
+        <select id="mu-ce-1">
+          <option value="1">1 cifra</option>
+          <option value="2" selected>2 cifras</option>
+          <option value="3">3 cifras</option>
+          <option value="4">4 cifras</option>
+        </select>
+        <label for="mu-cd-1">Cifras decimales:</label>
+        <select id="mu-cd-1">
+          <option value="0" selected>0</option>
+          <option value="1">1 cifra</option>
+          <option value="2">2 cifras</option>
+        </select>
+
+        <p style="margin:0.7rem 0 0.2rem;">Multiplicador (segundo número):</p>
+        <label for="mu-ce-2">Cifras enteras:</label>
+        <select id="mu-ce-2">
+          <option value="1" selected>1 cifra</option>
+          <option value="2">2 cifras</option>
+          <option value="3">3 cifras</option>
+        </select>
+        <label for="mu-cd-2">Cifras decimales:</label>
+        <select id="mu-cd-2">
+          <option value="0" selected>0</option>
+          <option value="1">1 cifra</option>
+          <option value="2">2 cifras</option>
+        </select>
+
+        <button id="mu-generar">🎲 Nueva multiplicación</button>
+
+        <div id="mu-operacion"></div>
+
+        <div class="dv-acciones">
+          <button id="mu-comprobar">✔️ Comprobar</button>
+        </div>
+
+        <div id="mu-resultado"></div>
+
+        <div id="mu-contador">
+          ✅ Aciertos: <span id="mu-aciertos">0</span> |
+          ❌ Errores: <span id="mu-errores">0</span>
+        </div>
+
+        <div id="mu-historial">
+          <h3>📋 Historial de Respuestas</h3>
+          <ul id="mu-listaHistorial"></ul>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============ NAVEGACIÓN DE PESTAÑAS ============ -->
+  <script src="js/navegacion.js"></script>
+
+
+  <!-- ============ CORE V3: PUNTOS, RACHA, MEDALLAS, TEMA, NOMBRE ============ -->
+  <script src="js/core.js"></script>
+
+
+  <!-- ============ MÓDULO 1: SUMAS Y RESTAS ============ -->
+  <script src="js/sumas.js"></script>
+
+
+  <!-- ============ MÓDULO 2: TABLAS DE MULTIPLICAR ============ -->
+  <script src="js/tablas.js"></script>
+
+
+  <!-- ============ MÓDULO 3: UNIDADES MÉTRICAS ============ -->
+  <script src="js/unidades.js"></script>
+
+
+  <!-- ============ MÓDULO 4: PROBLEMAS DE MATEMÁTICAS ============ -->
+  <script src="js/problemas.js"></script>
+
+
+  <!-- ============ MÓDULO 5: FRACCIONES ============ -->
+  <script src="js/fracciones.js"></script>
+
+
+  <!-- ============ MÓDULO 6: DECIMALES Y DINERO ============ -->
+  <script src="js/decimales.js"></script>
+
+
+  <!-- ============ MÓDULO 7: EL RELOJ ============ -->
+  <script src="js/reloj.js"></script>
+
+
+  <!-- ============ MÓDULO 8: NÚMEROS ROMANOS ============ -->
+  <script src="js/romanos.js"></script>
+
+
+  <!-- ============ MÓDULO 9: PERÍMETRO Y ÁREA ============ -->
+  <script src="js/figuras.js"></script>
+
+
+  <!-- ============ MÓDULO 10: MÚLTIPLOS Y DIVISORES ============ -->
+  <script src="js/multiplos.js"></script>
+
+
+  <!-- ============ MÓDULO 11: DESCOMPONER NÚMEROS ============ -->
+  <script src="js/descomponer.js"></script>
+
+
+  <!-- ============ MÓDULO 12: DIVISIONES (CUENTA DE DIVIDIR) ============ -->
+  <script src="js/divisiones.js"></script>
+
+
+<!-- ============ MÓDULO 13: APROXIMACIONES ============ -->
+  <script src="js/aproximaciones.js"></script>
+
+
+  <!-- ============ MÓDULO 14: MULTIPLICACIONES ============ -->
+  <script src="js/multiplicaciones.js"></script>
+
+</body>
+</html>

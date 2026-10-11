@@ -1,0 +1,105 @@
+
+    /* ---- Multiplicaciones en columna ---- */
+    .mu-module {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 2rem;
+      background-color: #fdf2f8;
+      border-radius: 18px;
+      margin-top: 14px;
+    }
+    .mu-module select, .mu-module button, .mu-module input {
+      padding: 0.5rem;
+      font-size: 1rem;
+      margin: 0.5rem;
+    }
+    #mu-operacion { margin: 1rem auto; }
+    .mul-wrap {
+      display: inline-block;
+      background: #fff;
+      border: 2px solid #f9a8d4;
+      border-radius: 14px;
+      padding: 14px 16px;
+      box-shadow: 0 4px 14px rgba(0,0,0,.08);
+      font-family: Consolas, monospace;
+    }
+    .mul-wrap * { box-sizing: border-box; }
+    .mul-fila {
+      display: flex;
+      align-items: center;
+      min-height: 2.4rem;
+      gap: 2px;
+      justify-content: flex-start;
+    }
+    .mul-titulo {
+      justify-content: center;
+      color: #be185d;
+      font-size: 0.95rem;
+      font-family: Arial, sans-serif;
+      margin-bottom: 4px;
+    }
+    .mul-cel {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.4rem;
+      height: 2.4rem;
+      font-family: Consolas, monospace;
+      font-size: 1.5rem;
+      color: #0f172a;
+    }
+    .mul-cel-num { font-weight: 700; }
+    .mul-op { color: #be185d; font-weight: 700; }
+    .mul-coma { color: #be185d; font-weight: 700; font-size: 1.4rem; }
+    .mul-caja-wrap { display: inline-flex; position: relative; }
+    .mul-con-coma::after {
+      content: ',';
+      position: absolute;
+      right: 2px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1.4rem;
+      color: #be185d;
+      font-weight: 700;
+      pointer-events: none;
+    }
+    .mul-cel-dash { color: #94a3b8; font-size: 1.1rem; }
+    .mul-caja {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.4rem;
+      height: 2.4rem;
+      font-family: Consolas, monospace;
+      font-size: 1.6rem;
+      font-weight: 700;
+      border: 2px solid #f9a8d4;
+      border-radius: 8px;
+      outline: none;
+      background: #fff5f8;
+      color: #0f172a;
+      box-shadow: inset 0 1px 4px rgba(0,0,0,.06);
+    }
+    .mul-caja:focus { border-color: #ec4899; background: #fce7f3; }
+    .mul-caja.mul-mal { border-color: #dc2626; background: #fef2f2; color: #991b1b; }
+    .mul-caja.mul-bien { border-color: #16a34a; background: #f0fdf4; color: #14532d; }
+    .mu-correcto { color: green; }
+    .mu-incorrecto { color: red; }
+    #mu-resultado { margin-top: 1.2rem; font-weight: bold; font-size: 1.3rem; }
+    #mu-contador { margin-top: 1.6rem; font-size: 1.1rem; }
+    #mu-historial {
+      margin-top: 1.6rem;
+      text-align: left;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      padding: 1rem;
+      border-radius: 10px;
+      font-family: monospace;
+    }
+    #mu-historial h3 { text-align: center; margin-bottom: 1rem; }
+    #mu-historial ul { padding: 0; list-style: none; }
+    #mu-historial li.mu-correcto { color: green; }
+    #mu-historial li.mu-incorrecto { color: red; }

@@ -1,0 +1,111 @@
+
+    .dm-module, .dv-module, .ap-module {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 2rem;
+      border-radius: 18px;
+      margin-top: 14px;
+    }
+    .dm-module { background-color: #fefce8; }
+    .dv-module { background-color: #ecfeff; }
+    .ap-module { background-color: #fdf2f8; }
+    .dm-module select, .dm-module button, .dm-module input,
+    .dv-module select, .dv-module button, .dv-module input,
+    .ap-module select, .ap-module button, .ap-module input {
+      padding: 0.5rem; font-size: 1rem; margin: 0.5rem;
+    }
+    #dm-resultado, #dv-resultado, #ap-resultado { margin-top: 1rem; font-weight: bold; font-size: 1.3rem; }
+    #dm-contador, #dv-contador, #ap-contador { margin-top: 1.5rem; font-size: 1.15rem; }
+    #dm-historial, #dv-historial, #ap-historial {
+      margin-top: 1.5rem; text-align: left; max-width: 600px;
+      margin-left: auto; margin-right: auto; background-color: #fff;
+      border: 1px solid #ccc; padding: 1rem; border-radius: 10px; font-family: monospace;
+    }
+    #dm-historial h3, #dv-historial h3, #ap-historial h3 { text-align: center; margin-bottom: 1rem; }
+    #dm-historial ul, #dv-historial ul, #ap-historial ul { padding: 0; list-style: none; }
+    #dm-historial li.dm-correcto, #dv-historial li.dv-correcto, #ap-historial li.ap-correcto { color: green; }
+    #dm-historial li.dm-incorrecto, #dv-historial li.dv-incorrecto, #ap-historial li.ap-incorrecto { color: red; }
+    .dm-correcto, .dv-correcto, .ap-correcto { color: green; }
+    .dm-incorrecto, .dv-incorrecto, .ap-incorrecto { color: red; }
+
+    /* ---- Descomposición de números ---- */
+    .dm-numero { display: flex; justify-content: center; gap: 6px; margin: 12px auto; flex-wrap: wrap; }
+    .dm-caja {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 3rem; height: 3.6rem; font-size: 2.2rem; font-weight: 700;
+      background: #fff; border: 2px solid #f59e0b; border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.08);
+    }
+    #dm-rows { max-width: 560px; margin: 12px auto; }
+    .dm-fila {
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+      background: #fff; border: 1px solid #fde68a; border-radius: 12px;
+      padding: 8px 14px; margin: 8px 0;
+    }
+    .dm-fila .dm-nombre { font-size: 1.02rem; text-align: left; }
+    .dm-input {
+      width: 7.5rem; padding: 0.45rem; font-size: 1.1rem; text-align: center;
+      border: 2px solid #e2e8f0; border-radius: 8px;
+    }
+    .dm-input.dm-bien { border-color: #16a34a; background: #f0fdf4; color: #14532d; }
+    .dm-input.dm-mal { border-color: #dc2626; background: #fef2f2; color: #991b1b; }
+    .dm-ayuda { color: #16a34a; font-weight: 700; font-size: 1.1rem; margin-left: 4px; }
+
+    /* ---- Divisiones: cuenta de dividir (dividendo │ casilla del divisor) ---- */
+    #dv-operacion { text-align: center; margin: 1rem auto; }
+    .dv-layout {
+      display: inline-block;
+      background: #fff;
+      border: 2px solid #a5f3fc;
+      border-radius: 14px;
+      padding: 14px 16px;
+      box-shadow: 0 4px 14px rgba(0,0,0,.08);
+      font-family: Consolas, monospace;
+    }
+    .dv-layout * { box-sizing: border-box; }
+    .dv-fila { display: flex; align-items: center; min-height: 2.4rem; gap: 2px; }
+    .dv-titulo { justify-content: center; color: #0e7490; font-size: 0.95rem; font-family: Arial, sans-serif; margin-bottom: 4px; }
+    .dv-cel {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 2.4rem; height: 2.4rem;
+      font-family: Consolas, monospace; font-size: 1.5rem; color: #0f172a;
+    }
+    .dv-cel-dvd { font-weight: 700; color: #0f172a; }
+    .dv-fila-top { align-items: flex-start; }
+    .dv-derecha {
+      display: inline-flex;
+      flex-direction: column;
+      border-left: 3px solid #2563eb;
+      margin-left: 6px;
+      padding-left: 8px;
+    }
+    .dv-divisor { display: flex; gap: 2px; }
+    .dv-divisor .dv-dig {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 2.4rem; height: 2.4rem;
+      font-family: Consolas, monospace; font-size: 1.6rem; font-weight: 700; color: #1e40af;
+    }
+    .dv-linea { height: 0; border-top: 3px solid #2563eb; margin: 1px 0; }
+    .dv-cociente { display: flex; gap: 2px; min-height: 2.4rem; }
+    .dv-cel-q { color: #16a34a; font-weight: 700; }
+    .dv-cel-prod { color: #0e7490; font-weight: 700; }
+    .dv-cel-signo { color: #0e7490; font-size: 1.3rem; }
+    .dv-cel-rest { color: #b45309; font-weight: 700; }
+    .dv-cel-dash { color: #64748b; font-size: 1.1rem; }
+    .dv-q, .dv-r-cel {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 2.4rem; height: 2.4rem;
+      font-family: Consolas, monospace; font-size: 1.6rem; font-weight: 700;
+      border: 2px solid #f59e0b; border-radius: 8px; outline: none; background: #fffbeb;
+      color: #0f172a; box-shadow: inset 0 1px 4px rgba(0,0,0,.06);
+    }
+    .dv-q { border-color: #94a3b8; background: #fff; }
+    .dv-q:focus, .dv-r-cel:focus { border-color: #2563eb; background: #eff6ff; }
+    .dv-q.dv-mal, .dv-r-cel.dv-mal { border-color: #dc2626; background: #fef2f2; color: #991b1b; }
+    .dv-r-cel.dv-bien { border-color: #16a34a; background: #f0fdf4; color: #14532d; }
+    .dv-win { background: #fffbeb; }
+    .dv-acciones { margin-top: 0.8rem; }
+
+    /* ---- Aproximaciones ---- */
+    .ap-enunciado { font-size: 1.4rem; margin: 1rem auto; font-weight: 700; }
+  

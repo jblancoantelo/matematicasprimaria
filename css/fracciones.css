@@ -1,0 +1,54 @@
+
+    .fr-module {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 2rem;
+      background-color: #f5f3ff;
+      border-radius: 18px;
+      margin-top: 14px;
+    }
+    .fr-module select, .fr-module button, .fr-module input {
+      padding: 0.5rem;
+      font-size: 1rem;
+      margin: 0.5rem;
+    }
+    .fr-enunciado { font-size: 1.15rem; margin: 1rem 0; line-height: 1.5; }
+    .fr-visual { min-height: 90px; }
+    .fr-bloque p { font-weight: 700; margin: 4px 0; }
+    .fr-bar {
+      display: flex;
+      gap: 2px;
+      max-width: 440px;
+      margin: 8px auto;
+      padding: 4px;
+      border: 2px solid #c7d2fe;
+      border-radius: 10px;
+      background: #fff;
+    }
+    .fr-cell { height: 30px; flex: 1; background: #eef2ff; border-radius: 3px; }
+    .fr-llena { background: #6366f1; }
+    .fr-fila { display: flex; gap: 18px; justify-content: center; flex-wrap: wrap; margin-top: 6px; }
+    #fr-resultado { margin-top: 1rem; font-weight: bold; font-size: 1.3rem; }
+    #fr-contador, #de-contador { margin-top: 1.5rem; font-size: 1.15rem; }
+    #fr-historial, #de-historial {
+      margin-top: 1.5rem;
+      text-align: left;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      background-color: #fff;
+      border: 1px solid var(--fr-border, #ccc);
+      padding: 1rem;
+      border-radius: 10px;
+      font-family: monospace;
+    }
+    #fr-historial h3, #de-historial h3 { text-align: center; margin-bottom: 1rem; }
+    #fr-historial ul, #de-historial ul { padding: 0; list-style: none; }
+    #fr-historial li.fr-correcto, #de-historial li.de-correcto { color: green; }
+    #fr-historial li.fr-incorrecto, #de-historial li.de-incorrecto { color: red; }
+    .fr-correcto { color: green; }
+    .fr-incorrecto { color: red; }
+    .de-correcto { color: green; }
+    .de-incorrecto { color: red; }
+    #fr-respuesta, #de-respuesta { font-size: 1.2rem; }
+  

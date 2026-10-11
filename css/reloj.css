@@ -1,0 +1,64 @@
+
+    .re-module, .nr-module, .pa-module, .md-module {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 2rem;
+      border-radius: 18px;
+      margin-top: 14px;
+    }
+    .re-module { background-color: #fdf2f8; }
+    .nr-module { background-color: #eff6ff; }
+    .pa-module { background-color: #fffbeb; }
+    .md-module { background-color: #f0fdf4; }
+    .re-module select, .re-module button,
+    .nr-module select, .nr-module button, .nr-module input,
+    .pa-module select, .pa-module button, .pa-module input,
+    .md-module select, .md-module button {
+      padding: 0.5rem; font-size: 1rem; margin: 0.5rem;
+    }
+    .re-enunciado, .nr-enunciado { font-size: 1.15rem; margin: 1rem 0; line-height: 1.5; }
+    .re-opciones {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin: 10px auto;
+    }
+    .re-opciones button, .md-opciones button {
+      border: 2px solid #cbd5e1;
+      border-radius: 12px;
+      padding: 12px 18px;
+      font-size: 1.15rem;
+      font-weight: 700;
+      cursor: pointer;
+      background: #fff;
+      color: #0f172a;
+      min-width: 110px;
+    }
+    .re-opciones button:hover, .md-opciones button:hover { border-color: #2563eb; background: #eff6ff; }
+    .re-opciones button.seleccionada-bien, .md-opciones button.seleccionada-bien {
+      border-color: #16a34a; background: #dcfce7;
+    }
+    .re-opciones button.seleccionada-mal, .md-opciones button.seleccionada-mal {
+      border-color: #dc2626; background: #fee2e2;
+    }
+    #re-resultado, #nr-resultado, #pa-resultado, #md-resultado {
+      margin-top: 1rem; font-weight: bold; font-size: 1.3rem;
+    }
+    #re-contador, #nr-contador, #pa-contador, #md-contador {
+      margin-top: 1.5rem; font-size: 1.15rem;
+    }
+    #nr-historial, #pa-historial, #md-historial {
+      margin-top: 1.5rem; text-align: left; max-width: 600px;
+      margin-left: auto; margin-right: auto; background-color: #fff;
+      border: 1px solid #ccc; padding: 1rem; border-radius: 10px; font-family: monospace;
+    }
+    #nr-historial h3, #pa-historial h3, #md-historial h3 { text-align: center; margin-bottom: 1rem; }
+    #nr-historial ul, #pa-historial ul, #md-historial ul { padding: 0; list-style: none; }
+    #nr-historial li.nr-correcto, #pa-historial li.pa-correcto, #md-historial li.md-correcto { color: green; }
+    #nr-historial li.nr-incorrecto, #pa-historial li.pa-incorrecto, #md-historial li.md-incorrecto { color: red; }
+    .re-modulo-svg { background: #fff; border-radius: 14px; margin: 8px auto; box-shadow: 0 4px 14px rgba(0,0,0,.08); }
+    .pa-svg { background: #fff; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,.08); }
+    .re-correcto, .nr-correcto, .pa-correcto, .md-correcto { color: green; }
+    .re-incorrecto, .nr-incorrecto, .pa-incorrecto, .md-incorrecto { color: red; }
+  

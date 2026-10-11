@@ -1,0 +1,48 @@
+
+    .sy-module {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 2rem;
+      background-color: #fff8e7;
+      border-radius: 18px;
+      margin-top: 14px;
+    }
+    .sy-module select, .sy-module button, .sy-module input {
+      padding: 0.5rem;
+      font-size: 1rem;
+      margin: 0.5rem;
+    }
+    #sy-operacion {
+      font-family: monospace;
+      font-size: 2rem;
+      line-height: 2.5rem;
+      display: inline-block;
+      margin-top: 1.5rem;
+      text-align: right;
+      border: 1px solid #ccc;
+      padding: 1rem;
+      background-color: #ffffff;
+      border-radius: 10px;
+      box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+    }
+    #sy-resultado { margin-top: 1.5rem; font-weight: bold; font-size: 1.5rem; }
+    .sy-correcto { color: green; }
+    .sy-incorrecto { color: red; }
+    #sy-contador { margin-top: 2rem; font-size: 1.2rem; }
+    #sy-historial {
+      margin-top: 2rem;
+      text-align: left;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      padding: 1rem;
+      border-radius: 10px;
+      font-family: monospace;
+    }
+    #sy-historial h3 { text-align: center; margin-bottom: 1rem; }
+    #sy-historial ul { padding: 0; list-style: none; }
+    #sy-historial li.sy-correcto { color: green; }
+    #sy-historial li.sy-incorrecto { color: red; }
+  

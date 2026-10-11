@@ -1,0 +1,35 @@
+
+    .tm-module {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 2rem;
+      background-color: #f0f8ff;
+      border-radius: 18px;
+      margin-top: 14px;
+    }
+    .tm-module select, .tm-module button, .tm-module input {
+      padding: 0.5rem;
+      font-size: 1rem;
+      margin: 1rem;
+    }
+    #tm-resultado { margin-top: 1.5rem; font-weight: bold; font-size: 1.5rem; }
+    .tm-correcto { color: green; }
+    .tm-incorrecto { color: red; }
+    #tm-contador { margin-top: 2rem; font-size: 1.2rem; }
+    #tm-historial {
+      margin-top: 2rem;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      text-align: left;
+      background: #ffffff;
+      border: 1px solid #ccc;
+      padding: 1rem;
+      border-radius: 10px;
+      box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+    }
+    #tm-historial h3 { text-align: center; margin-bottom: 1rem; }
+    #tm-historial ul { list-style: none; padding: 0; font-family: monospace; }
+    #tm-historial li.tm-correcto { color: green; }
+    #tm-historial li.tm-incorrecto { color: red; }
+  
