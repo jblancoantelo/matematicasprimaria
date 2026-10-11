@@ -78,6 +78,41 @@
         return '<div class="mul-fila">' + s + '</div>';
       }
 
+      function filasRellenables(){
+        return Array.from(document.querySelectorAll('#mu-operacion .mul-fila')).filter(function(r){
+          return r.querySelector('.mul-caja');
+        });
+      }
+      function cajasFila(fila){ return Array.from(fila.querySelectorAll('.mul-caja')); }
+      function ultimaCaja(fila){
+        const cs = cajasFila(fila);
+        return cs.length ? cs[cs.length - 1] : null;
+      }
+      function primeraCaja(actual){
+        const filas = filasRellenables();
+        for (let i = 0; i < filas.length; i++) {
+          if (filas[i].contains(actual)) {
+            const cs = cajasFila(filas[i]);
+            const idx = cs.indexOf(actual);
+            if (idx > 0) return cs[idx - 1];
+            return filas[i + 1] ? ultimaCaja(filas[i + 1]) : null;
+          }
+        }
+        return null;
+      }
+      function cajaAnterior(actual){
+        const filas = filasRellenables();
+        for (let i = 0; i < filas.length; i++) {
+          if (filas[i].contains(actual)) {
+            const cs = cajasFila(filas[i]);
+            const idx = cs.indexOf(actual);
+            if (idx < cs.length - 1) return cs[idx + 1];
+            return i > 0 ? ultimaCaja(filas[i - 1]) : null;
+          }
+        }
+        return null;
+      }
+
       function rend(){
         const SA = String(A);
         const SB = String(B);
@@ -122,7 +157,8 @@
         document.getElementById('mu-resultado').className = '';
         document.getElementById('mu-comprobar').disabled = false;
         rend();
-        const primero = document.querySelector('#mu-operacion .mul-caja');
+        const filas = filasRellenables();
+        const primero = filas.length ? ultimaCaja(filas[0]) : null;
         if (primero) primero.focus();
       }
 
@@ -212,11 +248,27 @@
         if (t && t.classList.contains('mul-caja')) {
           t.value = t.value.replace(/\D/g, '').slice(0, 1);
           t.classList.remove('mul-mal', 'mul-bien');
+          if (t.value !== '') {
+            const sig = primeraCaja(t);
+            if (sig) sig.focus();
+            else {
+              const comp = document.getElementById('mu-comprobar');
+              if (comp) comp.focus();
+            }
+          }
         }
       });
 
       document.getElementById('mu-operacion').addEventListener('keydown', function(e){
         if (e.key === 'Enter') comprobar();
+        const t = e.target;
+        if (e.key === 'Backspace' && t && t.classList.contains('mul-caja') && t.value === '') {
+          const ant = cajaAnterior(t);
+          if (ant) {
+            e.preventDefault();
+            ant.focus();
+          }
+        }
       });
 
       document.getElementById('mu-generar').addEventListener('click', generar);

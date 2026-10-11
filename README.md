@@ -17,6 +17,9 @@ Está pensada para alumnado de **3º y 4º de Primaria**, con 14 juegos organiza
 - **Historial de respuestas** en la mayoría de los juegos.
 - **Confeti** al acertar y **avisos emergentes** (toast) al alcanzar hitos de racha.
 - **Navegación por pestañas** (SPA) sin recargar la página, con el módulo activo guardado en la URL (`?modulo=...`) para conservarlo al refrescar.
+- **Atajo de teclado**: pulsa **Enter** para verificar la respuesta en la mayoría de los juegos (sumas, tablas, fracciones, decimales, romanos, perímetro, multiplicaciones, divisiones, descomponer y aproximaciones).
+- **Avance automático**: en algunos juegos (sumas, divisiones, aproximaciones, multiplicaciones y descomponer) la pregunta cambia sola después de comprobar la respuesta.
+- **Reinicio de progreso**: botón **🗑️ Reiniciar puntos** en *Mi Panel* para borrar puntos, racha y medallas (pide confirmación).
 - **Persistencia local** con `localStorage` (puntos, medallas, historiales). Nada se envía a internet.
 - **Diseño responsive**, adaptado a ordenador, tablet y móvil.
 
@@ -27,12 +30,12 @@ Está pensada para alumnado de **3º y 4º de Primaria**, con 14 juegos organiza
 ### 1. 🧮 Sumas y Restas
 Operaciones verticales (en columna).
 - Elige suma o resta.
-- En las sumas puedes elegir cuántos números sumar (de 2 a 5).
-- Configura las cifras de cada número (de 1 a 6).
+- Tanto en sumas como en restas puedes elegir cuántos números (de 2 a 5).
+- Configura las cifras enteras (de 1 a 6) y los **decimales** (de 0 a 3) de cada número.
 - Contador de aciertos/errores e historial de respuestas.
 
 ### 2. ✖️ Tablas de Multiplicar
-- Tablas del 0 al 10, modo **aleatorio** y **aleatorio difícil** (sin 0, 1 y 10).
+- Tablas del 0 al 10, modo **aleatorio** y **aleatorio difícil** (hasta el 12, sin 0, 1 ni 10).
 - **Modo contrarreloj**: elige los segundos (5–300) y resuelve tantas como puedas antes de que acabe el tiempo.
 - Contador de aciertos/errores e historial.
 
@@ -64,6 +67,7 @@ Reloj de agujas dibujado.
 ### 7. 🏛️ Números Romanos
 - Convertir de número normal a romano.
 - Convertir de romano a número normal.
+- Números del 1 al 399.
 
 ### 8. 📐 Perímetro y Área
 Figuras de rectángulos y cuadrados.
@@ -78,7 +82,7 @@ Figuras de rectángulos y cuadrados.
 ### 10. 🤔 Problemas
 Generador de problemas de la vida real (dinero, colegio, juguetes, comida o mezclado).
 - Nivel **3º (repaso)** o **4º de Primaria**.
-- De **1 a 5 operaciones** encadenadas (suma, resta, multiplicación y división).
+- De **1 a 5 operaciones** encadenadas en 4º (hasta 4 en 3º): suma, resta, multiplicación y división.
 - Botones para **mostrar la solución** y **mostrar cómo se resuelve**, separando **Datos** y **Operaciones**.
 - Historial desplegable que marca en rojo los problemas fallados, con opciones de abrir/cerrar todo y borrar.
 
