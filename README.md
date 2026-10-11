@@ -1,5 +1,19 @@
 # 🧮 Aventuras Matemáticas
 
+## 🔗 Abrir la aplicación
+
+👉 **[Abrir Aventuras Matemáticas en el navegador](https://jblancoantelo.github.io/matematicasprimaria/Matematicas_Primaria.html)**
+
+Haz clic en el enlace anterior para jugar directamente, sin descargar ni instalar nada.
+
+> Si el enlace aún no funciona, activa **GitHub Pages** siguiendo estos pasos:
+> 1. Entra en el repositorio: https://github.com/jblancoantelo/matematicasprimaria
+> 2. Ve a **Settings → Pages**.
+> 3. En **Source**, selecciona la rama **`main`** y la carpeta **`/ (root)`**, y pulsa **Save**.
+> 4. Espera 1–2 minutos y vuelve a abrir el enlace de arriba.
+
+---
+
 Aplicación web interactiva para practicar **matemáticas de Primaria**. Funciona directamente en el navegador (sin servidor ni instalación) y guarda el progreso del alumno en el propio dispositivo.
 
 Está pensada para alumnado de **3º y 4º de Primaria**, con 14 juegos organizados por bloques temáticos, apoyo visual, corrección automática y un sistema de puntos, rachas y medallas para motivar la práctica diaria.
