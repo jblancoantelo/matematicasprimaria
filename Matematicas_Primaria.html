@@ -725,34 +725,42 @@
         <h1>✖️ Multiplicaciones en columna</h1>
         <p style="margin:0.5rem 0;">Elige las cifras y multiplica como en el papel: escribe cada producto en su fila de casillas y luego haz la suma final.</p>
 
-        <p style="margin:0.7rem 0 0.2rem;">Multiplicando (primer número):</p>
-        <label for="mu-ce-1">Cifras enteras:</label>
-        <select id="mu-ce-1">
-          <option value="1">1 cifra</option>
-          <option value="2" selected>2 cifras</option>
-          <option value="3">3 cifras</option>
-          <option value="4">4 cifras</option>
-        </select>
-        <label for="mu-cd-1">Cifras decimales:</label>
-        <select id="mu-cd-1">
-          <option value="0" selected>0</option>
-          <option value="1">1 cifra</option>
-          <option value="2">2 cifras</option>
-        </select>
+        <div class="mu-bloque">
+          <div class="mu-bloque-titulo">• Multiplicando (primer número)</div>
+          <div class="mu-bloque-controles">
+            <label for="mu-ce-1">Cifras enteras:</label>
+            <select id="mu-ce-1">
+              <option value="1">1 cifra</option>
+              <option value="2" selected>2 cifras</option>
+              <option value="3">3 cifras</option>
+              <option value="4">4 cifras</option>
+            </select>
+            <label for="mu-cd-1">Cifras decimales:</label>
+            <select id="mu-cd-1">
+              <option value="0" selected>0</option>
+              <option value="1">1 cifra</option>
+              <option value="2">2 cifras</option>
+            </select>
+          </div>
+        </div>
 
-        <p style="margin:0.7rem 0 0.2rem;">Multiplicador (segundo número):</p>
-        <label for="mu-ce-2">Cifras enteras:</label>
-        <select id="mu-ce-2">
-          <option value="1" selected>1 cifra</option>
-          <option value="2">2 cifras</option>
-          <option value="3">3 cifras</option>
-        </select>
-        <label for="mu-cd-2">Cifras decimales:</label>
-        <select id="mu-cd-2">
-          <option value="0" selected>0</option>
-          <option value="1">1 cifra</option>
-          <option value="2">2 cifras</option>
-        </select>
+        <div class="mu-bloque">
+          <div class="mu-bloque-titulo">• Multiplicador (segundo número)</div>
+          <div class="mu-bloque-controles">
+            <label for="mu-ce-2">Cifras enteras:</label>
+            <select id="mu-ce-2">
+              <option value="1" selected>1 cifra</option>
+              <option value="2">2 cifras</option>
+              <option value="3">3 cifras</option>
+            </select>
+            <label for="mu-cd-2">Cifras decimales:</label>
+            <select id="mu-cd-2">
+              <option value="0" selected>0</option>
+              <option value="1">1 cifra</option>
+              <option value="2">2 cifras</option>
+            </select>
+          </div>
+        </div>
 
         <button id="mu-generar">🎲 Nueva multiplicación</button>
 
