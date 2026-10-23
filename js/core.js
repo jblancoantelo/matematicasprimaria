@@ -16,6 +16,7 @@
         dv:  { n: 'Divisiones',             e: '➗' },
         mu:  { n: 'Multiplicaciones',       e: '✖️' },
         ap:  { n: 'Aproximaciones',         e: '🎯' },
+        pm:  { n: 'Propiedades',            e: '🔁' },
         pr:  { n: 'Problemas',              e: '🤔' }
       };
 

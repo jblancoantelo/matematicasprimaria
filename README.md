@@ -16,7 +16,7 @@ Haz clic en el enlace anterior para jugar directamente, sin descargar ni instala
 
 Aplicación web interactiva para practicar **matemáticas de Primaria**. Funciona directamente en el navegador (sin servidor ni instalación) y guarda el progreso del alumno en el propio dispositivo.
 
-Está pensada para alumnado de **3º y 4º de Primaria**, con 14 juegos organizados por bloques temáticos, apoyo visual, corrección automática y un sistema de puntos, rachas y medallas para motivar la práctica diaria.
+Está pensada para alumnado de **3º y 4º de Primaria**, con 15 juegos organizados por bloques temáticos, apoyo visual, corrección automática y un sistema de puntos, rachas y medallas para motivar la práctica diaria.
 
 ---
 
@@ -31,15 +31,15 @@ Está pensada para alumnado de **3º y 4º de Primaria**, con 14 juegos organiza
 - **Historial de respuestas** en la mayoría de los juegos.
 - **Confeti** al acertar y **avisos emergentes** (toast) al alcanzar hitos de racha.
 - **Navegación por pestañas** (SPA) sin recargar la página, con el módulo activo guardado en la URL (`?modulo=...`) para conservarlo al refrescar.
-- **Atajo de teclado**: pulsa **Enter** para verificar la respuesta en la mayoría de los juegos (sumas, tablas, fracciones, decimales, romanos, perímetro, multiplicaciones, divisiones, descomponer y aproximaciones).
-- **Avance automático**: en algunos juegos (sumas, divisiones, aproximaciones, multiplicaciones y descomponer) la pregunta cambia sola después de comprobar la respuesta.
+- **Atajo de teclado**: pulsa **Enter** para verificar la respuesta en la mayoría de los juegos (sumas, tablas, fracciones, decimales, romanos, perímetro, multiplicaciones, divisiones, descomponer, aproximaciones y propiedades).
+- **Avance automático**: en algunos juegos (sumas, divisiones, aproximaciones, multiplicaciones, descomponer y propiedades) la pregunta cambia sola después de comprobar la respuesta.
 - **Reinicio de progreso**: botón **🗑️ Reiniciar puntos** en *Mi Panel* para borrar puntos, racha y medallas (pide confirmación).
 - **Persistencia local** con `localStorage` (puntos, medallas, historiales). Nada se envía a internet.
 - **Diseño responsive**, adaptado a ordenador, tablet y móvil.
 
 ---
 
-## 🎮 Los 14 juegos
+## 🎮 Los 15 juegos
 
 ### 1. 🧮 Sumas y Restas
 Operaciones verticales (en columna).
@@ -118,6 +118,14 @@ Redondeo de números enteros.
 - Números de 3 a 6 cifras.
 - Redondear a la unidad, decena, centena, unidad de millar, decena de millar o centena de millar.
 
+### 15. 🔁 Propiedades de la Multiplicación
+Completa igualdades para practicar las tres propiedades.
+- **Conmutativa**: cambiar el orden de los factores no cambia el producto.
+- **Asociativa**: cambiar la agrupación de tres factores no cambia el producto.
+- **Distributiva**: multiplicar por una suma o resta equivale a multiplicar por cada término y luego sumar o restar.
+- Modo **mezcla** con las tres propiedades, botón de **pista** y explicación tras cada respuesta.
+- Contador de aciertos y errores, historial y avance automático al acertar.
+
 ---
 
 ## 📁 Estructura del proyecto
@@ -136,7 +144,8 @@ mates/
 │   ├── decimales.css           # Decimales y dinero
 │   ├── reloj.css               # Reloj, romanos, perímetro, múltiplos
 │   ├── descomponer.css         # Descomponer, divisiones, aproximaciones
-│   └── multiplicaciones.css    # Multiplicaciones
+│   ├── multiplicaciones.css    # Multiplicaciones
+│   └── propiedades.css         # Propiedades de la multiplicación
 └── js/
     ├── navegacion.js           # Cambio de pestañas y URL
     ├── core.js                 # Puntos, racha, medallas, logros, confeti, toast
@@ -153,7 +162,8 @@ mates/
     ├── descomponer.js          # Módulo 11
     ├── divisiones.js           # Módulo 12
     ├── aproximaciones.js       # Módulo 13
-    └── multiplicaciones.js     # Módulo 14
+    ├── multiplicaciones.js     # Módulo 14
+    └── propiedades.js          # Módulo 15
 ```
 
 ---
