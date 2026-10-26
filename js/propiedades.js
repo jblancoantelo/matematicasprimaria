@@ -105,6 +105,7 @@
 
         const terminos = [esperados[0] * esperados[1], esperados[2] * esperados[3]];
         const resultado = terminos[0] + terminos[1];
+        const suma = b + c;
 
         return {
           prop: 'distributiva',
@@ -117,6 +118,8 @@
           opsEsperadasPaso2: [op2],
           terminos: terminos,
           esperadosPaso2: [terminos[0], terminos[1], resultado],
+          suma: suma,
+          esperadosPaso3: [suma, resultado],
           completa: izquierda + ' = (' + esperados[0] + ' × ' + esperados[1] + ') ' + op2 +
             ' (' + esperados[2] + ' × ' + esperados[3] + ')',
           resultado: resultado,
@@ -124,7 +127,8 @@
           formula: REGLA_DISTRIBUTIVA.formula,
           ejemplo: REGLA_DISTRIBUTIVA.ejemplo,
           pista: 'Multiplica el número de fuera por cada número del paréntesis. Elige tú la operación' +
-            ' de cada hueco y coloca los paréntesis si quieres.'
+            ' de cada hueco y coloca los paréntesis si quieres. Después comprueba el resultado' +
+            ' resolviendo primero el paréntesis.'
         };
       }
 
@@ -267,6 +271,15 @@
               '<span class="pm-igual">=</span> ' + campo(4, 'Primer producto', 'pm-num') +
               opBoton('Operación entre los dos productos') + campo(5, 'Segundo producto', 'pm-num') +
               ' <span class="pm-igual">=</span> ' + campo(6, 'Resultado', 'pm-num') +
+            '</div>' +
+          '</div>' +
+          '<div class="pm-forma pm-dist-paso3" hidden>' +
+            '<div class="pm-forma-titulo">Comprueba resolviendo el paréntesis</div>' +
+            '<div class="pm-cadena pm-dist-cadena" data-paso="3">' +
+              '<span class="pm-igual">=</span>' +
+              '<span class="pm-fijo">' + datos.esperados[0] + '</span>' +
+              '<span class="pm-signo">×</span>' + campo(7, 'Suma del paréntesis', 'pm-num') +
+              ' <span class="pm-igual">=</span> ' + campo(8, 'Resultado final', 'pm-num') +
             '</div>' +
           '</div>';
       }
@@ -609,13 +622,29 @@
           actual.terminos[1] + ' = ' + actual.resultado;
 
         if (ok) {
-          inputs.forEach(function(inp){ inp.classList.add('pm-bien'); });
+          inputs.forEach(function(inp){
+            inp.classList.add('pm-bien');
+            inp.readOnly = true;
+          });
           marcarOps(2, ops, actual.opsEsperadasPaso2, 'pm-bien');
-          aciertos++;
-          window.MatesCore.puntuar('pm', true);
-          agregarHistorial(['✅ ' + correcta], true);
-          actualizarContadores();
-          generar();
+          Array.prototype.forEach.call(paso2.querySelectorAll('.pm-op'), function(b){
+            b.disabled = true;
+          });
+
+          actual.valsPaso2 = vals;
+          actual.opsPaso2 = ops;
+          actual.paso = 3;
+
+          const paso3 = el('pm-builder').querySelector('.pm-dist-paso3');
+          paso3.hidden = false;
+          el('pm-consigna').textContent =
+            'Comprueba el resultado resolviendo primero el paréntesis.';
+          limpiarResultado();
+
+          const primero = paso3.querySelector('.pm-hueco');
+          if (primero) {
+            try { primero.focus({ preventScroll: true }); } catch (e) { primero.focus(); }
+          }
         } else {
           inputs.forEach(function(inp, i){
             inp.classList.toggle('pm-mal', nums[i] !== actual.esperadosPaso2[i]);
@@ -639,8 +668,64 @@
         }
       }
 
+      function comprobarDistPaso3(){
+        const paso3 = el('pm-builder').querySelector('.pm-dist-paso3');
+        const inputs = Array.prototype.slice.call(paso3.querySelectorAll('.pm-hueco'));
+        const vals = distValores(3);
+
+        if (vals.some(function(v){ return v === ''; })) {
+          const vacio = inputs[vals.indexOf('')];
+          if (vacio) vacio.focus();
+          mostrarAviso('Resuelve el paréntesis y escribe también el resultado final.');
+          return;
+        }
+
+        const nums = vals.map(Number);
+        const ok = nums.every(function(n, i){
+          return Number.isFinite(n) && n === actual.esperadosPaso3[i];
+        });
+
+        const val = function(v){ return v === '' ? '?' : v; };
+        const tu = actual.izquierda + ' = ' + actual.esperados[0] + ' × ' + val(vals[0]) +
+          ' = ' + val(vals[1]);
+        const correcta = actual.izquierda + ' = ' + actual.esperados[0] + ' × ' + actual.suma +
+          ' = ' + actual.resultado;
+        const expansion = actual.completa + ' = ' + actual.terminos[0] + ' ' + actual.op2 + ' ' +
+          actual.terminos[1] + ' = ' + actual.resultado;
+
+        if (ok) {
+          inputs.forEach(function(inp){ inp.classList.add('pm-bien'); });
+          aciertos++;
+          window.MatesCore.puntuar('pm', true);
+          agregarHistorial([
+            '✅ ' + expansion,
+            '✔️ Comprobación: ' + correcta
+          ], true);
+          actualizarContadores();
+          generar();
+        } else {
+          inputs.forEach(function(inp, i){
+            inp.classList.toggle('pm-mal', nums[i] !== actual.esperadosPaso3[i]);
+          });
+          errores++;
+          window.MatesCore.puntuar('pm', false);
+          agregarHistorial(['❌ Tú: ' + tu, '✔️ Correcto: ' + correcta], false);
+          actualizarContadores();
+
+          const r = el('pm-resultado');
+          r.textContent = nums[0] !== actual.suma
+            ? '❌ Revisa la suma del paréntesis.'
+            : '❌ Revisa la multiplicación final.';
+          r.className = 'pm-resultado pm-ko';
+
+          const primerMal = inputs.filter(function(inp, i){ return nums[i] !== actual.esperadosPaso3[i]; })[0];
+          if (primerMal) { primerMal.focus(); primerMal.select(); }
+        }
+      }
+
       function comprobarDist(){
-        if (actual.paso === 2) comprobarDistPaso2();
+        if (actual.paso === 3) comprobarDistPaso3();
+        else if (actual.paso === 2) comprobarDistPaso2();
         else comprobarDistPaso1();
       }
 

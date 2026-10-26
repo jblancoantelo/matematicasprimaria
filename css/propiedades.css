@@ -236,6 +236,11 @@
       height: 2.5rem;
       font-size: 1.25rem;
     }
+    .pm-fijo {
+      padding: 0 0.2rem;
+      font-weight: 700;
+      color: #0f172a;
+    }
     .pm-agrupa {
       display: flex;
       flex-wrap: wrap;
