@@ -113,6 +113,8 @@
           izquierda: izquierda,
           op2: op2,
           esperados: esperados,
+          opsEsperadas: ['×', '+', '×'],
+          opsEsperadasPaso2: [op2],
           terminos: terminos,
           esperadosPaso2: [terminos[0], terminos[1], resultado],
           completa: izquierda + ' = (' + esperados[0] + ' × ' + esperados[1] + ') ' + op2 +
@@ -121,8 +123,8 @@
           regla: REGLA_DISTRIBUTIVA.regla,
           formula: REGLA_DISTRIBUTIVA.formula,
           ejemplo: REGLA_DISTRIBUTIVA.ejemplo,
-          pista: 'Multiplica el número de fuera por cada número del paréntesis y después suma.' +
-            ' Escribe cada producto entre paréntesis.'
+          pista: 'Multiplica el número de fuera por cada número del paréntesis. Elige tú la operación' +
+            ' de cada hueco y coloca los paréntesis si quieres.'
         };
       }
 
@@ -229,6 +231,11 @@
 
       /* ---------- Constructor de la propiedad distributiva ---------- */
 
+      function opBoton(etiqueta){
+        return '<button class="pm-op" type="button" data-op-valor="" aria-label="' +
+          etiqueta + ' (pulsa para cambiar entre × y +)">?</button>';
+      }
+
       function renderDist(datos){
         el('pm-builder').innerHTML =
           '<div class="pm-objetivo pm-dist-izq">' + datos.izquierda +
@@ -237,13 +244,15 @@
             '<div class="pm-cadena pm-dist-cadena" data-paso="1">' +
               '<span class="pm-producto" data-par="0">' +
                 '<span class="pm-par">(</span>' + campo(0, 'Número 1', 'pm-num') +
-                  ' <span class="pm-signo">×</span> ' + campo(1, 'Número 2', 'pm-num') +
+                  opBoton('Operación entre el primer y el segundo número') +
+                  campo(1, 'Número 2', 'pm-num') +
                   '<span class="pm-par">)</span>' +
               '</span>' +
-              ' <span class="pm-signo">' + datos.op2 + '</span> ' +
+              opBoton('Operación entre los dos productos') +
               '<span class="pm-producto" data-par="0">' +
                 '<span class="pm-par">(</span>' + campo(2, 'Número 3', 'pm-num') +
-                  ' <span class="pm-signo">×</span> ' + campo(3, 'Número 4', 'pm-num') +
+                  opBoton('Operación entre el tercer y el cuarto número') +
+                  campo(3, 'Número 4', 'pm-num') +
                   '<span class="pm-par">)</span>' +
               '</span>' +
             '</div>' +
@@ -256,23 +265,21 @@
             '<div class="pm-forma-titulo">Ahora calcula</div>' +
             '<div class="pm-cadena pm-dist-cadena" data-paso="2">' +
               '<span class="pm-igual">=</span> ' + campo(4, 'Primer producto', 'pm-num') +
-              ' <span class="pm-signo">' + datos.op2 + '</span> ' + campo(5, 'Segundo producto', 'pm-num') +
+              opBoton('Operación entre los dos productos') + campo(5, 'Segundo producto', 'pm-num') +
               ' <span class="pm-igual">=</span> ' + campo(6, 'Resultado', 'pm-num') +
             '</div>' +
           '</div>';
       }
 
-      function textoDist(datos, vals, pares){
+      function textoDist(datos, vals, pares, ops){
         const v = vals.map(function(x){ return x === '' ? '?' : x; });
+        const o = (ops || []).map(function(x){ return x || '?'; });
+        while (o.length < 3) o.push('?');
         const con1 = pares && pares[0];
         const con2 = pares && pares[1];
-        const p1 = con1
-          ? '(' + v[0] + ' × ' + v[1] + ')'
-          : v[0] + ' × ' + v[1];
-        const p2 = con2
-          ? '(' + v[2] + ' × ' + v[3] + ')'
-          : v[2] + ' × ' + v[3];
-        return datos.izquierda + ' = ' + p1 + ' ' + datos.op2 + ' ' + p2;
+        const p1 = (con1 ? '(' : '') + v[0] + ' ' + o[0] + ' ' + v[1] + (con1 ? ')' : '');
+        const p2 = (con2 ? '(' : '') + v[2] + ' ' + o[2] + ' ' + v[3] + (con2 ? ')' : '');
+        return datos.izquierda + ' = ' + p1 + ' ' + o[1] + ' ' + p2;
       }
 
       function parentesisDist(){
@@ -324,7 +331,8 @@
           operacion.hidden = true;
           operacion.innerHTML = '';
           builder.hidden = false;
-          el('pm-consigna').textContent = 'Aplica la propiedad distributiva y completa los cuatro números.';
+          el('pm-consigna').textContent =
+            'Aplica la propiedad distributiva: escribe los números, elige × o + y coloca los paréntesis.';
           renderDist(datos);
         }
 
@@ -471,10 +479,26 @@
           .map(function(i){ return i.value.trim(); });
       }
 
+      function distOperadores(paso){
+        return Array.prototype.slice
+          .call(distCadena(paso).querySelectorAll('.pm-op'))
+          .map(function(b){ return b.getAttribute('data-op-valor') || ''; });
+      }
+
+      function marcarOps(paso, ops, esperadas, clase){
+        const botones = distCadena(paso).querySelectorAll('.pm-op');
+        Array.prototype.forEach.call(botones, function(b, i){
+          b.classList.remove('pm-mal', 'pm-bien');
+          if (clase) b.classList.add(clase);
+          else if (ops[i] !== esperadas[i]) b.classList.add('pm-mal');
+        });
+      }
+
       function comprobarDistPaso1(){
         const cadena = distCadena(1);
         const inputs = Array.prototype.slice.call(cadena.querySelectorAll('.pm-hueco'));
         const vals = distValores(1);
+        const ops = distOperadores(1);
 
         if (vals.some(function(v){ return v === ''; })) {
           const vacio = inputs[vals.indexOf('')];
@@ -482,16 +506,25 @@
           mostrarAviso('Escribe los cuatro números y coloca los paréntesis si quieres.');
           return;
         }
+        if (ops.some(function(o){ return o === ''; })) {
+          const boton = cadena.querySelector('.pm-op[data-op-valor=""]');
+          if (boton) boton.focus();
+          mostrarAviso('Elige la operación (× o +) de cada hueco.');
+          return;
+        }
 
         const nums = vals.map(Number);
-        const ok = nums.every(function(n, i){
+        const numsOk = nums.every(function(n, i){
           return Number.isFinite(n) && n === actual.esperados[i];
         });
+        const opsOk = ops.every(function(o, i){ return o === actual.opsEsperadas[i]; });
+        const ok = numsOk && opsOk;
         const pares = parentesisDist();
-        const tu = textoDist(actual, vals, pares);
+        const tu = textoDist(actual, vals, pares, ops);
 
         if (ok) {
           actual.valsPaso1 = vals;
+          actual.opsPaso1 = ops;
           actual.paresPaso1 = pares;
           actual.paso = 2;
 
@@ -500,11 +533,16 @@
             inp.classList.add('pm-bien');
             inp.readOnly = true;
           });
+          marcarOps(1, ops, actual.opsEsperadas, 'pm-bien');
+          Array.prototype.forEach.call(cadena.querySelectorAll('.pm-op'), function(b){
+            b.disabled = true;
+          });
           cadena.parentElement.querySelector('.pm-agrupa').hidden = true;
 
           const paso2 = el('pm-builder').querySelector('.pm-dist-paso2');
           paso2.hidden = false;
-          el('pm-consigna').textContent = 'Ahora calcula cada producto y el resultado final.';
+          el('pm-consigna').textContent =
+            'Ahora elige la operación y calcula los productos y el resultado final.';
           limpiarResultado();
 
           const primero = paso2.querySelector('.pm-hueco');
@@ -515,6 +553,7 @@
           inputs.forEach(function(inp, i){
             inp.classList.toggle('pm-mal', nums[i] !== actual.esperados[i]);
           });
+          marcarOps(1, ops, actual.opsEsperadas, null);
           errores++;
           window.MatesCore.puntuar('pm', false);
           agregarHistorial([
@@ -524,11 +563,15 @@
           actualizarContadores();
 
           const r = el('pm-resultado');
-          r.textContent = '❌ No es correcto. Aplica la propiedad distributiva y vuelve a intentarlo.';
+          r.textContent = numsOk
+            ? '❌ Revisa las operaciones que has elegido en cada hueco.'
+            : '❌ No es correcto. Aplica la propiedad distributiva y vuelve a intentarlo.';
           r.className = 'pm-resultado pm-ko';
 
           const primerMal = inputs.filter(function(inp, i){ return nums[i] !== actual.esperados[i]; })[0];
+          const primerOpMal = cadena.querySelector('.pm-op.pm-mal');
           if (primerMal) { primerMal.focus(); primerMal.select(); }
+          else if (primerOpMal) { primerOpMal.focus(); }
         }
       }
 
@@ -536,6 +579,7 @@
         const paso2 = el('pm-builder').querySelector('.pm-dist-paso2');
         const inputs = Array.prototype.slice.call(paso2.querySelectorAll('.pm-hueco'));
         const vals = distValores(2);
+        const ops = distOperadores(2);
 
         if (vals.some(function(v){ return v === ''; })) {
           const vacio = inputs[vals.indexOf('')];
@@ -543,21 +587,30 @@
           mostrarAviso('Calcula los dos productos y escribe también el resultado.');
           return;
         }
+        if (ops.some(function(o){ return o === ''; })) {
+          const boton = paso2.querySelector('.pm-op[data-op-valor=""]');
+          if (boton) boton.focus();
+          mostrarAviso('Elige la operación (× o +) entre los dos productos.');
+          return;
+        }
 
         const nums = vals.map(Number);
-        const ok = nums.every(function(n, i){
+        const numsOk = nums.every(function(n, i){
           return Number.isFinite(n) && n === actual.esperadosPaso2[i];
         });
+        const opsOk = ops[0] === actual.opsEsperadasPaso2[0];
+        const ok = numsOk && opsOk;
 
         const val = function(v){ return v === '' ? '?' : v; };
-        const paso1 = textoDist(actual, actual.valsPaso1, actual.paresPaso1);
-        const tu = paso1 + ' = ' + val(vals[0]) + ' ' + actual.op2 + ' ' + val(vals[1]) +
+        const paso1 = textoDist(actual, actual.valsPaso1, actual.paresPaso1, actual.opsPaso1);
+        const tu = paso1 + ' = ' + val(vals[0]) + ' ' + (ops[0] || '?') + ' ' + val(vals[1]) +
           ' = ' + val(vals[2]);
         const correcta = actual.completa + ' = ' + actual.terminos[0] + ' ' + actual.op2 + ' ' +
           actual.terminos[1] + ' = ' + actual.resultado;
 
         if (ok) {
           inputs.forEach(function(inp){ inp.classList.add('pm-bien'); });
+          marcarOps(2, ops, actual.opsEsperadasPaso2, 'pm-bien');
           aciertos++;
           window.MatesCore.puntuar('pm', true);
           agregarHistorial(['✅ ' + correcta], true);
@@ -567,17 +620,22 @@
           inputs.forEach(function(inp, i){
             inp.classList.toggle('pm-mal', nums[i] !== actual.esperadosPaso2[i]);
           });
+          marcarOps(2, ops, actual.opsEsperadasPaso2, null);
           errores++;
           window.MatesCore.puntuar('pm', false);
           agregarHistorial(['❌ Tú: ' + tu, '✔️ Correcto: ' + correcta], false);
           actualizarContadores();
 
           const r = el('pm-resultado');
-          r.textContent = '❌ Revisa los productos y el resultado final.';
+          r.textContent = numsOk
+            ? '❌ Revisa la operación que has elegido entre los dos productos.'
+            : '❌ Revisa los productos y el resultado final.';
           r.className = 'pm-resultado pm-ko';
 
           const primerMal = inputs.filter(function(inp, i){ return nums[i] !== actual.esperadosPaso2[i]; })[0];
+          const primerOpMal = paso2.querySelector('.pm-op.pm-mal');
           if (primerMal) { primerMal.focus(); primerMal.select(); }
+          else if (primerOpMal) { primerOpMal.focus(); }
         }
       }
 
@@ -624,6 +682,19 @@
       });
 
       el('pm-builder').addEventListener('click', function(e){
+        const opBtn = e.target.closest('.pm-op');
+        if (opBtn) {
+          if (opBtn.disabled) return;
+          const valor = opBtn.getAttribute('data-op-valor') || '';
+          const siguiente = valor === '' ? '×' : valor === '×' ? '+' : '';
+          opBtn.setAttribute('data-op-valor', siguiente);
+          opBtn.textContent = siguiente || '?';
+          opBtn.classList.toggle('pm-elegido', siguiente !== '');
+          opBtn.classList.remove('pm-mal', 'pm-bien');
+          limpiarResultado();
+          return;
+        }
+
         const btn = e.target.closest('.pm-agrupa-btn');
         if (!btn) return;
 

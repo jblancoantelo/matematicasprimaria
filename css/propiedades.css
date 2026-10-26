@@ -186,6 +186,41 @@
       color: #0f172a;
     }
     .pm-signo { padding: 0 0.12rem; color: #475569; }
+    .pm-op {
+      min-width: 2.2rem;
+      height: 2.5rem;
+      padding: 0 0.4rem;
+      font-family: inherit;
+      font-size: 1.3rem;
+      font-weight: 700;
+      line-height: 1;
+      color: #94a3b8;
+      background: #fff;
+      border: 1px dashed #94a3b8;
+      border-radius: 0.55rem;
+      cursor: pointer;
+    }
+    .pm-op:hover { background: #f5f3ff; }
+    .pm-op:focus-visible { outline: 3px solid rgba(124, 58, 237, 0.35); outline-offset: 1px; }
+    .pm-op.pm-elegido {
+      color: #4c1d95;
+      background: #ede9fe;
+      border-style: solid;
+      border-color: #c4b5fd;
+    }
+    .pm-op.pm-bien {
+      color: #14532d;
+      background: #f0fdf4;
+      border-style: solid;
+      border-color: #16a34a;
+    }
+    .pm-op.pm-mal {
+      color: #991b1b;
+      background: #fef2f2;
+      border-style: solid;
+      border-color: #dc2626;
+    }
+    .pm-op:disabled { opacity: 0.9; cursor: default; }
     .pm-par {
       display: none;
       font-size: 1.9rem;
@@ -301,5 +336,6 @@
       .pm-forma { padding: 0.45rem 0.25rem 0.6rem; }
       .pm-cadena { font-size: 1.15rem; }
       .pm-par { font-size: 1.6rem; }
+      .pm-op { min-width: 1.95rem; height: 2.3rem; font-size: 1.15rem; padding: 0 0.3rem; }
       .pm-agrupa-btn { font-size: 0.75rem; padding: 0.3rem 0.5rem; }
     }
