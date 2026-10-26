@@ -275,10 +275,15 @@
         document.getElementById('dv-errores').textContent = errores;
 
         const historial = document.getElementById('dv-listaHistorial');
-        const li = document.createElement('li');
-        li.className = bien ? 'dv-correcto' : 'dv-incorrecto';
-        li.textContent = separar(dividendo) + ' ÷ ' + divisor + ' = ' + cociente + ' r ' + resto + (bien ? ' ✅' : '');
-        historial.prepend(li);
+        const tuQ = pasos.map(function(p){ return p.typedQd || ''; }).join('');
+        const ultimo = pasos[pasos.length - 1] || {};
+        const tuR = ultimo.typedResto === undefined ? '?' : ultimo.typedResto;
+        const tu = separar(dividendo) + ' ÷ ' + divisor + ' = ' + tuQ + ' r ' + tuR;
+        const correcta = separar(dividendo) + ' ÷ ' + divisor + ' = ' + cociente + ' r ' + resto;
+        const lineas = bien
+          ? ['✅ ' + correcta + ' · Tú: ' + tuQ + ' r ' + tuR]
+          : ['❌ Tú: ' + tu, '✔️ Correcto: ' + correcta];
+        historial.prepend(window.MatesCore.itemHistorial(bien ? 'dv-correcto' : 'dv-incorrecto', lineas));
 
         setTimeout(generar, 3000);
       }

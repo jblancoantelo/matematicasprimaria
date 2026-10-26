@@ -114,10 +114,13 @@
         document.getElementById('fr-errores').textContent = errores;
 
         const historial = document.getElementById('fr-listaHistorial');
-        const li = document.createElement('li');
-        li.className = esCorrecto ? 'fr-correcto' : 'fr-incorrecto';
-        li.textContent = `${actual.texto} — respondido: ${entrada} ${esCorrecto ? '✅' : `❌ (${actual.texto})`}`;
-        historial.prepend(li);
+        const correcta = actual.tipo === 'comparar'
+          ? actual.simbolo
+          : actual.ref.n + '/' + actual.ref.d;
+        const lineas = esCorrecto
+          ? ['✅ Tú: ' + entrada + ' · ' + actual.texto]
+          : ['❌ Tú: ' + entrada, '✔️ Correcto: ' + correcta + ' · ' + actual.texto];
+        historial.prepend(window.MatesCore.itemHistorial(esCorrecto ? 'fr-correcto' : 'fr-incorrecto', lineas));
       }
     })();
   

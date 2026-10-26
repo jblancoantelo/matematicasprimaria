@@ -130,6 +130,7 @@
     }
     details.pr-history-item summary::-webkit-details-marker { display: none; }
     .pr-summary-line { display: block; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 24px; position: relative; }
+    .pr-history-fecha { display: block; font-size: 0.78rem; font-weight: 500; color: var(--pr-muted); margin-bottom: 2px; }
     .pr-summary-line.is-failed { color: var(--pr-danger); }
     .pr-summary-line::after { content: '▾'; position: absolute; right: 0; top: 0; color: inherit; font-weight: 900; }
     details[open] .pr-summary-line::after { content: '▴'; }

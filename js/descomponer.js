@@ -118,10 +118,15 @@
         document.getElementById('dm-errores').textContent = errores;
 
         const historial = document.getElementById('dm-listaHistorial');
-        const li = document.createElement('li');
-        li.className = todosBien ? 'dm-correcto' : 'dm-incorrecto';
-        li.textContent = textoNum + ' → ' + (todosBien ? '✅ descompuesto' : bien + ' de ' + total + ' correctas');
-        historial.prepend(li);
+        const hecho = filas.map(function(f){
+          const v = f.input.value.trim();
+          return v === '' ? '(vacío)' : v;
+        }).join(' + ');
+        const correcta = filas.map(function(f){ return f.valor; }).join(' + ');
+        const lineas = todosBien
+          ? ['✅ ' + textoNum + ' = ' + correcta + ' · Tú: ' + hecho]
+          : ['❌ Tú: ' + textoNum + ' = ' + hecho, '✔️ Correcto: ' + textoNum + ' = ' + correcta];
+        historial.prepend(window.MatesCore.itemHistorial(todosBien ? 'dm-correcto' : 'dm-incorrecto', lineas));
       }
 
       document.getElementById('dm-generar').addEventListener('click', function(){ generar(); });

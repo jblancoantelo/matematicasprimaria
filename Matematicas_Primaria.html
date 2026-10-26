@@ -45,7 +45,7 @@
   <!-- ============ MULTIPLICACIONES ============ -->
   <link rel="stylesheet" href="css/multiplicaciones.css">
 
-  <!-- ============ PROPIEDADES DE LA MULTIPLICACIÓN ============ -->
+  <!-- ============ PROPIEDADES DE LAS OPERACIONES ============ -->
   <link rel="stylesheet" href="css/propiedades.css">
 
 </head>
@@ -789,21 +789,22 @@
     </section>
 
     <!-- ============================================================
-         MÓDULO 15: PROPIEDADES DE LA MULTIPLICACIÓN
+         MÓDULO 15: PROPIEDADES DE LAS OPERACIONES
          ============================================================ -->
     <section id="tab-propiedades" class="tab-panel">
       <div class="pm-module">
-        <h1>🔁 Propiedades de la multiplicación</h1>
+        <h1>🔁 Propiedades de las operaciones</h1>
         <p class="pm-sub">
-          Practica la propiedad <strong>conmutativa</strong>, <strong>asociativa</strong> y
-          <strong>distributiva</strong> completando la igualdad con el número que falta.
+          Practica las propiedades <strong>conmutativa</strong>, <strong>asociativa</strong> y
+          <strong>distributiva</strong>. Escribe tú los números, coloca los paréntesis y combina
+          multiplicaciones, sumas y restas.
         </p>
 
         <div class="pm-controles">
           <div>
             <label for="pm-tipo">Propiedad:</label>
             <select id="pm-tipo">
-              <option value="mezcla" selected>Mezcla (las tres)</option>
+              <option value="mezcla" selected>Mezcla (las tres propiedades)</option>
               <option value="conmutativa">Conmutativa</option>
               <option value="asociativa">Asociativa</option>
               <option value="distributiva">Distributiva</option>
@@ -817,8 +818,10 @@
           <div class="pm-etiqueta" id="pm-etiqueta"></div>
           <div class="pm-consigna" id="pm-consigna"></div>
           <div class="pm-operacion" id="pm-operacion"></div>
+          <div class="pm-builder" id="pm-builder" hidden></div>
           <div class="pm-acciones">
             <button id="pm-comprobar" type="button">✔️ Comprobar</button>
+            <button id="pm-otra" type="button">🎲 Generar otra</button>
           </div>
           <div id="pm-resultado" class="pm-resultado" aria-live="polite"></div>
           <div id="pm-ayuda" class="pm-ayuda" hidden></div>
@@ -902,7 +905,7 @@
   <script src="js/multiplicaciones.js"></script>
 
 
-  <!-- ============ MÓDULO 15: PROPIEDADES DE LA MULTIPLICACIÓN ============ -->
+  <!-- ============ MÓDULO 15: PROPIEDADES DE LAS OPERACIONES ============ -->
   <script src="js/propiedades.js"></script>
 
 </body>

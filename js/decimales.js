@@ -99,10 +99,10 @@
         document.getElementById('de-errores').textContent = errores;
 
         const historial = document.getElementById('de-listaHistorial');
-        const li = document.createElement('li');
-        li.className = esCorrecto ? 'de-correcto' : 'de-incorrecto';
-        li.textContent = `${actual.etiqueta}: ${actual.texto} — respondido: ${entrada || '(vacío)'} ${esCorrecto ? '✅' : ''}`;
-        historial.prepend(li);
+        const lineas = esCorrecto
+          ? ['✅ ' + actual.texto + ' · Tú: ' + entrada]
+          : ['❌ Tú: ' + entrada, '✔️ Correcto: ' + actual.texto];
+        historial.prepend(window.MatesCore.itemHistorial(esCorrecto ? 'de-correcto' : 'de-incorrecto', lineas));
       }
     })();
   

@@ -77,10 +77,13 @@
         document.getElementById('nr-errores').textContent = errores;
 
         const historial = document.getElementById('nr-listaHistorial');
-        const li = document.createElement('li');
-        li.className = esCorrecto ? 'nr-correcto' : 'nr-incorrecto';
-        li.textContent = actual.texto + ' — respondido: ' + (entrada.toUpperCase() || '(vacío)') + (esCorrecto ? ' ✅' : '');
-        historial.prepend(li);
+        const tu = actual.tipo === 'aromano'
+          ? entrada.toUpperCase().replace(/\s+/g, '')
+          : entrada;
+        const lineas = esCorrecto
+          ? ['✅ ' + actual.texto + ' · Tú: ' + tu]
+          : ['❌ Tú: ' + (tu || '(vacío)'), '✔️ Correcto: ' + actual.texto];
+        historial.prepend(window.MatesCore.itemHistorial(esCorrecto ? 'nr-correcto' : 'nr-incorrecto', lineas));
       }
 
       document.getElementById('nr-generar').addEventListener('click', function(){ generar(); });

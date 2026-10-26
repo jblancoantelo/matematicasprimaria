@@ -86,10 +86,13 @@
         document.getElementById('md-errores').textContent = errores;
 
         const historial = document.getElementById('md-listaHistorial');
-        const li = document.createElement('li');
-        li.className = esCorrecto ? 'md-correcto' : 'md-incorrecto';
-        li.textContent = actual.texto + ' → ' + (esCorrecto ? 'SÍ' : 'NO');
-        historial.prepend(li);
+        const elegido = actual.tipo === 'esdivisor'
+          ? (valor ? 'SÍ' : 'NO')
+          : String(valor);
+        const lineas = esCorrecto
+          ? ['✅ ' + actual.texto + ' · Tú: ' + elegido]
+          : ['❌ Tú: ' + elegido, '✔️ Correcto: ' + actual.texto];
+        historial.prepend(window.MatesCore.itemHistorial(esCorrecto ? 'md-correcto' : 'md-incorrecto', lineas));
       }
 
       document.getElementById('md-generar').addEventListener('click', function(){ generar(); });

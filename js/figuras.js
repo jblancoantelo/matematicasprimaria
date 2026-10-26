@@ -74,10 +74,10 @@
         document.getElementById('pa-errores').textContent = errores;
 
         const historial = document.getElementById('pa-listaHistorial');
-        const li = document.createElement('li');
-        li.className = esCorrecto ? 'pa-correcto' : 'pa-incorrecto';
-        li.textContent = actual.texto + ' — respondido: ' + (entrada || '(vacío)') + (esCorrecto ? ' ✅' : '');
-        historial.prepend(li);
+        const lineas = esCorrecto
+          ? ['✅ ' + actual.texto + ' · Tú: ' + entrada]
+          : ['❌ Tú: ' + (entrada || '(vacío)'), '✔️ Correcto: ' + actual.texto];
+        historial.prepend(window.MatesCore.itemHistorial(esCorrecto ? 'pa-correcto' : 'pa-incorrecto', lineas));
       }
 
       document.getElementById('pa-generar').addEventListener('click', function(){ generar(); });

@@ -28,7 +28,7 @@ Está pensada para alumnado de **3º y 4º de Primaria**, con 15 juegos organiza
 - **Medallas por juego**: 🥉 5 aciertos · 🥈 15 aciertos · 🥇 40 aciertos.
 - **Logros por módulo**: lista con los aciertos y errores de cada juego y su medalla actual.
 - **Corrección automática** de las respuestas con mensajes de éxito o error.
-- **Historial de respuestas** en la mayoría de los juegos.
+- **Historial de respuestas** en la mayoría de los juegos, con **fecha y hora** de cada intento, la respuesta que escribió el alumno y la respuesta correcta cuando falla.
 - **Confeti** al acertar y **avisos emergentes** (toast) al alcanzar hitos de racha.
 - **Navegación por pestañas** (SPA) sin recargar la página, con el módulo activo guardado en la URL (`?modulo=...`) para conservarlo al refrescar.
 - **Atajo de teclado**: pulsa **Enter** para verificar la respuesta en la mayoría de los juegos (sumas, tablas, fracciones, decimales, romanos, perímetro, multiplicaciones, divisiones, descomponer, aproximaciones y propiedades).
@@ -39,7 +39,22 @@ Está pensada para alumnado de **3º y 4º de Primaria**, con 15 juegos organiza
 
 ---
 
+## 🗒️ Historial de respuestas
+
+Cada juego guarda un historial con las últimas respuestas:
+
+- **Fecha y hora** de cada intento (`dd/mm/aaaa · hh:mm`).
+- La **respuesta del alumno** tal como la escribió.
+- La **respuesta correcta** cuando falla, con la operación o solución completa.
+- En algunos juegos se indica también la operación resuelta paso a paso.
+
+El historial se guarda solo en el navegador del dispositivo. En *Problemas* y *Unidades* se conserva con `localStorage` y hay botón para borrarlo; en el resto vive en la propia página y se vacía al recargar.
+
+---
+
 ## 🎮 Los 15 juegos
+
+> Todos los juegos que tienen historial muestran la **fecha y hora** de cada intento, la **respuesta del alumno** y la **respuesta correcta** cuando falla.
 
 ### 1. 🧮 Sumas y Restas
 Operaciones verticales (en columna).
@@ -98,7 +113,7 @@ Generador de problemas de la vida real (dinero, colegio, juguetes, comida o mezc
 - Nivel **3º (repaso)** o **4º de Primaria**.
 - De **1 a 5 operaciones** encadenadas en 4º (hasta 4 en 3º): suma, resta, multiplicación y división.
 - Botones para **mostrar la solución** y **mostrar cómo se resuelve**, separando **Datos** y **Operaciones**.
-- Historial desplegable que marca en rojo los problemas fallados, con opciones de abrir/cerrar todo y borrar.
+- Historial desplegable con **fecha y hora**, la respuesta que escribió el alumno, la solución correcta y el aviso en rojo de los problemas fallados; incluye opciones de abrir/cerrar todo y borrar.
 
 ### 11. 🧩 Descomponer Números
 - Escribe el valor de cada cifra (U, D, C, UM, DM, CM…).
@@ -118,13 +133,14 @@ Redondeo de números enteros.
 - Números de 3 a 6 cifras.
 - Redondear a la unidad, decena, centena, unidad de millar, decena de millar o centena de millar.
 
-### 15. 🔁 Propiedades de la Multiplicación
-Completa igualdades para practicar las tres propiedades.
-- **Conmutativa**: cambiar el orden de los factores no cambia el producto.
-- **Asociativa**: cambiar la agrupación de tres factores no cambia el producto.
-- **Distributiva**: multiplicar por una suma o resta equivale a multiplicar por cada término y luego sumar o restar.
-- Modo **mezcla** con las tres propiedades, botón de **pista** y explicación tras cada respuesta.
-- Contador de aciertos y errores, historial y avance automático al acertar.
+### 15. 🔁 Propiedades de las Operaciones
+Practica las tres propiedades escribiendo tú mismo los números y los paréntesis.
+- **Conmutativa**: el niño completa los dos números del otro lado de la igualdad.
+- **Asociativa**: construye dos agrupaciones distintas con los tres números y elige dónde van los paréntesis.
+- **Distributiva**: completa los cuatro números de la expresión desarrollada, coloca los paréntesis de cada producto y, en un segundo paso, calcula los productos y el resultado final.
+- Se combinan operaciones de **multiplicación, suma y resta**, y el modo **mezcla** alterna las tres propiedades.
+- Botón **Generar otra** para cambiar de operación sin hacer la actual, botón de **pista** (sin revelar la solución, con el ejemplo `1 × (2 + 3) = (1 × 2) + (1 × 3) = 2 + 3 = 5`) y **Enter** para comprobar y pasar a la siguiente operación.
+- Contador de aciertos y errores e historial con **fecha y hora**, lo que escribió el niño y la solución correcta completa cuando falla.
 
 ---
 
@@ -145,7 +161,7 @@ mates/
 │   ├── reloj.css               # Reloj, romanos, perímetro, múltiplos
 │   ├── descomponer.css         # Descomponer, divisiones, aproximaciones
 │   ├── multiplicaciones.css    # Multiplicaciones
-│   └── propiedades.css         # Propiedades de la multiplicación
+│   └── propiedades.css         # Propiedades de las operaciones
 └── js/
     ├── navegacion.js           # Cambio de pestañas y URL
     ├── core.js                 # Puntos, racha, medallas, logros, confeti, toast

@@ -135,6 +135,39 @@
       load();
       pintar();
 
-      window.MatesCore = { puntuar: puntuar, pintar: pintar, medallaNivel: medallaNivel, MED_EMOJI: MED_EMOJI };
+      function fechaHora(){
+        var d = new Date();
+        var fecha = d.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
+        var hora = d.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+        return fecha + ' · ' + hora;
+      }
+
+      function itemHistorial(clase, lineas){
+        var li = document.createElement('li');
+        if (clase) li.className = clase;
+
+        var cuando = document.createElement('div');
+        cuando.className = 'hist-fecha';
+        cuando.textContent = fechaHora();
+        li.appendChild(cuando);
+
+        var arr = Array.isArray(lineas) ? lineas : [lineas];
+        for (var i = 0; i < arr.length; i++) {
+          var linea = document.createElement('div');
+          linea.className = i === 0 ? 'hist-texto' : 'hist-texto hist-detalle';
+          linea.textContent = arr[i] == null ? '' : String(arr[i]);
+          li.appendChild(linea);
+        }
+        return li;
+      }
+
+      window.MatesCore = {
+        puntuar: puntuar,
+        pintar: pintar,
+        medallaNivel: medallaNivel,
+        MED_EMOJI: MED_EMOJI,
+        fechaHora: fechaHora,
+        itemHistorial: itemHistorial
+      };
     })();
   

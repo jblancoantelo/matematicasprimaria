@@ -50,6 +50,12 @@
       font-weight: 700;
     }
     #pm-pista:hover { background: #fde68a; }
+    #pm-otra {
+      background: #dcfce7;
+      border-color: #86efac;
+      color: #166534;
+    }
+    #pm-otra:hover { background: #bbf7d0; }
 
     .pm-tarjeta {
       max-width: 680px;
@@ -128,6 +134,100 @@
       background: #fef2f2;
       color: #991b1b;
     }
+
+    /* Constructor de expresiones (asociativa y distributiva) */
+    .pm-builder { margin: 0.4rem auto 0.8rem; }
+    .pm-builder[hidden] { display: none; }
+    .pm-objetivo {
+      margin-bottom: 0.55rem;
+      font-size: 1.05rem;
+      color: #334155;
+    }
+    .pm-objetivo strong {
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 1.25rem;
+      color: #0f172a;
+    }
+    .pm-dist-izq {
+      font-family: Consolas, "Courier New", monospace;
+      font-size: clamp(1.2rem, 4vw, 1.6rem);
+      font-weight: 700;
+      color: #0f172a;
+    }
+    .pm-igual { color: #7c3aed; }
+    .pm-forma {
+      max-width: 540px;
+      margin: 0.55rem auto;
+      padding: 0.5rem 0.45rem 0.65rem;
+      background: #faf5ff;
+      border: 1px dashed #ddd6fe;
+      border-radius: 12px;
+    }
+    .pm-forma[hidden] { display: none; }
+    .pm-dist-paso2 { background: #f0fdf4; border-color: #bbf7d0; }
+    .pm-dist-paso2 .pm-forma-titulo { color: #15803d; }
+    .pm-forma-titulo {
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: #6d28d9;
+    }
+    .pm-cadena {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 0.1rem;
+      margin: 0.3rem 0 0.2rem;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #0f172a;
+    }
+    .pm-signo { padding: 0 0.12rem; color: #475569; }
+    .pm-par {
+      display: none;
+      font-size: 1.9rem;
+      line-height: 1;
+      color: #7c3aed;
+    }
+    .pm-producto { display: inline-flex; align-items: center; }
+    .pm-producto[data-par="1"] .pm-par,
+    .pm-cadena[data-agrupa="a"] .pm-par,
+    .pm-cadena[data-agrupa="b"] .pm-par { display: inline; }
+    .pm-num {
+      width: 2.8rem;
+      height: 2.5rem;
+      font-size: 1.25rem;
+    }
+    .pm-agrupa {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.35rem;
+      margin-top: 0.3rem;
+    }
+    .pm-agrupa[hidden] { display: none; }
+    .pm-agrupa-btn {
+      padding: 0.32rem 0.6rem;
+      font-family: inherit;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #5b21b6;
+      background: #fff;
+      border: 1px solid #c4b5fd;
+      border-radius: 999px;
+      cursor: pointer;
+    }
+    .pm-agrupa-btn:hover { background: #f5f3ff; }
+    .pm-agrupa-btn.pm-activo {
+      color: #fff;
+      background: #7c3aed;
+      border-color: #6d28d9;
+    }
+    .pm-aviso { color: #b45309; }
+
     .pm-acciones { margin: 0.5rem 0 0.3rem; }
     .pm-acciones button {
       background: #ede9fe;
@@ -183,6 +283,12 @@
     .pm-historial h3 { margin-bottom: 1rem; text-align: center; }
     .pm-historial ul { padding: 0; list-style: none; }
     .pm-historial li { padding: 0.15rem 0; overflow-wrap: anywhere; }
+    .pm-historial li div + div { margin-top: 0.1rem; }
+    .pm-historial li .hist-fecha { margin-bottom: 0.05rem; }
+    .pm-historial li .pm-hist-bien {
+      color: #15803d;
+      opacity: 1;
+    }
     .pm-historial li.pm-ok { color: green; }
     .pm-historial li.pm-ko { color: #b91c1c; }
 
@@ -191,4 +297,9 @@
       .pm-tarjeta { padding: 1rem 0.6rem 1.2rem; }
       .pm-operacion { line-height: 2; }
       .pm-hueco { width: 2.9rem; height: 2.4rem; font-size: 1.2rem; }
+      .pm-num { width: 2.35rem; height: 2.3rem; font-size: 1.1rem; }
+      .pm-forma { padding: 0.45rem 0.25rem 0.6rem; }
+      .pm-cadena { font-size: 1.15rem; }
+      .pm-par { font-size: 1.6rem; }
+      .pm-agrupa-btn { font-size: 0.75rem; padding: 0.3rem 0.5rem; }
     }

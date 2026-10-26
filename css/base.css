@@ -18,4 +18,17 @@
     .tab-panel { display: none; }
     .tab-panel.active { display: block; }
     .wrap-app { max-width: 1000px; margin: 0 auto; padding: 10px 16px 40px; }
+
+    /* Entradas de historial: fecha/hora y detalle */
+    .hist-fecha {
+      font-size: 0.72em;
+      font-weight: 400;
+      letter-spacing: 0.02em;
+      opacity: 0.6;
+    }
+    .hist-texto { margin-top: 0.1rem; }
+    .hist-detalle {
+      font-size: 0.94em;
+      opacity: 0.95;
+    }
   

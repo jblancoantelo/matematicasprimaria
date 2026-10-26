@@ -90,10 +90,12 @@
 
         // Agregar al historial
         const historial = document.getElementById('tm-listaHistorial');
-        const li = document.createElement('li');
-        li.className = esCorrecto ? 'tm-correcto' : 'tm-incorrecto';
-        li.textContent = `${numTabla} x ${numAleatorio} = ${respuestaUsuario} ${esCorrecto ? '✅' : `❌ (correcto: ${resultadoCorrecto})`}`;
-        historial.prepend(li);
+        const operacion = numTabla + ' × ' + numAleatorio;
+        const lineas = esCorrecto
+          ? ['✅ ' + operacion + ' = ' + resultadoCorrecto + ' · Tú: ' + respuestaUsuario]
+          : ['❌ Tú: ' + operacion + ' = ' + respuestaUsuario,
+             '✔️ Correcto: ' + operacion + ' = ' + resultadoCorrecto];
+        historial.prepend(window.MatesCore.itemHistorial(esCorrecto ? 'tm-correcto' : 'tm-incorrecto', lineas));
 
         setTimeout(tm_generarPregunta, crActivo ? 800 : 1500);
       };

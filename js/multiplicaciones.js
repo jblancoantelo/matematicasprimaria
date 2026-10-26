@@ -235,10 +235,12 @@
         document.getElementById('mu-errores').textContent = errores;
 
         const historial = document.getElementById('mu-listaHistorial');
-        const li = document.createElement('li');
-        li.className = todoBien ? 'mu-correcto' : 'mu-incorrecto';
-        li.textContent = aTxt + ' × ' + bTxt + ' = ' + pTxt + (todoBien ? ' ✅' : '');
-        historial.prepend(li);
+        const tuTxt = formato(sumaObtenida, decP);
+        const lineas = todoBien
+          ? ['✅ ' + aTxt + ' × ' + bTxt + ' = ' + pTxt + ' · Tú: ' + tuTxt]
+          : ['❌ Tú: ' + aTxt + ' × ' + bTxt + ' = ' + tuTxt,
+             '✔️ Correcto: ' + aTxt + ' × ' + bTxt + ' = ' + pTxt];
+        historial.prepend(window.MatesCore.itemHistorial(todoBien ? 'mu-correcto' : 'mu-incorrecto', lineas));
 
         if (todoBien) setTimeout(generar, 3000);
       }

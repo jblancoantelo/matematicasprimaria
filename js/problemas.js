@@ -72,7 +72,9 @@
           if (!parsed || !Array.isArray(parsed.history)) return false;
           history = parsed.history.map(item => ({
             index: Number(item.index),
+            when: item.when || null,
             failed: Boolean(item.failed),
+            userAnswers: Array.isArray(item.userAnswers) ? item.userAnswers : [],
             problem: item.problem
           })).filter(item => item.index && item.problem && item.problem.text && Array.isArray(item.problem.data) && Array.isArray(item.problem.steps));
           problemCounter = Number(parsed.problemCounter) || (history.length ? Math.max(...history.map(item => item.index)) : 0);
@@ -92,6 +94,14 @@
         renderHistory();
       }
 
+      function fechaTexto(iso) {
+        if (!iso) return '';
+        const d = new Date(iso);
+        if (Number.isNaN(d.getTime())) return '';
+        return d.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }) +
+          ' · ' + d.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+      }
+
       function renderHistory() {
         historyListEl.innerHTML = '';
         if (history.length === 0) {
@@ -107,8 +117,15 @@
           const summary = document.createElement('summary');
           const failedClass = item.failed ? 'pr-summary-line is-failed' : 'pr-summary-line';
           const etiqueta = item.problem.nivel === 'nivel4' ? '4º' : '3º';
-          summary.innerHTML = `<span class="${failedClass}">Problema ${item.index} · ${etiqueta}: ${item.problem.text}</span>`;
+          const fecha = fechaTexto(item.when);
+          summary.innerHTML =
+            (fecha ? `<span class="pr-history-fecha">📅 ${fecha}</span>` : '') +
+            `<span class="${failedClass}">Problema ${item.index} · ${etiqueta}: ${item.problem.text}</span>`;
           details.appendChild(summary);
+
+          const respuestas = item.userAnswers && item.userAnswers.length
+            ? item.userAnswers.join(' → ')
+            : '—';
 
           const content = document.createElement('div');
           content.className = 'pr-history-content';
@@ -124,7 +141,8 @@
                 <ol>${item.problem.steps.map(s => `<li>${s}</li>`).join('')}</ol>
               </div>
             </div>
-            <p><strong>Solución:</strong> ${item.problem.answerText}</p>
+            <p><strong>Tu respuesta:</strong> ${respuestas}</p>
+            <p><strong>Solución correcta:</strong> ${item.problem.answerText}</p>
             ${item.failed ? '<p><strong style="color:#c0392b;">Este problema tuvo al menos un fallo.</strong></p>' : ''}
             <button type="button" class="pr-btn-light" data-load="${item.index}">Cargar este problema arriba</button>
           `;
@@ -143,7 +161,13 @@
 
       function addToHistory(problem) {
         problemCounter += 1;
-        const newItem = { index: problemCounter, failed: false, problem };
+        const newItem = {
+          index: problemCounter,
+          when: new Date().toISOString(),
+          failed: false,
+          userAnswers: [],
+          problem
+        };
         history.unshift(newItem);
         if (history.length > 20) history = history.slice(0, 20);
         currentHistoryId = newItem.index;
@@ -203,6 +227,15 @@
         methodBox.classList.add('pr-hidden');
       }
 
+      function registrarIntento(value) {
+        const item = history.find(entry => entry.index === currentHistoryId);
+        if (!item) return;
+        item.userAnswers = item.userAnswers || [];
+        item.userAnswers.push(value);
+        saveHistory();
+        renderHistory();
+      }
+
       function checkAnswer() {
         if (!currentProblem) {
           feedbackEl.textContent = 'Primero genera un problema.';
@@ -215,6 +248,7 @@
           return;
         }
         const value = Number(studentAnswerEl.value);
+        registrarIntento(value);
         if (value === currentProblem.answer) {
           if (!currentProblem.solvedOnce) { currentProblem.solvedOnce = true; window.MatesCore.puntuar('pr', true); }
           feedbackEl.textContent = '¡Muy bien! La respuesta es correcta. 🎉';

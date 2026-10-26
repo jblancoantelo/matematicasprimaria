@@ -244,12 +244,12 @@
         document.getElementById('sy-errores').textContent = totalErrores;
 
         const historial = document.getElementById('sy-listaHistorial');
-        const li = document.createElement('li');
-        li.className = esCorrecto ? 'sy-correcto' : 'sy-incorrecto';
         const expresion = numerosDisplay.join(' ' + simbolo + ' ');
         const usr = formatearRes({ int: Math.floor(numUsuario / M), dec: Math.abs(numUsuario % M) });
-        li.textContent = expresion + ' = ' + usr + ' ' + (esCorrecto ? '✅' : '❌ (correcto: ' + correctoMostrar + ')');
-        historial.prepend(li);
+        const lineas = esCorrecto
+          ? ['✅ ' + expresion + ' = ' + usr]
+          : ['❌ Tú: ' + expresion + ' = ' + usr, '✔️ Correcto: ' + expresion + ' = ' + correctoMostrar];
+        historial.prepend(window.MatesCore.itemHistorial(esCorrecto ? 'sy-correcto' : 'sy-incorrecto', lineas));
 
         setTimeout(sy_generarPregunta, 2000);
       };

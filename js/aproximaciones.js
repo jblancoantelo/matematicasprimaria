@@ -58,10 +58,10 @@
         document.getElementById('ap-errores').textContent = errores;
 
         const historial = document.getElementById('ap-listaHistorial');
-        const li = document.createElement('li');
-        li.className = esCorrecto ? 'ap-correcto' : 'ap-incorrecto';
-        li.textContent = separar(numero) + ' ≈ ' + separar(correcta) + ' → ' + txt + (esCorrecto ? ' ✅' : '');
-        historial.prepend(li);
+        const lineas = esCorrecto
+          ? ['✅ ' + separar(numero) + ' ≈ ' + separar(correcta) + ' · Tú: ' + txt]
+          : ['❌ Tú: ' + txt, '✔️ Correcto: ' + separar(numero) + ' ≈ ' + separar(correcta)];
+        historial.prepend(window.MatesCore.itemHistorial(esCorrecto ? 'ap-correcto' : 'ap-incorrecto', lineas));
 
         setTimeout(generar, 2600);
       }
