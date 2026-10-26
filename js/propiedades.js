@@ -24,7 +24,7 @@
         '+': { regla: 'Al sumar tres números, da igual cómo los agrupemos.', formula: '(a + b) + c = a + (b + c)' }
       };
       const REGLA_DISTRIBUTIVA = {
-        regla: 'Multiplicar por una suma (o una resta) es multiplicar por cada término y después sumar (o restar).',
+        regla: 'Multiplicar un número por una suma es multiplicar ese número por cada sumando y después sumar los resultados.',
         formula: 'a × (b + c) = (a × b) + (a × c)',
         ejemplo: '1 × (2 + 3) = (1 × 2) + (1 × 3) = 2 + 3 = 5'
       };
@@ -96,42 +96,15 @@
 
       function genDistributiva(){
         const a = randInt(2, 9);
-        const variante = randInt(0, 3);
+        const b = randInt(2, 9);
+        const c = randInt(2, 9);
 
-        let izquierda, op2, esperados, pista;
-
-        if (variante === 0) {
-          const b = randInt(2, 9);
-          const c = randInt(2, 9);
-          izquierda = a + ' × (' + b + ' + ' + c + ')';
-          op2 = '+';
-          esperados = [a, b, a, c];
-          pista = 'Multiplica el número de fuera por cada número del paréntesis y después suma.';
-        } else if (variante === 1) {
-          const b = randInt(2, 9);
-          const c = randInt(2, 9);
-          izquierda = '(' + b + ' + ' + c + ') × ' + a;
-          op2 = '+';
-          esperados = [b, a, c, a];
-          pista = 'Multiplica cada número del paréntesis por el número de fuera y después suma.';
-        } else if (variante === 2) {
-          const b = randInt(8, 15);
-          const c = randInt(1, b - 3);
-          izquierda = a + ' × (' + b + ' − ' + c + ')';
-          op2 = '−';
-          esperados = [a, b, a, c];
-          pista = 'Multiplica el número de fuera por cada número del paréntesis y después resta.';
-        } else {
-          const redondo = randInt(2, 9) * 10;
-          const unidades = randInt(1, 9);
-          izquierda = a + ' × ' + (redondo + unidades);
-          op2 = '+';
-          esperados = [a, redondo, a, unidades];
-          pista = 'Descompón el número en decenas y unidades, multiplica cada parte y suma.';
-        }
+        const izquierda = a + ' × (' + b + ' + ' + c + ')';
+        const op2 = '+';
+        const esperados = [a, b, a, c];
 
         const terminos = [esperados[0] * esperados[1], esperados[2] * esperados[3]];
-        const resultado = op2 === '+' ? terminos[0] + terminos[1] : terminos[0] - terminos[1];
+        const resultado = terminos[0] + terminos[1];
 
         return {
           prop: 'distributiva',
@@ -148,7 +121,8 @@
           regla: REGLA_DISTRIBUTIVA.regla,
           formula: REGLA_DISTRIBUTIVA.formula,
           ejemplo: REGLA_DISTRIBUTIVA.ejemplo,
-          pista: pista + ' Escribe cada producto entre paréntesis.'
+          pista: 'Multiplica el número de fuera por cada número del paréntesis y después suma.' +
+            ' Escribe cada producto entre paréntesis.'
         };
       }
 

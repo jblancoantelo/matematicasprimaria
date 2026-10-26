@@ -137,8 +137,8 @@ Redondeo de números enteros.
 Practica las tres propiedades escribiendo tú mismo los números y los paréntesis.
 - **Conmutativa**: el niño completa los dos números del otro lado de la igualdad.
 - **Asociativa**: construye dos agrupaciones distintas con los tres números y elige dónde van los paréntesis.
-- **Distributiva**: completa los cuatro números de la expresión desarrollada, coloca los paréntesis de cada producto y, en un segundo paso, calcula los productos y el resultado final.
-- Se combinan operaciones de **multiplicación, suma y resta**, y el modo **mezcla** alterna las tres propiedades.
+- **Distributiva**: la operación inicial es siempre de la forma `a × (b + c)`; el niño completa los cuatro números de la expresión desarrollada, coloca los paréntesis de cada producto y, en un segundo paso, calcula los productos y el resultado final.
+- Se combinan **multiplicaciones y sumas**, y el modo **mezcla** alterna las tres propiedades.
 - Botón **Generar otra** para cambiar de operación sin hacer la actual, botón de **pista** (sin revelar la solución, con el ejemplo `1 × (2 + 3) = (1 × 2) + (1 × 3) = 2 + 3 = 5`) y **Enter** para comprobar y pasar a la siguiente operación.
 - Contador de aciertos y errores e historial con **fecha y hora**, lo que escribió el niño y la solución correcta completa cuando falla.
 
