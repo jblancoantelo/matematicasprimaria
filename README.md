@@ -121,7 +121,7 @@ Generador de problemas de la vida real (dinero, colegio, juguetes, comida o mezc
 
 ### 12. ➗ Divisiones
 - Cuenta de dividir en columna con cajitas para cociente y resto.
-- Configura las cifras del dividendo (2–6) y del divisor (1–3).
+- Configura las cifras del dividendo (2–6) y del divisor (1–3), con un límite máximo para el divisor (por defecto 13).
 - Comprobación por pasos.
 
 ### 13. ✖️ Multiplicaciones

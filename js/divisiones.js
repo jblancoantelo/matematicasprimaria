@@ -32,24 +32,54 @@
         }
       }
 
-      function generar(){
-        const selDvd = document.getElementById('dv-dvdCifras');
-        const selDvs = document.getElementById('dv-dvsCifras');
-        let dvdC = parseInt(selDvd.value, 10);
-        let dvsC = parseInt(selDvs.value, 10);
-        if (dvsC >= dvdC) { dvsC = Math.max(1, dvdC - 1); selDvs.value = String(dvsC); }
+      function leerLimite(){
+        const el = document.getElementById('dv-dvsLimite');
+        let v = parseInt(el.value, 10);
+        if (!isFinite(v) || v < 2) v = 2;
+        if (v > 999) v = 999;
+        if (el.value !== String(v)) el.value = String(v);
+        return v;
+      }
 
+      // Desactiva las cifras del divisor que no caben en el dividendo o superan el límite
+      function actualizarOpcionesDvs(){
+        const dvdC = parseInt(document.getElementById('dv-dvdCifras').value, 10);
+        const limite = leerLimite();
+        const maxDividendo = Math.pow(10, dvdC) - 1;
+        const sel = document.getElementById('dv-dvsCifras');
+        Array.prototype.forEach.call(sel.options, function(op){
+          const cif = parseInt(op.value, 10);
+          const minCif = Math.pow(10, cif - 1);
+          op.disabled = cif > dvdC || minCif > Math.min(limite, maxDividendo);
+        });
+        const elegida = sel.options[sel.selectedIndex];
+        if (!elegida || elegida.disabled) {
+          let valor = '1';
+          Array.prototype.forEach.call(sel.options, function(op){
+            if (!op.disabled) valor = op.value;
+          });
+          sel.value = valor;
+        }
+      }
+
+      function generar(){
+        actualizarOpcionesDvs();
+        const dvdC = parseInt(document.getElementById('dv-dvdCifras').value, 10);
+        const dvsC = parseInt(document.getElementById('dv-dvsCifras').value, 10);
         const dvsMin = Math.max(2, Math.pow(10, dvsC - 1));
-        const dvsMax = Math.pow(10, dvsC) - 1;
-        const qd = Math.max(1, dvdC - dvsC);
-        const cocMin = Math.pow(10, qd - 1);
-        const cocMax = Math.pow(10, qd) - 1;
+        const dvsMax = Math.min(leerLimite(), Math.pow(10, dvsC) - 1);
+        const minDividendo = Math.pow(10, dvdC - 1);
+        const maxDividendo = Math.pow(10, dvdC) - 1;
 
         let intentos = 0;
         do {
           divisor = aleatorioInt(dvsMin, dvsMax);
+          const cocMin = Math.max(1, Math.ceil(minDividendo / divisor));
+          const cocMax = Math.floor(maxDividendo / divisor);
+          if (cocMax < cocMin) { intentos++; continue; }
           cociente = aleatorioInt(cocMin, cocMax);
-          resto = aleatorioInt(0, divisor - 1);
+          const restoMax = Math.min(divisor - 1, maxDividendo - divisor * cociente);
+          resto = aleatorioInt(0, restoMax);
           dividendo = divisor * cociente + resto;
           intentos++;
         } while (String(dividendo).length !== dvdC && intentos < 200);
@@ -331,6 +361,7 @@
       document.getElementById('dv-paso').addEventListener('click', function(){ accion(); });
       document.getElementById('dv-dvdCifras').addEventListener('change', function(){ generar(); });
       document.getElementById('dv-dvsCifras').addEventListener('change', function(){ generar(); });
+      document.getElementById('dv-dvsLimite').addEventListener('change', function(){ generar(); });
       generar();
     })();
   

@@ -645,12 +645,16 @@
           <option value="6">6 cifras</option>
         </select>
 
-        <label for="dv-dvsCifras">Cifras del divisor:</label>
-        <select id="dv-dvsCifras">
-          <option value="1">1 cifra</option>
-          <option value="2" selected>2 cifras</option>
-          <option value="3">3 cifras</option>
-        </select>
+        <div class="dv-fila-cifras">
+          <label for="dv-dvsCifras">Cifras del divisor:</label>
+          <select id="dv-dvsCifras">
+            <option value="1">1 cifra</option>
+            <option value="2" selected>2 cifras</option>
+            <option value="3">3 cifras</option>
+          </select>
+          <label for="dv-dvsLimite">hasta</label>
+          <input type="number" id="dv-dvsLimite" min="2" max="999" step="1" value="13" inputmode="numeric">
+        </div>
 
         <button id="dv-generar">🎲 Nueva división</button>
 
