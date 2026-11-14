@@ -16,7 +16,7 @@ Haz clic en el enlace anterior para jugar directamente, sin descargar ni instala
 
 Aplicación web interactiva para practicar **matemáticas de Primaria**. Funciona directamente en el navegador (sin servidor ni instalación) y guarda el progreso del alumno en el propio dispositivo.
 
-Está pensada para alumnado de **3º y 4º de Primaria**, con 15 juegos organizados por bloques temáticos, apoyo visual, corrección automática y un sistema de puntos, rachas y medallas para motivar la práctica diaria.
+Está pensada para alumnado de **3º y 4º de Primaria**, con 16 juegos organizados por bloques temáticos, apoyo visual, corrección automática y un sistema de puntos, rachas y medallas para motivar la práctica diaria.
 
 ---
 
@@ -31,8 +31,8 @@ Está pensada para alumnado de **3º y 4º de Primaria**, con 15 juegos organiza
 - **Historial de respuestas** en la mayoría de los juegos, con **fecha y hora** de cada intento, la respuesta que escribió el alumno y la respuesta correcta cuando falla.
 - **Confeti** al acertar y **avisos emergentes** (toast) al alcanzar hitos de racha.
 - **Navegación por pestañas** (SPA) sin recargar la página, con el módulo activo guardado en la URL (`?modulo=...`) para conservarlo al refrescar.
-- **Atajo de teclado**: pulsa **Enter** para verificar la respuesta en la mayoría de los juegos (sumas, tablas, fracciones, decimales, romanos, perímetro, multiplicaciones, divisiones, descomponer, aproximaciones y propiedades).
-- **Avance automático**: en algunos juegos (sumas, divisiones, aproximaciones, multiplicaciones, descomponer y propiedades) la pregunta cambia sola después de comprobar la respuesta.
+- **Atajo de teclado**: pulsa **Enter** para verificar la respuesta en la mayoría de los juegos (sumas, tablas, fracciones, decimales, romanos, perímetro, multiplicaciones, divisiones, descomponer, aproximaciones, propiedades y operaciones combinadas).
+- **Avance automático**: en algunos juegos (sumas, divisiones, aproximaciones, multiplicaciones, descomponer, propiedades y operaciones combinadas) la pregunta cambia sola después de comprobar la respuesta.
 - **Reinicio de progreso**: botón **🗑️ Reiniciar puntos** en *Mi Panel* para borrar puntos, racha y medallas (pide confirmación).
 - **Persistencia local** con `localStorage` (puntos, medallas, historiales). Nada se envía a internet.
 - **Diseño responsive**, adaptado a ordenador, tablet y móvil.
@@ -52,7 +52,7 @@ El historial se guarda solo en el navegador del dispositivo. En *Problemas* y *U
 
 ---
 
-## 🎮 Los 15 juegos
+## 🎮 Los 16 juegos
 
 > Todos los juegos que tienen historial muestran la **fecha y hora** de cada intento, la **respuesta del alumno** y la **respuesta correcta** cuando falla.
 
@@ -142,6 +142,29 @@ Practica las tres propiedades escribiendo tú mismo los números y los paréntes
 - Botón **Generar otra** para cambiar de operación sin hacer la actual, botón de **pista** (sin revelar la solución, con el ejemplo `1 × (2 + 3) = (1 × 2) + (1 × 3) = 2 + 3 = 5`) y **Enter** para comprobar y pasar a la siguiente operación.
 - Contador de aciertos y errores e historial con **fecha y hora**, lo que escribió el niño y la solución correcta completa cuando falla.
 
+### 16. 🧠 Operaciones Combinadas
+Aprende y practica el **orden de las operaciones** con sumas, restas, multiplicaciones, divisiones y paréntesis.
+
+**Controles**
+- **Paréntesis**: selector con dos únicas opciones, **Sin paréntesis** (por defecto) y **Con paréntesis**.
+- **Operaciones**: contador de **1 a 99** operaciones por expresión, con **5** por defecto. Al escribir un valor fuera del rango se ajusta solo (vacío → 5, `123` → 99, `0` → 1). También puedes subir o bajar con las flechas del campo.
+
+**Cómo funciona**
+- El niño **toca la operación que debe resolver primero** directamente en la expresión. Si elige mal, la app le recuerda la regla sin penalizar.
+- Después escribe el resultado de esa operación y la expresión se va transformando paso a paso: `3 + 4 × 2 = 3 + 8 = 11`.
+- **Sin paréntesis**: las multiplicaciones y divisiones se resuelven antes que las sumas y restas.
+- **Con paréntesis**: primero se resuelve lo que hay dentro del paréntesis. Si hay varios, se resuelven **todos** antes que las operaciones exteriores.
+- Dentro de cada nivel, las operaciones van de **izquierda a derecha**.
+- El generador crea expresiones de exactamente el número de operaciones elegido, **sin restas negativas y con divisiones exactas**.
+- La etiqueta muestra el modo y el total (`🧠 Con paréntesis · 7 operaciones`) y el paso indica el progreso (`Paso 3 de 7`).
+
+**Apoyo y progreso**
+- Escalera visual del orden (**paréntesis → × ÷ → + −**) que resalta la regla que se está aplicando.
+- Botón de **pista** con el orden de las operaciones y un ejemplo.
+- **Enter** para comprobar el resultado y avance automático al terminar la expresión.
+- Contador de aciertos y errores e historial con **fecha y hora** y la cadena completa de resolución.
+- Acceso directo con `?modulo=combinadas` en la URL.
+
 ---
 
 ## 📁 Estructura del proyecto
@@ -161,7 +184,8 @@ mates/
 │   ├── reloj.css               # Reloj, romanos, perímetro, múltiplos
 │   ├── descomponer.css         # Descomponer, divisiones, aproximaciones
 │   ├── multiplicaciones.css    # Multiplicaciones
-│   └── propiedades.css         # Propiedades de las operaciones
+│   ├── propiedades.css         # Propiedades de las operaciones
+│   └── combinadas.css          # Operaciones combinadas
 └── js/
     ├── navegacion.js           # Cambio de pestañas y URL
     ├── core.js                 # Puntos, racha, medallas, logros, confeti, toast
@@ -179,7 +203,8 @@ mates/
     ├── divisiones.js           # Módulo 12
     ├── aproximaciones.js       # Módulo 13
     ├── multiplicaciones.js     # Módulo 14
-    └── propiedades.js          # Módulo 15
+    ├── propiedades.js          # Módulo 15
+    └── combinadas.js           # Módulo 16
 ```
 
 ---

@@ -48,6 +48,9 @@
   <!-- ============ PROPIEDADES DE LAS OPERACIONES ============ -->
   <link rel="stylesheet" href="css/propiedades.css">
 
+  <!-- ============ OPERACIONES COMBINADAS ============ -->
+  <link rel="stylesheet" href="css/combinadas.css">
+
 </head>
 <body>
   <header class="app-header">
@@ -99,6 +102,7 @@
           <button class="card-modulo c-14" data-ir="multiplicaciones" type="button"><span class="gran">✖️</span>Multiplicaciones<span class="mini">En columna: filas de productos y suma final</span></button>
           <button class="card-modulo c-13" data-ir="aproximar" type="button"><span class="gran">🎯</span>Aproximaciones<span class="mini">Redondear a la unidad, decena, centena…</span></button>
           <button class="card-modulo c-15" data-ir="propiedades" type="button"><span class="gran">🔁</span>Propiedades<span class="mini">Conmutativa, asociativa y distributiva</span></button>
+          <button class="card-modulo c-16" data-ir="combinadas" type="button"><span class="gran">🧠</span>Operaciones combinadas<span class="mini">Paréntesis, × ÷ y + − en el orden correcto</span></button>
         </div>
 
         <h2>🏆 Progreso y medallas</h2>
@@ -843,6 +847,68 @@
       </div>
     </section>
 
+    <!-- ============================================================
+         MÓDULO 16: OPERACIONES COMBINADAS
+         ============================================================ -->
+    <section id="tab-combinadas" class="tab-panel">
+      <div class="oc-module">
+        <h1>🧠 Operaciones combinadas</h1>
+        <p class="oc-sub">
+          Aprende qué operación se resuelve primero: los <strong>paréntesis</strong>, después las
+          <strong>multiplicaciones y divisiones</strong> y, al final, las <strong>sumas y restas</strong>.
+          Elige si quieres paréntesis y cuántas operaciones tendrá cada expresión. Después, toca la
+          operación que hay que resolver primero y escribe su resultado paso a paso.
+        </p>
+
+        <div class="oc-controles">
+          <div>
+            <label for="oc-tipo">Paréntesis:</label>
+            <select id="oc-tipo">
+              <option value="sin" selected>Sin paréntesis</option>
+              <option value="con">Con paréntesis</option>
+            </select>
+          </div>
+          <div>
+            <label for="oc-numOps">Operaciones:</label>
+            <input id="oc-numOps" type="number" min="1" max="99" step="1" value="5"
+              inputmode="numeric" title="Número de operaciones de cada expresión (1 a 99)">
+          </div>
+          <button id="oc-generar" type="button">🎲 Nueva pregunta</button>
+          <button id="oc-pista" type="button" aria-expanded="false">💡 Ver pista</button>
+        </div>
+
+        <div class="oc-tarjeta" id="oc-tarjeta">
+          <div class="oc-etiqueta" id="oc-etiqueta"></div>
+          <div class="oc-consigna" id="oc-consigna"></div>
+          <div class="oc-jerarquia" id="oc-jerarquia" aria-label="Orden de las operaciones">
+            <span class="oc-jer" data-nivel="1">1.º Paréntesis ( )</span>
+            <span class="oc-flecha">→</span>
+            <span class="oc-jer" data-nivel="2">2.º × ÷</span>
+            <span class="oc-flecha">→</span>
+            <span class="oc-jer" data-nivel="3">3.º + −</span>
+          </div>
+          <div class="oc-expresion" id="oc-expresion"></div>
+          <div class="oc-paso" id="oc-paso" hidden></div>
+          <div class="oc-acciones">
+            <button id="oc-comprobar" type="button" hidden>✔️ Comprobar</button>
+            <button id="oc-otra" type="button">🔄 Otra operación</button>
+          </div>
+          <div id="oc-resultado" class="oc-resultado" aria-live="polite"></div>
+          <div id="oc-ayuda" class="oc-ayuda" hidden></div>
+        </div>
+
+        <div id="oc-contador" class="oc-contador">
+          ✅ Aciertos: <span id="oc-aciertos">0</span> |
+          ❌ Errores: <span id="oc-errores">0</span>
+        </div>
+
+        <div id="oc-historial" class="oc-historial">
+          <h3>📋 Historial de respuestas</h3>
+          <ul id="oc-listaHistorial"></ul>
+        </div>
+      </div>
+    </section>
+
   </main>
 
   <!-- ============ NAVEGACIÓN DE PESTAÑAS ============ -->
@@ -911,6 +977,10 @@
 
   <!-- ============ MÓDULO 15: PROPIEDADES DE LAS OPERACIONES ============ -->
   <script src="js/propiedades.js"></script>
+
+
+  <!-- ============ MÓDULO 16: OPERACIONES COMBINADAS ============ -->
+  <script src="js/combinadas.js"></script>
 
 </body>
 </html>

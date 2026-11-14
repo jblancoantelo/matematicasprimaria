@@ -17,6 +17,7 @@
         mu:  { n: 'Multiplicaciones',       e: '✖️' },
         ap:  { n: 'Aproximaciones',         e: '🎯' },
         pm:  { n: 'Propiedades',            e: '🔁' },
+        oc:  { n: 'Operaciones combinadas', e: '🧠' },
         pr:  { n: 'Problemas',              e: '🤔' }
       };
 
