@@ -41,6 +41,14 @@
       }
       var MED_EMOJI = { 3:'🥇', 2:'🥈', 1:'🥉', 0:'—' };
 
+      function fechaUltimo(ts){
+        if (!ts) return 'Sin partidas todavía';
+        var d = new Date(ts);
+        if (isNaN(d.getTime())) return 'Sin partidas todavía';
+        return 'Último: ' + d.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }) +
+          ' · ' + d.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+      }
+
       function pintar(){
         var medallas = 0;
         for (var k in MODULOS) if (s.mod[k] && medallaNivel(s.mod[k].a) > 0) medallas++;
@@ -58,7 +66,8 @@
             var lvl = medallaNivel(m.a);
             var li = document.createElement('div');
             li.className = 'ini-logro';
-            li.innerHTML = '<span>' + MODULOS[k].e + ' ' + MODULOS[k].n + '</span>' +
+            li.innerHTML = '<span class="ini-nombre">' + MODULOS[k].e + ' ' + MODULOS[k].n +
+                '<small class="ini-fecha">' + fechaUltimo(m.ultimo) + '</small></span>' +
               '<span class="num">✅ ' + m.a + ' · ❌ ' + m.e + '</span>' +
               '<span>' + MED_EMOJI[lvl] + '</span>';
             lista.appendChild(li);
@@ -106,6 +115,7 @@
         }
         var m = s.mod[mod] || { a: 0, e: 0 };
         if (ok) m.a++; else m.e++;
+        m.ultimo = Date.now();
         s.mod[mod] = m;
         save();
         pintar();

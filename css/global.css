@@ -112,13 +112,28 @@
       justify-content: space-between;
       align-items: center;
       gap: 10px;
+      flex-wrap: wrap;
       background: #fff;
       border: 1px solid #e2e8f0;
       border-radius: 12px;
       padding: 10px 14px;
       font-weight: 600;
     }
-    .ini-logro .num { color: #64748b; font-weight: 400; }
+    .ini-logro .num { color: #64748b; font-weight: 400; white-space: nowrap; }
+    .ini-logro .ini-nombre {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 2px;
+      text-align: left;
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+    .ini-logro .ini-fecha {
+      font-size: 12px;
+      font-weight: 400;
+      color: #94a3b8;
+    }
     .btn-reset {
       border: 0;
       border-radius: 999px;
