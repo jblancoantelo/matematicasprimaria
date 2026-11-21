@@ -22,7 +22,7 @@ Está pensada para alumnado de **3º y 4º de Primaria**, con 16 juegos organiza
 
 ## ✨ Características generales
 
-- **Panel de inicio** con resumen del progreso: puntos, racha, medallas y aciertos totales, además de la fecha y hora de la última partida de cada juego.
+- **Panel de inicio** con resumen del progreso: puntos, racha, medallas y aciertos totales, además de la fecha y hora de la última partida de cada juego. Cada juego se puede desplegar para ver el histórico de aciertos y fallos agrupado por fechas.
 - **Sistema de puntos**: cada acierto suma `10` puntos base, con bonus creciente según la racha (hasta +10 extra) y `+5` extra cada 5 aciertos seguidos.
 - **Racha**: cuenta de aciertos consecutivos. Si se falla, vuelve a cero. Se guarda la mejor racha histórica.
 - **Medallas por juego**: 🥉 5 aciertos · 🥈 15 aciertos · 🥇 40 aciertos.

@@ -108,17 +108,31 @@
       max-width: 640px;
     }
     .ini-logro {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      font-weight: 600;
+      overflow: hidden;
+    }
+    .ini-logro[open] { box-shadow: 0 4px 14px rgba(0,0,0,.06); }
+    .ini-logro > .ini-resumen {
+      list-style: none;
+      cursor: pointer;
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 10px;
       flex-wrap: wrap;
-      background: #fff;
-      border: 1px solid #e2e8f0;
-      border-radius: 12px;
       padding: 10px 14px;
-      font-weight: 600;
     }
+    .ini-logro > .ini-resumen::-webkit-details-marker { display: none; }
+    .ini-logro > .ini-resumen::after {
+      content: '▾';
+      color: #94a3b8;
+      font-size: 12px;
+      transition: transform .15s ease;
+    }
+    .ini-logro[open] > .ini-resumen::after { transform: rotate(180deg); }
     .ini-logro .num { color: #64748b; font-weight: 400; white-space: nowrap; }
     .ini-logro .ini-nombre {
       display: flex;
@@ -131,6 +145,36 @@
     }
     .ini-logro .ini-fecha {
       font-size: 12px;
+      font-weight: 400;
+      color: #94a3b8;
+    }
+    .ini-logro .ini-medalla {
+      font-size: 30px;
+      line-height: 1;
+      flex: 0 0 auto;
+    }
+    .ini-detalle {
+      border-top: 1px solid #e2e8f0;
+      background: #f8fafc;
+      padding: 8px 14px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .ini-dia {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 10px;
+      flex-wrap: wrap;
+      font-size: 13px;
+      color: #475569;
+    }
+    .ini-dia .fecha { font-weight: 600; color: #334155; text-transform: capitalize; }
+    .ini-dia .marcador { white-space: nowrap; }
+    .ini-sin {
+      margin: 0;
+      font-size: 13px;
       font-weight: 400;
       color: #94a3b8;
     }

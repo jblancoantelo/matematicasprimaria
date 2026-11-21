@@ -40,6 +40,7 @@
         return 0;
       }
       var MED_EMOJI = { 3:'🥇', 2:'🥈', 1:'🥉', 0:'—' };
+      var MED_NOMBRE = { 3:'oro', 2:'plata', 1:'bronce', 0:'sin medalla' };
 
       function fechaUltimo(ts){
         if (!ts) return 'Sin partidas todavía';
@@ -47,6 +48,44 @@
         if (isNaN(d.getTime())) return 'Sin partidas todavía';
         return 'Último: ' + d.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }) +
           ' · ' + d.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+      }
+
+      function dosCifras(n){ return n < 10 ? '0' + n : String(n); }
+
+      function claveDia(d){
+        return d.getFullYear() + '-' + dosCifras(d.getMonth() + 1) + '-' + dosCifras(d.getDate());
+      }
+
+      function fechaDia(clave){
+        var p = clave.split('-');
+        var d = new Date(Number(p[0]), Number(p[1]) - 1, Number(p[2]));
+        if (isNaN(d.getTime())) return clave;
+        return d.toLocaleDateString('es-ES', { weekday: 'short', day: '2-digit', month: '2-digit', year: 'numeric' });
+      }
+
+      function detalleHtml(m){
+        var dias = m && m.dias ? Object.keys(m.dias) : [];
+        if (!dias.length) {
+          if (m && m.ultimo) {
+            var u = new Date(m.ultimo);
+            return '<div class="ini-dia">' +
+                '<span class="fecha">Hasta el ' + u.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }) + '</span>' +
+                '<span class="marcador">✅ ' + (m.a || 0) + ' · ❌ ' + (m.e || 0) + '</span>' +
+              '</div>' +
+              '<p class="ini-sin">El detalle diario se empezará a guardar a partir de ahora.</p>';
+          }
+          return '<p class="ini-sin">Sin detalle por fechas todavía. Se irá guardando a partir de ahora.</p>';
+        }
+        dias.sort().reverse();
+        var html = '';
+        for (var i = 0; i < dias.length; i++) {
+          var d = m.dias[dias[i]] || { a: 0, e: 0 };
+          html += '<div class="ini-dia">' +
+            '<span class="fecha">' + fechaDia(dias[i]) + '</span>' +
+            '<span class="marcador">✅ ' + (d.a || 0) + ' · ❌ ' + (d.e || 0) + '</span>' +
+            '</div>';
+        }
+        return html;
       }
 
       function pintar(){
@@ -64,13 +103,16 @@
           for (var k in MODULOS) {
             var m = s.mod[k] || { a: 0, e: 0 };
             var lvl = medallaNivel(m.a);
-            var li = document.createElement('div');
-            li.className = 'ini-logro';
-            li.innerHTML = '<span class="ini-nombre">' + MODULOS[k].e + ' ' + MODULOS[k].n +
-                '<small class="ini-fecha">' + fechaUltimo(m.ultimo) + '</small></span>' +
-              '<span class="num">✅ ' + m.a + ' · ❌ ' + m.e + '</span>' +
-              '<span>' + MED_EMOJI[lvl] + '</span>';
-            lista.appendChild(li);
+            var fila = document.createElement('details');
+            fila.className = 'ini-logro';
+            fila.innerHTML = '<summary class="ini-resumen">' +
+                '<span class="ini-nombre">' + MODULOS[k].e + ' ' + MODULOS[k].n +
+                  '<small class="ini-fecha">' + fechaUltimo(m.ultimo) + '</small></span>' +
+                '<span class="num">✅ ' + m.a + ' · ❌ ' + m.e + '</span>' +
+                '<span class="ini-medalla" title="Medalla: ' + MED_NOMBRE[lvl] + '">' + MED_EMOJI[lvl] + '</span>' +
+              '</summary>' +
+              '<div class="ini-detalle">' + detalleHtml(m) + '</div>';
+            lista.appendChild(fila);
           }
         }
       }
@@ -116,6 +158,11 @@
         var m = s.mod[mod] || { a: 0, e: 0 };
         if (ok) m.a++; else m.e++;
         m.ultimo = Date.now();
+        if (!m.dias || typeof m.dias !== 'object') m.dias = {};
+        var clave = claveDia(new Date());
+        var dia = m.dias[clave] || { a: 0, e: 0 };
+        if (ok) dia.a++; else dia.e++;
+        m.dias[clave] = dia;
         s.mod[mod] = m;
         save();
         pintar();
