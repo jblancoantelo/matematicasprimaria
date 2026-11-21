@@ -40,7 +40,14 @@
       font-weight: 600;
       box-shadow: 0 2px 8px rgba(0,0,0,.06);
       font-size: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
     }
+    .pill-dato { cursor: help; white-space: nowrap; }
+    .pill-dato + .pill-dato { border-left: 1px solid #cbd5e1; padding-left: 10px; }
 
     /* ---- Panel de inicio (dashboard) ---- */
     .inicio-module {
@@ -51,25 +58,6 @@
       border-radius: 18px;
       margin-top: 14px;
     }
-    .inicio-datos {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      justify-content: center;
-      margin: 18px 0;
-    }
-    .stat-card {
-      background: #fff;
-      border: 1px solid #e2e8f0;
-      border-radius: 14px;
-      padding: 14px 22px;
-      min-width: 118px;
-      box-shadow: 0 4px 12px rgba(0,0,0,.06);
-      font-size: 14px;
-      color: #64748b;
-      cursor: help;
-    }
-    .stat-card b { display: block; font-size: 24px; color: #0f172a; margin-top: 4px; }
     .grid-modulos {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(168px, 1fr));

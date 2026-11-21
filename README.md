@@ -33,7 +33,7 @@ Está pensada para alumnado de **3º y 4º de Primaria**, con 16 juegos organiza
 - **Navegación por pestañas** (SPA) sin recargar la página, con el módulo activo guardado en la URL (`?modulo=...`) para conservarlo al refrescar.
 - **Atajo de teclado**: pulsa **Enter** para verificar la respuesta en la mayoría de los juegos (sumas, tablas, fracciones, decimales, romanos, perímetro, multiplicaciones, divisiones, descomponer, aproximaciones, propiedades y operaciones combinadas).
 - **Avance automático**: en algunos juegos (sumas, divisiones, aproximaciones, multiplicaciones, descomponer, propiedades y operaciones combinadas) la pregunta cambia sola después de comprobar la respuesta.
-- **Reinicio de progreso**: botón **🗑️ Reiniciar puntos** en *Mi Panel* para borrar puntos, racha y medallas (pide confirmación).
+- **Reinicio de progreso**: botón **🗑️ Reiniciar puntos** en la pantalla principal para borrar puntos, racha y medallas (pide confirmación).
 - **Persistencia local** con `localStorage` (puntos, medallas, historiales). Nada se envía a internet.
 - **Diseño responsive**, adaptado a ordenador, tablet y móvil.
 
@@ -213,7 +213,7 @@ mates/
 
 1. Descarga o clona el repositorio.
 2. Abre el archivo `Matematicas_Primaria.html` en cualquier navegador moderno (Chrome, Edge, Firefox, Safari).
-3. En el panel **🏠 Mi Panel**, elige un juego, resuelve los ejercicios y gana puntos y medallas.
+3. En la pantalla principal, elige un juego, resuelve los ejercicios y gana puntos y medallas.
 
 > No requiere instalación, servidor ni conexión a internet. Todo el progreso se guarda localmente en el navegador del dispositivo.
 

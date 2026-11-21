@@ -50,13 +50,6 @@
         document.getElementById('hdr-medallas').textContent = medallas;
         if (document.getElementById('hdr-aciertos')) document.getElementById('hdr-aciertos').textContent = s.aciertos;
 
-        if (document.getElementById('ini-puntos')) {
-          document.getElementById('ini-puntos').textContent = s.puntos;
-          document.getElementById('ini-racha').textContent = s.racha;
-          document.getElementById('ini-medallas').textContent = medallas;
-          document.getElementById('ini-aciertos').textContent = s.aciertos;
-        }
-
         var lista = document.getElementById('ini-logros');
         if (lista) {
           lista.innerHTML = '';
