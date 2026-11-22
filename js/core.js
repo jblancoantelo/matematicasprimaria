@@ -114,6 +114,9 @@
         }
 
         if (!claves.length) {
+          if (m && m.borrado) {
+            return '<p class="ini-sin">Historial borrado. Se volverá a guardar al responder.</p>';
+          }
           if (m && m.ultimo) {
             var u = new Date(m.ultimo);
             return '<div class="ini-dia">' +
@@ -183,7 +186,13 @@
                 '<span class="num">✅ ' + m.a + ' · ❌ ' + m.e + '</span>' +
                 '<span class="ini-medalla" title="Medalla: ' + MED_NOMBRE[lvl] + '">' + MED_EMOJI[lvl] + '</span>' +
               '</summary>' +
-              '<div class="ini-detalle">' + detalleHtml(m) + '</div>';
+              '<div class="ini-detalle">' +
+                '<div class="ini-acciones">' +
+                  '<button type="button" class="ini-btn" data-ir="' + k + '" title="Ir a ' + MODULOS[k].n + '">🎮 Ir al juego</button>' +
+                  '<button type="button" class="ini-btn ini-btn-peligro" data-borrar="' + k + '" title="Borrar solo el historial de ' + MODULOS[k].n + '">🗑️ Borrar historial</button>' +
+                '</div>' +
+                detalleHtml(m) +
+              '</div>';
             lista.appendChild(fila);
           }
         }
@@ -204,6 +213,8 @@
       function borrarHistorial(mod){
         if (!s.mod[mod]) return;
         s.mod[mod].hist = [];
+        s.mod[mod].dias = {};
+        s.mod[mod].borrado = true;
         save();
         pintarHistorial(mod);
         pintar();
@@ -266,6 +277,7 @@
           var l = [];
           for (var i = 0; i < arr.length; i++) l.push(arr[i] == null ? '' : String(arr[i]));
           m.hist.push({ t: ahora, ok: ok, l: l });
+          m.borrado = false;
         }
 
         s.mod[mod] = m;
@@ -292,6 +304,28 @@
           for (var k in MODULOS) pintarHistorial(k);
         }
       });
+
+      var listaLogros = document.getElementById('ini-logros');
+      if (listaLogros) {
+        listaLogros.addEventListener('click', function(ev){
+          var btn = ev.target.closest ? ev.target.closest('button[data-ir], button[data-borrar]') : null;
+          if (!btn) return;
+          var modIr = btn.getAttribute('data-ir');
+          if (modIr) {
+            ev.preventDefault();
+            if (window.irA) window.irA(modIr);
+            return;
+          }
+          var modBorrar = btn.getAttribute('data-borrar');
+          if (modBorrar) {
+            ev.preventDefault();
+            var nombre = MODULOS[modBorrar] ? MODULOS[modBorrar].n : modBorrar;
+            if (confirm('¿Borrar solo el historial de "' + nombre + '"?\nLos puntos y medallas no se borran.')) {
+              borrarHistorial(modBorrar);
+            }
+          }
+        });
+      }
 
       load();
       pintar();

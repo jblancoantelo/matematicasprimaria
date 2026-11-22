@@ -181,6 +181,34 @@
       border-bottom: 1px dashed #e2e8f0;
     }
     .ini-grupo-dia:last-child { border-bottom: 0; padding-bottom: 0; }
+    .ini-acciones {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding-bottom: 4px;
+    }
+    .ini-btn {
+      border: 1px solid #cbd5e1;
+      background: #fff;
+      color: #0f172a;
+      border-radius: 999px;
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .12s ease, border-color .12s ease;
+    }
+    .ini-btn:hover { background: #eff6ff; border-color: #2563eb; }
+    .ini-btn-peligro { color: #b91c1c; border-color: #fecaca; }
+    .ini-btn-peligro:hover { background: #fef2f2; border-color: #dc2626; }
+
+    /* Separación visual de cada entrada en los historiales de los módulos */
+    ul[id$="-listaHistorial"] > li {
+      padding: 8px 0;
+      border-bottom: 1px dashed #cbd5e1;
+    }
+    ul[id$="-listaHistorial"] > li:first-child { padding-top: 0; }
+    ul[id$="-listaHistorial"] > li:last-child { border-bottom: 0; padding-bottom: 0; }
     .ini-entrada {
       display: flex;
       align-items: baseline;
