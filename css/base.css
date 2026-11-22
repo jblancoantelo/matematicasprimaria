@@ -27,6 +27,7 @@
       opacity: 0.6;
     }
     .hist-texto { margin-top: 0.1rem; }
+    .hist-bien { color: #15803d; }
     .hist-detalle {
       font-size: 0.94em;
       opacity: 0.95;

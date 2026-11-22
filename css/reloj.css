@@ -48,15 +48,15 @@
     #re-contador, #nr-contador, #pa-contador, #md-contador {
       margin-top: 1.5rem; font-size: 1.15rem;
     }
-    #nr-historial, #pa-historial, #md-historial {
+    #re-historial, #nr-historial, #pa-historial, #md-historial {
       margin-top: 1.5rem; text-align: left; max-width: 600px;
       margin-left: auto; margin-right: auto; background-color: #fff;
       border: 1px solid #ccc; padding: 1rem; border-radius: 10px; font-family: monospace;
     }
-    #nr-historial h3, #pa-historial h3, #md-historial h3 { text-align: center; margin-bottom: 1rem; }
-    #nr-historial ul, #pa-historial ul, #md-historial ul { padding: 0; list-style: none; }
-    #nr-historial li.nr-correcto, #pa-historial li.pa-correcto, #md-historial li.md-correcto { color: green; }
-    #nr-historial li.nr-incorrecto, #pa-historial li.pa-incorrecto, #md-historial li.md-incorrecto { color: red; }
+    #re-historial h3, #nr-historial h3, #pa-historial h3, #md-historial h3 { text-align: center; margin-bottom: 1rem; }
+    #re-historial ul, #nr-historial ul, #pa-historial ul, #md-historial ul { padding: 0; list-style: none; }
+    #re-historial li.re-correcto, #nr-historial li.nr-correcto, #pa-historial li.pa-correcto, #md-historial li.md-correcto { color: green; }
+    #re-historial li.re-incorrecto, #nr-historial li.nr-incorrecto, #pa-historial li.pa-incorrecto, #md-historial li.md-incorrecto { color: red; }
     .re-modulo-svg { background: #fff; border-radius: 14px; margin: 8px auto; box-shadow: 0 4px 14px rgba(0,0,0,.08); }
     .pa-svg { background: #fff; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,.08); }
     .re-correcto, .nr-correcto, .pa-correcto, .md-correcto { color: green; }

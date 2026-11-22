@@ -28,7 +28,7 @@ Está pensada para alumnado de **3º y 4º de Primaria**, con 16 juegos organiza
 - **Medallas por juego**: 🥉 5 aciertos · 🥈 15 aciertos · 🥇 40 aciertos.
 - **Logros por módulo**: lista con los aciertos y errores de cada juego y su medalla actual.
 - **Corrección automática** de las respuestas con mensajes de éxito o error.
-- **Historial de respuestas** en la mayoría de los juegos, con **fecha y hora** de cada intento, la respuesta que escribió el alumno y la respuesta correcta cuando falla.
+- **Historial de respuestas** en todos los juegos, con **fecha y hora** de cada intento, la respuesta que escribió el alumno y la respuesta correcta cuando falla. El historial está centralizado y es el mismo que alimenta el detalle por fechas del panel de inicio.
 - **Confeti** al acertar y **avisos emergentes** (toast) al alcanzar hitos de racha.
 - **Navegación por pestañas** (SPA) sin recargar la página, con el módulo activo guardado en la URL (`?modulo=...`) para conservarlo al refrescar.
 - **Atajo de teclado**: pulsa **Enter** para verificar la respuesta en la mayoría de los juegos (sumas, tablas, fracciones, decimales, romanos, perímetro, multiplicaciones, divisiones, descomponer, aproximaciones, propiedades y operaciones combinadas).
@@ -48,7 +48,7 @@ Cada juego guarda un historial con las últimas respuestas:
 - La **respuesta correcta** cuando falla, con la operación o solución completa.
 - En algunos juegos se indica también la operación resuelta paso a paso.
 
-El historial se guarda solo en el navegador del dispositivo. En *Problemas* y *Unidades* se conserva con `localStorage` y hay botón para borrarlo; en el resto vive en la propia página y se vacía al recargar.
+El historial se guarda solo en el navegador del dispositivo, dentro del mismo almacenamiento que los puntos y medallas (`mates_v3_progreso`). Cada juego conserva sus **últimas 100 respuestas**. En *Problemas* y *Unidades* se mantiene además su historial detallado propio, con botón para borrarlo.
 
 ---
 

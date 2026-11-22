@@ -172,6 +172,31 @@
     }
     .ini-dia .fecha { font-weight: 600; color: #334155; text-transform: capitalize; }
     .ini-dia .marcador { white-space: nowrap; }
+    .ini-grupo-dia {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding-bottom: 6px;
+      border-bottom: 1px dashed #e2e8f0;
+    }
+    .ini-grupo-dia:last-child { border-bottom: 0; padding-bottom: 0; }
+    .ini-entrada {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 400;
+      color: #475569;
+      padding-left: 6px;
+    }
+    .ini-entrada .ini-hora {
+      flex: 0 0 auto;
+      color: #94a3b8;
+      font-variant-numeric: tabular-nums;
+    }
+    .ini-entrada .ini-texto { min-width: 0; overflow-wrap: anywhere; }
+    .ini-entrada.ok .ini-texto { color: #15803d; }
+    .ini-entrada.ko .ini-texto { color: #b91c1c; }
     .ini-sin {
       margin: 0;
       font-size: 13px;

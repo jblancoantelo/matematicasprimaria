@@ -228,8 +228,6 @@
 
         const esCorrecto = numUsuario === r.res;
 
-        window.MatesCore.puntuar('sy', esCorrecto);
-
         if (esCorrecto) {
           resultado.textContent = '✅ ¡Correcto!';
           resultado.className = 'sy-correcto';
@@ -243,13 +241,12 @@
         document.getElementById('sy-aciertos').textContent = totalAciertos;
         document.getElementById('sy-errores').textContent = totalErrores;
 
-        const historial = document.getElementById('sy-listaHistorial');
         const expresion = numerosDisplay.join(' ' + simbolo + ' ');
         const usr = formatearRes({ int: Math.floor(numUsuario / M), dec: Math.abs(numUsuario % M) });
         const lineas = esCorrecto
           ? ['✅ ' + expresion + ' = ' + usr]
           : ['❌ Tú: ' + expresion + ' = ' + usr, '✔️ Correcto: ' + expresion + ' = ' + correctoMostrar];
-        historial.prepend(window.MatesCore.itemHistorial(esCorrecto ? 'sy-correcto' : 'sy-incorrecto', lineas));
+        window.MatesCore.registrar('sy', esCorrecto, lineas);
 
         setTimeout(sy_generarPregunta, 2000);
       };

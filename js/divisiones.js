@@ -291,12 +291,10 @@
 
         if (bien) {
           aciertos++;
-          window.MatesCore.puntuar('dv', true);
           resultado.textContent = '✅ ¡Correcto! ' + separar(dividendo) + ' = ' + divisor + ' × ' + cociente + ' + ' + resto + '.';
           resultado.className = 'dv-correcto';
         } else {
           errores++;
-          window.MatesCore.puntuar('dv', false);
           resultado.textContent = '❌ No coincide. El cociente es ' + cociente + ' y el resto ' + resto + '.';
           resultado.className = 'dv-incorrecto';
         }
@@ -304,7 +302,6 @@
         document.getElementById('dv-aciertos').textContent = aciertos;
         document.getElementById('dv-errores').textContent = errores;
 
-        const historial = document.getElementById('dv-listaHistorial');
         const tuQ = pasos.map(function(p){ return p.typedQd || ''; }).join('');
         const ultimo = pasos[pasos.length - 1] || {};
         const tuR = ultimo.typedResto === undefined ? '?' : ultimo.typedResto;
@@ -313,7 +310,7 @@
         const lineas = bien
           ? ['✅ ' + correcta + ' · Tú: ' + tuQ + ' r ' + tuR]
           : ['❌ Tú: ' + tu, '✔️ Correcto: ' + correcta];
-        historial.prepend(window.MatesCore.itemHistorial(bien ? 'dv-correcto' : 'dv-incorrecto', lineas));
+        window.MatesCore.registrar('dv', bien, lineas);
 
         setTimeout(generar, 3000);
       }

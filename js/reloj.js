@@ -119,7 +119,10 @@
           resultado.className = 're-incorrecto';
           errores++;
         }
-        window.MatesCore.puntuar('re', esCorrecto);
+        const lineas = esCorrecto
+          ? ['✅ Son las ' + actual.correcta]
+          : ['❌ Tú: ' + (bot.textContent || '').trim(), '✔️ Correcto: ' + actual.correcta];
+        window.MatesCore.registrar('re', esCorrecto, lineas);
         document.getElementById('re-aciertos').textContent = aciertos;
         document.getElementById('re-errores').textContent = errores;
       }

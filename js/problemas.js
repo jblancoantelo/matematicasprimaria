@@ -249,12 +249,19 @@
         }
         const value = Number(studentAnswerEl.value);
         registrarIntento(value);
+        const texto = (currentProblem.text || '').length > 140
+          ? currentProblem.text.slice(0, 140) + '…'
+          : currentProblem.text;
+        const solucion = currentProblem.answerText || String(currentProblem.answer);
         if (value === currentProblem.answer) {
-          if (!currentProblem.solvedOnce) { currentProblem.solvedOnce = true; window.MatesCore.puntuar('pr', true); }
+          if (!currentProblem.solvedOnce) {
+            currentProblem.solvedOnce = true;
+            window.MatesCore.registrar('pr', true, ['✅ ' + texto, '✔️ Solución: ' + solucion]);
+          }
           feedbackEl.textContent = '¡Muy bien! La respuesta es correcta. 🎉';
           feedbackEl.style.color = '#18884b';
         } else {
-          window.MatesCore.puntuar('pr', false);
+          window.MatesCore.registrar('pr', false, ['❌ ' + texto, '✔️ Solución: ' + solucion]);
           feedbackEl.textContent = 'Todavía no. Inténtalo otra vez o mira la solución.';
           feedbackEl.style.color = '#c0392b';
           markCurrentAsFailed();

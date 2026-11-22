@@ -105,19 +105,16 @@
           resultado.className = 'dm-correcto';
           aciertos++;
           comprobado = true;
-          window.MatesCore.puntuar('dm', true);
           setTimeout(generar, 2600);
         } else {
           resultado.textContent = '❌ Revisa las filas en rojo: ' + bien + ' de ' + total + ' bien. Corrige y vuelve a pulsar «Comprobar».';
           resultado.className = 'dm-incorrecto';
           errores++;
-          window.MatesCore.puntuar('dm', false);
         }
 
         document.getElementById('dm-aciertos').textContent = aciertos;
         document.getElementById('dm-errores').textContent = errores;
 
-        const historial = document.getElementById('dm-listaHistorial');
         const hecho = filas.map(function(f){
           const v = f.input.value.trim();
           return v === '' ? '(vacío)' : v;
@@ -126,7 +123,7 @@
         const lineas = todosBien
           ? ['✅ ' + textoNum + ' = ' + correcta + ' · Tú: ' + hecho]
           : ['❌ Tú: ' + textoNum + ' = ' + hecho, '✔️ Correcto: ' + textoNum + ' = ' + correcta];
-        historial.prepend(window.MatesCore.itemHistorial(todosBien ? 'dm-correcto' : 'dm-incorrecto', lineas));
+        window.MatesCore.registrar('dm', todosBien, lineas);
       }
 
       document.getElementById('dm-generar').addEventListener('click', function(){ generar(); });

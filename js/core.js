@@ -42,6 +42,28 @@
       var MED_EMOJI = { 3:'🥇', 2:'🥈', 1:'🥉', 0:'—' };
       var MED_NOMBRE = { 3:'oro', 2:'plata', 1:'bronce', 0:'sin medalla' };
 
+      // Historial centralizado: cada módulo guarda sus últimas respuestas aquí.
+      var LIMITE_HIST = 100;
+      var CLASES_HIST = {
+        pm: { ok: 'pm-ok', ko: 'pm-ko' },
+        oc: { ok: 'oc-ok', ko: 'oc-ko' }
+      };
+
+      function claseHist(mod, ok){
+        var c = CLASES_HIST[mod];
+        if (c) return ok ? c.ok : c.ko;
+        return mod + (ok ? '-correcto' : '-incorrecto');
+      }
+
+      function escaparHtml(txt){
+        return String(txt == null ? '' : txt)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
+
       function fechaUltimo(ts){
         if (!ts) return 'Sin partidas todavía';
         var d = new Date(ts);
@@ -64,8 +86,35 @@
       }
 
       function detalleHtml(m){
-        var dias = m && m.dias ? Object.keys(m.dias) : [];
-        if (!dias.length) {
+        var hist = m && Array.isArray(m.hist) ? m.hist : [];
+        var grupos = {};
+        var claves = [];
+        var i, k, e;
+
+        for (i = 0; i < hist.length; i++) {
+          e = hist[i];
+          if (!e || !e.t) continue;
+          k = claveDia(new Date(e.t));
+          if (!grupos[k]) {
+            grupos[k] = { a: 0, e: 0, items: [] };
+            claves.push(k);
+          }
+          if (e.ok) grupos[k].a++; else grupos[k].e++;
+          grupos[k].items.push(e);
+        }
+
+        // Días antiguos que solo tienen recuento (sin detalle de respuestas).
+        if (m && m.dias) {
+          for (var dk in m.dias) {
+            if (!grupos[dk]) {
+              var dd = m.dias[dk] || {};
+              grupos[dk] = { a: dd.a || 0, e: dd.e || 0, items: [] };
+              claves.push(dk);
+            }
+          }
+        }
+
+        if (!claves.length) {
           if (m && m.ultimo) {
             var u = new Date(m.ultimo);
             return '<div class="ini-dia">' +
@@ -76,14 +125,34 @@
           }
           return '<p class="ini-sin">Sin detalle por fechas todavía. Se irá guardando a partir de ahora.</p>';
         }
-        dias.sort().reverse();
-        var html = '';
-        for (var i = 0; i < dias.length; i++) {
-          var d = m.dias[dias[i]] || { a: 0, e: 0 };
-          html += '<div class="ini-dia">' +
-            '<span class="fecha">' + fechaDia(dias[i]) + '</span>' +
-            '<span class="marcador">✅ ' + (d.a || 0) + ' · ❌ ' + (d.e || 0) + '</span>' +
+
+        claves.sort().reverse();
+        var html = hist.length >= LIMITE_HIST
+          ? '<p class="ini-sin">Mostrando las últimas ' + LIMITE_HIST + ' respuestas.</p>'
+          : '';
+        for (i = 0; i < claves.length; i++) {
+          var clave = claves[i];
+          var g = grupos[clave];
+          html += '<div class="ini-grupo-dia">' +
+            '<div class="ini-dia">' +
+              '<span class="fecha">' + fechaDia(clave) + '</span>' +
+              '<span class="marcador">✅ ' + g.a + ' · ❌ ' + g.e + '</span>' +
             '</div>';
+          for (var j = g.items.length - 1; j >= 0; j--) {
+            var it = g.items[j];
+            var hora = new Date(it.t).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+            var ls = Array.isArray(it.l) ? it.l : [it.l];
+            var lineas = [];
+            for (var w = 0; w < ls.length; w++) lineas.push(escaparHtml(ls[w]));
+            html += '<div class="ini-entrada ' + (it.ok ? 'ok' : 'ko') + '">' +
+              '<span class="ini-hora">' + hora + '</span>' +
+              '<span class="ini-texto">' + lineas.join('<br>') + '</span>' +
+              '</div>';
+          }
+          if (!g.items.length) {
+            html += '<p class="ini-sin">Solo recuento del día (detalle no disponible).</p>';
+          }
+          html += '</div>';
         }
         return html;
       }
@@ -99,12 +168,18 @@
 
         var lista = document.getElementById('ini-logros');
         if (lista) {
+          var abiertos = {};
+          lista.querySelectorAll('details[data-mod]').forEach(function(det){
+            if (det.open) abiertos[det.getAttribute('data-mod')] = true;
+          });
           lista.innerHTML = '';
           for (var k in MODULOS) {
             var m = s.mod[k] || { a: 0, e: 0 };
             var lvl = medallaNivel(m.a);
             var fila = document.createElement('details');
             fila.className = 'ini-logro';
+            fila.setAttribute('data-mod', k);
+            if (abiertos[k]) fila.open = true;
             fila.innerHTML = '<summary class="ini-resumen">' +
                 '<span class="ini-nombre">' + MODULOS[k].e + ' ' + MODULOS[k].n +
                   '<small class="ini-fecha">' + fechaUltimo(m.ultimo) + '</small></span>' +
@@ -115,6 +190,26 @@
             lista.appendChild(fila);
           }
         }
+      }
+
+      function pintarHistorial(mod){
+        var lista = document.getElementById(mod + '-listaHistorial');
+        if (!lista) return;
+        var m = s.mod[mod];
+        var hist = m && Array.isArray(m.hist) ? m.hist : [];
+        lista.innerHTML = '';
+        for (var i = hist.length - 1; i >= 0; i--) {
+          var e = hist[i];
+          lista.appendChild(itemHistorial(claseHist(mod, e.ok), e.l, e.t));
+        }
+      }
+
+      function borrarHistorial(mod){
+        if (!s.mod[mod]) return;
+        s.mod[mod].hist = [];
+        save();
+        pintarHistorial(mod);
+        pintar();
       }
 
       function confetti(){
@@ -141,7 +236,10 @@
         toastTemporizador = setTimeout(function(){ el.classList.remove('show'); }, 2400);
       }
 
-      function puntuar(mod, ok){
+      function registrar(mod, ok, lineas){
+        ok = !!ok;
+        var ahora = Date.now();
+
         if (!ok) {
           s.errores++;
           s.racha = 0;
@@ -155,18 +253,33 @@
           confetti();
           if (s.racha % 5 === 0) brindis('🔥 ¡Racha de ' + s.racha + '! +' + ganados + ' pts');
         }
+
         var m = s.mod[mod] || { a: 0, e: 0 };
         if (ok) m.a++; else m.e++;
-        m.ultimo = Date.now();
+        m.ultimo = ahora;
         if (!m.dias || typeof m.dias !== 'object') m.dias = {};
-        var clave = claveDia(new Date());
+        var clave = claveDia(new Date(ahora));
         var dia = m.dias[clave] || { a: 0, e: 0 };
         if (ok) dia.a++; else dia.e++;
         m.dias[clave] = dia;
+
+        if (lineas != null) {
+          if (!Array.isArray(m.hist)) m.hist = [];
+          var arr = Array.isArray(lineas) ? lineas : [lineas];
+          var l = [];
+          for (var i = 0; i < arr.length; i++) l.push(arr[i] == null ? '' : String(arr[i]));
+          m.hist.push({ t: ahora, ok: ok, l: l });
+          if (m.hist.length > LIMITE_HIST) m.hist = m.hist.slice(-LIMITE_HIST);
+        }
+
         s.mod[mod] = m;
         save();
         pintar();
+        if (lineas != null) pintarHistorial(mod);
       }
+
+      // Compatibilidad: los módulos que no aporten detalle siguen sumando puntos.
+      function puntuar(mod, ok){ registrar(mod, ok); }
 
       // Botones "ir a módulo" del panel de inicio
       document.querySelectorAll('.card-modulo').forEach(function(card){
@@ -180,32 +293,39 @@
           s = defaultState();
           save();
           pintar();
+          for (var k in MODULOS) pintarHistorial(k);
         }
       });
 
       load();
       pintar();
+      for (var kMod in MODULOS) pintarHistorial(kMod);
 
-      function fechaHora(){
-        var d = new Date();
+      function fechaHoraDe(ts){
+        var d = new Date(ts);
+        if (isNaN(d.getTime())) d = new Date();
         var fecha = d.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
         var hora = d.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
         return fecha + ' · ' + hora;
       }
 
-      function itemHistorial(clase, lineas){
+      function fechaHora(){ return fechaHoraDe(Date.now()); }
+
+      function itemHistorial(clase, lineas, ts){
         var li = document.createElement('li');
         if (clase) li.className = clase;
 
         var cuando = document.createElement('div');
         cuando.className = 'hist-fecha';
-        cuando.textContent = fechaHora();
+        cuando.textContent = fechaHoraDe(ts);
         li.appendChild(cuando);
 
         var arr = Array.isArray(lineas) ? lineas : [lineas];
+        var esFallo = !!clase && /(ko|incorrecto)$/.test(clase);
         for (var i = 0; i < arr.length; i++) {
           var linea = document.createElement('div');
           linea.className = i === 0 ? 'hist-texto' : 'hist-texto hist-detalle';
+          if (esFallo && i === arr.length - 1 && arr.length > 1) linea.classList.add('hist-bien');
           linea.textContent = arr[i] == null ? '' : String(arr[i]);
           li.appendChild(linea);
         }
@@ -214,7 +334,10 @@
 
       window.MatesCore = {
         puntuar: puntuar,
+        registrar: registrar,
         pintar: pintar,
+        pintarHistorial: pintarHistorial,
+        borrarHistorial: borrarHistorial,
         medallaNivel: medallaNivel,
         MED_EMOJI: MED_EMOJI,
         fechaHora: fechaHora,

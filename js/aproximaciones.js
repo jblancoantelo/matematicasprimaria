@@ -52,16 +52,13 @@
           resultado.className = 'ap-incorrecto';
           errores++;
         }
-        window.MatesCore.puntuar('ap', esCorrecto);
-
         document.getElementById('ap-aciertos').textContent = aciertos;
         document.getElementById('ap-errores').textContent = errores;
 
-        const historial = document.getElementById('ap-listaHistorial');
         const lineas = esCorrecto
           ? ['✅ ' + separar(numero) + ' ≈ ' + separar(correcta) + ' · Tú: ' + txt]
           : ['❌ Tú: ' + txt, '✔️ Correcto: ' + separar(numero) + ' ≈ ' + separar(correcta)];
-        historial.prepend(window.MatesCore.itemHistorial(esCorrecto ? 'ap-correcto' : 'ap-incorrecto', lineas));
+        window.MatesCore.registrar('ap', esCorrecto, lineas);
 
         setTimeout(generar, 2600);
       }

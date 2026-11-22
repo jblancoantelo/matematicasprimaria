@@ -155,13 +155,7 @@
       }
 
       function agregarHistorial(lineas, correcto){
-        const lista = el('pm-listaHistorial');
-        const li = window.MatesCore.itemHistorial(correcto ? 'pm-ok' : 'pm-ko', lineas);
-        if (!correcto && lineas.length > 1) {
-          li.lastElementChild.classList.add('pm-hist-bien');
-        }
-        lista.prepend(li);
-        while (lista.children.length > 50) lista.removeChild(lista.lastChild);
+        window.MatesCore.registrar('pm', correcto, lineas);
       }
 
       function actualizarContadores(){
@@ -387,7 +381,6 @@
         if (ok) {
           inputs.forEach(function(i){ i.classList.add('pm-bien'); });
           aciertos++;
-          window.MatesCore.puntuar('pm', true);
           agregarHistorial(['✅ ' + tu + ' = ' + actual.resultado], true);
           actualizarContadores();
           generar();
@@ -396,7 +389,6 @@
             inp.classList.toggle('pm-mal', nums[i] !== actual.esperados[i]);
           });
           errores++;
-          window.MatesCore.puntuar('pm', false);
           agregarHistorial(['❌ Tú: ' + tu, '✔️ Correcto: ' + correcta], false);
           actualizarContadores();
 
@@ -462,7 +454,6 @@
           fila.inputs.forEach(function(inp){ inp.classList.add('pm-bien'); });
         });
         aciertos++;
-        window.MatesCore.puntuar('pm', true);
         agregarHistorial(['✅ ' + tu + ' = ' + actual.resultado], true);
         actualizarContadores();
         generar();
@@ -474,7 +465,6 @@
         r.className = 'pm-resultado pm-ko';
 
         errores++;
-        window.MatesCore.puntuar('pm', false);
         agregarHistorial([
           '❌ Tú: ' + tu,
           '✔️ Correcto: ' + actual.completa + ' = ' + actual.resultado
@@ -568,7 +558,6 @@
           });
           marcarOps(1, ops, actual.opsEsperadas, null);
           errores++;
-          window.MatesCore.puntuar('pm', false);
           agregarHistorial([
             '❌ Tú: ' + tu,
             '✔️ Correcto: ' + actual.completa
@@ -651,7 +640,6 @@
           });
           marcarOps(2, ops, actual.opsEsperadasPaso2, null);
           errores++;
-          window.MatesCore.puntuar('pm', false);
           agregarHistorial(['❌ Tú: ' + tu, '✔️ Correcto: ' + correcta], false);
           actualizarContadores();
 
@@ -696,7 +684,6 @@
         if (ok) {
           inputs.forEach(function(inp){ inp.classList.add('pm-bien'); });
           aciertos++;
-          window.MatesCore.puntuar('pm', true);
           agregarHistorial([
             '✅ ' + expansion,
             '✔️ Comprobación: ' + correcta
@@ -708,7 +695,6 @@
             inp.classList.toggle('pm-mal', nums[i] !== actual.esperadosPaso3[i]);
           });
           errores++;
-          window.MatesCore.puntuar('pm', false);
           agregarHistorial(['❌ Tú: ' + tu, '✔️ Correcto: ' + correcta], false);
           actualizarContadores();
 

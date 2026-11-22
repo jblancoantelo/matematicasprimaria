@@ -72,18 +72,16 @@
           resultado.className = 'nr-incorrecto';
           errores++;
         }
-        window.MatesCore.puntuar('nr', esCorrecto);
         document.getElementById('nr-aciertos').textContent = aciertos;
         document.getElementById('nr-errores').textContent = errores;
 
-        const historial = document.getElementById('nr-listaHistorial');
         const tu = actual.tipo === 'aromano'
           ? entrada.toUpperCase().replace(/\s+/g, '')
           : entrada;
         const lineas = esCorrecto
           ? ['✅ ' + actual.texto + ' · Tú: ' + tu]
           : ['❌ Tú: ' + (tu || '(vacío)'), '✔️ Correcto: ' + actual.texto];
-        historial.prepend(window.MatesCore.itemHistorial(esCorrecto ? 'nr-correcto' : 'nr-incorrecto', lineas));
+        window.MatesCore.registrar('nr', esCorrecto, lineas);
       }
 
       document.getElementById('nr-generar').addEventListener('click', function(){ generar(); });

@@ -151,11 +151,17 @@
           if(Number.isNaN(userVal)){
             ex.ok = false;
             mark.innerHTML = `<span class="um-bad">✗</span> <span class="um-small">(${fmt(ex.correct)})</span>`;
-            window.MatesCore.puntuar('um', false);
+            window.MatesCore.registrar('um', false, [
+              '❌ Tú: ' + (ex.user || '(vacío)') + ' ' + units[ex.to],
+              '✔️ Correcto: ' + fmt(ex.value) + ' ' + units[ex.from] + ' = ' + fmt(ex.correct) + ' ' + units[ex.to]
+            ]);
           }else{
             const isOk = roughlyEqual(userVal, ex.correct);
             ex.ok = isOk;
-            window.MatesCore.puntuar('um', isOk);
+            window.MatesCore.registrar('um', isOk, isOk
+              ? ['✅ ' + fmt(ex.value) + ' ' + units[ex.from] + ' = ' + fmt(ex.correct) + ' ' + units[ex.to] + ' · Tú: ' + ex.user]
+              : ['❌ Tú: ' + ex.user + ' ' + units[ex.to],
+                 '✔️ Correcto: ' + fmt(ex.value) + ' ' + units[ex.from] + ' = ' + fmt(ex.correct) + ' ' + units[ex.to]]);
             if(isOk){
               ok++;
               mark.innerHTML = `<span class="um-ok">✓</span>`;

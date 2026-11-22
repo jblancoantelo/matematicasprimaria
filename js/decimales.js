@@ -84,7 +84,6 @@
         const esCorrecto = Number.isFinite(valor) && roughlyEqual(valor, actual.correcta);
         const resultado = document.getElementById('de-resultado');
 
-        window.MatesCore.puntuar('de', esCorrecto);
         if (esCorrecto) {
           resultado.textContent = '✅ ¡Correcto!';
           resultado.className = 'de-correcto';
@@ -98,11 +97,10 @@
         document.getElementById('de-aciertos').textContent = aciertos;
         document.getElementById('de-errores').textContent = errores;
 
-        const historial = document.getElementById('de-listaHistorial');
         const lineas = esCorrecto
           ? ['✅ ' + actual.texto + ' · Tú: ' + entrada]
           : ['❌ Tú: ' + entrada, '✔️ Correcto: ' + actual.texto];
-        historial.prepend(window.MatesCore.itemHistorial(esCorrecto ? 'de-correcto' : 'de-incorrecto', lineas));
+        window.MatesCore.registrar('de', esCorrecto, lineas);
       }
     })();
   

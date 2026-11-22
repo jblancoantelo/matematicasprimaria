@@ -221,12 +221,10 @@
 
         if (todoBien) {
           aciertos++;
-          window.MatesCore.puntuar('mu', true);
           resultado.textContent = '✅ ¡Correcto! ' + aTxt + ' × ' + bTxt + ' = ' + pTxt + '.';
           resultado.className = 'mu-correcto';
         } else {
           errores++;
-          window.MatesCore.puntuar('mu', false);
           resultado.textContent = '❌ Revisa las casillas en rojo. ' + aTxt + ' × ' + bTxt + ' = ' + pTxt + '.';
           resultado.className = 'mu-incorrecto';
         }
@@ -234,13 +232,12 @@
         document.getElementById('mu-aciertos').textContent = aciertos;
         document.getElementById('mu-errores').textContent = errores;
 
-        const historial = document.getElementById('mu-listaHistorial');
         const tuTxt = formato(sumaObtenida, decP);
         const lineas = todoBien
           ? ['✅ ' + aTxt + ' × ' + bTxt + ' = ' + pTxt + ' · Tú: ' + tuTxt]
           : ['❌ Tú: ' + aTxt + ' × ' + bTxt + ' = ' + tuTxt,
              '✔️ Correcto: ' + aTxt + ' × ' + bTxt + ' = ' + pTxt];
-        historial.prepend(window.MatesCore.itemHistorial(todoBien ? 'mu-correcto' : 'mu-incorrecto', lineas));
+        window.MatesCore.registrar('mu', todoBien, lineas);
 
         if (todoBien) setTimeout(generar, 3000);
       }

@@ -99,7 +99,6 @@
           if (f) esCorrecto = iguales(f, actual.ref);
         }
 
-        window.MatesCore.puntuar('fr', esCorrecto);
         if (esCorrecto) {
           resultado.textContent = '✅ ¡Correcto!';
           resultado.className = 'fr-correcto';
@@ -113,14 +112,13 @@
         document.getElementById('fr-aciertos').textContent = aciertos;
         document.getElementById('fr-errores').textContent = errores;
 
-        const historial = document.getElementById('fr-listaHistorial');
         const correcta = actual.tipo === 'comparar'
           ? actual.simbolo
           : actual.ref.n + '/' + actual.ref.d;
         const lineas = esCorrecto
           ? ['✅ Tú: ' + entrada + ' · ' + actual.texto]
           : ['❌ Tú: ' + entrada, '✔️ Correcto: ' + correcta + ' · ' + actual.texto];
-        historial.prepend(window.MatesCore.itemHistorial(esCorrecto ? 'fr-correcto' : 'fr-incorrecto', lineas));
+        window.MatesCore.registrar('fr', esCorrecto, lineas);
       }
     })();
   

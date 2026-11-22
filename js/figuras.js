@@ -69,15 +69,13 @@
           resultado.className = 'pa-incorrecto';
           errores++;
         }
-        window.MatesCore.puntuar('pa', esCorrecto);
         document.getElementById('pa-aciertos').textContent = aciertos;
         document.getElementById('pa-errores').textContent = errores;
 
-        const historial = document.getElementById('pa-listaHistorial');
         const lineas = esCorrecto
           ? ['✅ ' + actual.texto + ' · Tú: ' + entrada]
           : ['❌ Tú: ' + (entrada || '(vacío)'), '✔️ Correcto: ' + actual.texto];
-        historial.prepend(window.MatesCore.itemHistorial(esCorrecto ? 'pa-correcto' : 'pa-incorrecto', lineas));
+        window.MatesCore.registrar('pa', esCorrecto, lineas);
       }
 
       document.getElementById('pa-generar').addEventListener('click', function(){ generar(); });

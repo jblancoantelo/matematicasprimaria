@@ -72,8 +72,6 @@
 
         const esCorrecto = respuestaUsuario === resultadoCorrecto;
 
-        window.MatesCore.puntuar('tm', esCorrecto);
-
         if (esCorrecto) {
           resultado.textContent = '✅ ¡Correcto!';
           resultado.className = 'tm-correcto';
@@ -89,13 +87,12 @@
         document.getElementById('tm-errores').textContent = errores;
 
         // Agregar al historial
-        const historial = document.getElementById('tm-listaHistorial');
         const operacion = numTabla + ' × ' + numAleatorio;
         const lineas = esCorrecto
           ? ['✅ ' + operacion + ' = ' + resultadoCorrecto + ' · Tú: ' + respuestaUsuario]
           : ['❌ Tú: ' + operacion + ' = ' + respuestaUsuario,
              '✔️ Correcto: ' + operacion + ' = ' + resultadoCorrecto];
-        historial.prepend(window.MatesCore.itemHistorial(esCorrecto ? 'tm-correcto' : 'tm-incorrecto', lineas));
+        window.MatesCore.registrar('tm', esCorrecto, lineas);
 
         setTimeout(tm_generarPregunta, crActivo ? 800 : 1500);
       };
@@ -112,6 +109,7 @@
         document.getElementById('tm-aciertos').textContent = 0;
         document.getElementById('tm-errores').textContent = 0;
         document.getElementById('tm-listaHistorial').innerHTML = '';
+        window.MatesCore.borrarHistorial('tm');
         crActivo = true;
         relojEl.textContent = `⏱ ${crRestantes}s · Correctas: 0`;
         tm_generarPregunta();

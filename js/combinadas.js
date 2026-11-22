@@ -344,10 +344,7 @@
       }
 
       function agregarHistorial(lineas, correcto){
-        var lista = el('oc-listaHistorial');
-        var li = window.MatesCore.itemHistorial(correcto ? 'oc-ok' : 'oc-ko', lineas);
-        lista.prepend(li);
-        while (lista.children.length > 50) lista.removeChild(lista.lastChild);
+        window.MatesCore.registrar('oc', correcto, lineas);
       }
 
       function actualizarContadores(){
@@ -532,7 +529,6 @@
         } else {
           input.classList.add('oc-mal');
           errores++;
-          window.MatesCore.puntuar('oc', false);
           agregarHistorial([
             '❌ Tú: ' + calculo,
             '✔️ Correcto: ' + p.a + ' ' + p.op + ' ' + p.b + ' = ' + p.resultado
@@ -567,7 +563,6 @@
         res.className = 'oc-resultado oc-ok';
 
         aciertos++;
-        window.MatesCore.puntuar('oc', true);
         agregarHistorial(['✅ ' + cadena], true);
         actualizarContadores();
 
