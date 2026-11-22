@@ -21,6 +21,14 @@
         pr:  { n: 'Problemas',              e: '🤔' }
       };
 
+      // Identificadores de las pestañas (los usa window.irA).
+      var TAB = {
+        sy: 'sumas', tm: 'tablas', um: 'unidades', fr: 'fracciones', de: 'decimales',
+        re: 'reloj', nr: 'romanos', pa: 'figuras', md: 'multiplos', dm: 'descomponer',
+        dv: 'divisiones', mu: 'multiplicaciones', ap: 'aproximar', pm: 'propiedades',
+        oc: 'combinadas', pr: 'problemas'
+      };
+
       var s;
       function defaultState(){
         return { puntos: 0, racha: 0, mejorRacha: 0, aciertos: 0, errores: 0, mod: {} };
@@ -188,7 +196,7 @@
               '</summary>' +
               '<div class="ini-detalle">' +
                 '<div class="ini-acciones">' +
-                  '<button type="button" class="ini-btn" data-ir="' + k + '" title="Ir a ' + MODULOS[k].n + '">🎮 Ir al juego</button>' +
+                  '<button type="button" class="ini-btn" data-ir="' + TAB[k] + '" title="Ir a ' + MODULOS[k].n + '">🎮 Ir al juego</button>' +
                   '<button type="button" class="ini-btn ini-btn-peligro" data-borrar="' + k + '" title="Borrar solo el historial de ' + MODULOS[k].n + '">🗑️ Borrar historial</button>' +
                 '</div>' +
                 detalleHtml(m) +
