@@ -41,14 +41,14 @@ Está pensada para alumnado de **3º y 4º de Primaria**, con 16 juegos organiza
 
 ## 🗒️ Historial de respuestas
 
-Cada juego guarda un historial con las últimas respuestas:
+Cada juego guarda un historial completo de sus respuestas:
 
 - **Fecha y hora** de cada intento (`dd/mm/aaaa · hh:mm`).
 - La **respuesta del alumno** tal como la escribió.
 - La **respuesta correcta** cuando falla, con la operación o solución completa.
 - En algunos juegos se indica también la operación resuelta paso a paso.
 
-El historial se guarda solo en el navegador del dispositivo, dentro del mismo almacenamiento que los puntos y medallas (`mates_v3_progreso`). Cada juego conserva sus **últimas 100 respuestas**. En *Problemas* y *Unidades* se mantiene además su historial detallado propio, con botón para borrarlo.
+El historial se guarda solo en el navegador del dispositivo, dentro del mismo almacenamiento que los puntos y medallas (`mates_v3_progreso`). Cada juego conserva **todas sus respuestas, sin límite**. En *Problemas* y *Unidades* se mantiene además su historial detallado propio, con botón para borrarlo.
 
 ---
 

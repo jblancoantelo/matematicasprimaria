@@ -42,8 +42,7 @@
       var MED_EMOJI = { 3:'🥇', 2:'🥈', 1:'🥉', 0:'—' };
       var MED_NOMBRE = { 3:'oro', 2:'plata', 1:'bronce', 0:'sin medalla' };
 
-      // Historial centralizado: cada módulo guarda sus últimas respuestas aquí.
-      var LIMITE_HIST = 100;
+      // Historial centralizado: cada módulo guarda aquí todas sus respuestas.
       var CLASES_HIST = {
         pm: { ok: 'pm-ok', ko: 'pm-ko' },
         oc: { ok: 'oc-ok', ko: 'oc-ko' }
@@ -127,9 +126,7 @@
         }
 
         claves.sort().reverse();
-        var html = hist.length >= LIMITE_HIST
-          ? '<p class="ini-sin">Mostrando las últimas ' + LIMITE_HIST + ' respuestas.</p>'
-          : '';
+        var html = '';
         for (i = 0; i < claves.length; i++) {
           var clave = claves[i];
           var g = grupos[clave];
@@ -269,7 +266,6 @@
           var l = [];
           for (var i = 0; i < arr.length; i++) l.push(arr[i] == null ? '' : String(arr[i]));
           m.hist.push({ t: ahora, ok: ok, l: l });
-          if (m.hist.length > LIMITE_HIST) m.hist = m.hist.slice(-LIMITE_HIST);
         }
 
         s.mod[mod] = m;
