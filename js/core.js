@@ -92,7 +92,7 @@
         return d.toLocaleDateString('es-ES', { weekday: 'short', day: '2-digit', month: '2-digit', year: 'numeric' });
       }
 
-      function detalleHtml(m){
+      function agruparHistorial(m){
         var hist = m && Array.isArray(m.hist) ? m.hist : [];
         var grupos = {};
         var claves = [];
@@ -121,9 +121,18 @@
           }
         }
 
+        claves.sort().reverse();
+        return { claves: claves, grupos: grupos };
+      }
+
+      function detalleHtml(m){
+        var agrupado = agruparHistorial(m);
+        var claves = agrupado.claves;
+        var grupos = agrupado.grupos;
+
         if (!claves.length) {
           if (m && m.borrado) {
-            return '<p class="ini-sin">Historial borrado. Se volverá a guardar al responder.</p>';
+            return '<p class="ini-sin">Sin historial. Se irá guardando al responder.</p>';
           }
           if (m && m.ultimo) {
             var u = new Date(m.ultimo);
@@ -136,9 +145,8 @@
           return '<p class="ini-sin">Sin detalle por fechas todavía. Se irá guardando a partir de ahora.</p>';
         }
 
-        claves.sort().reverse();
         var html = '';
-        for (i = 0; i < claves.length; i++) {
+        for (var i = 0; i < claves.length; i++) {
           var clave = claves[i];
           var g = grupos[clave];
           html += '<div class="ini-grupo-dia">' +
@@ -226,6 +234,172 @@
         save();
         pintarHistorial(mod);
         pintar();
+      }
+
+      function datosHistorial(){
+        var modulos = {};
+        for (var k in MODULOS) {
+          var m = s.mod[k] || {};
+          modulos[k] = {
+            hist: Array.isArray(m.hist) ? m.hist : [],
+            dias: (m.dias && typeof m.dias === 'object') ? m.dias : {}
+          };
+        }
+        return {
+          app: 'Aventuras Matemáticas',
+          tipo: 'historial',
+          version: 1,
+          exportado: new Date().toISOString(),
+          modulos: modulos
+        };
+      }
+
+      function descargarArchivo(nombre, contenido, tipoMime){
+        try {
+          var blob = new Blob([contenido], { type: tipoMime });
+          var url = URL.createObjectURL(blob);
+          var a = document.createElement('a');
+          a.href = url;
+          a.download = nombre;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+          return true;
+        } catch (e) {
+          alert('No se pudo descargar el archivo.');
+          return false;
+        }
+      }
+
+      function nombreHistorial(ext){
+        return 'historial-mates-' + claveDia(new Date()) + '.' + ext;
+      }
+
+      function exportarHistorialJson(){
+        var texto = JSON.stringify(datosHistorial(), null, 2);
+        if (descargarArchivo(nombreHistorial('json'), texto, 'application/json;charset=utf-8')) {
+          brindis('⬇️ Historial JSON descargado');
+        }
+      }
+
+      function exportarHistorialHtml(){
+        var esc = escaparHtml;
+        var css = [
+          'body{font-family:Arial,Helvetica,sans-serif;margin:24px;color:#1f2937;background:#fff;line-height:1.45}',
+          'h1{margin:0 0 4px;font-size:24px}',
+          '.meta{margin:0 0 20px;color:#64748b;font-size:13px}',
+          'section{border:1px solid #e2e8f0;border-radius:12px;padding:14px 18px;margin-bottom:16px}',
+          'h2{margin:0 0 4px;font-size:18px}',
+          'h2 .med{font-size:22px;margin-left:6px}',
+          '.tot{margin:0 0 10px;color:#475569;font-size:13px}',
+          'h3{margin:12px 0 4px;font-size:14px;color:#334155;border-bottom:1px solid #e2e8f0;padding-bottom:2px}',
+          '.dia-tot{float:right;font-weight:400;color:#64748b}',
+          'ul{margin:0;padding:0;list-style:none}',
+          'li{font-size:13px;padding:3px 0 3px 14px;position:relative}',
+          'li::before{content:"▸";position:absolute;left:0;color:#2563eb}',
+          'li.ok{color:#15803d}',
+          'li.ko{color:#b91c1c}',
+          '.hora{color:#64748b}',
+          '.vacio{color:#94a3b8;font-size:13px;margin:4px 0}'
+        ].join('');
+        var html = '<!DOCTYPE html><html lang="es"><head><meta charset="utf-8">' +
+          '<title>Historial · Aventuras Matemáticas</title><style>' + css + '</style></head><body>' +
+          '<h1>Historial · Aventuras Matemáticas</h1>' +
+          '<p class="meta">Exportado el ' + esc(fechaHora()) + '</p>';
+
+        for (var k in MODULOS) {
+          var m = s.mod[k] || {};
+          var agrupado = agruparHistorial(m);
+          var lvl = medallaNivel(m.a || 0);
+          html += '<section><h2>' + esc(MODULOS[k].e + ' ' + MODULOS[k].n) +
+            '<span class="med">' + MED_EMOJI[lvl] + '</span></h2>' +
+            '<p class="tot">✅ ' + (m.a || 0) + ' aciertos · ❌ ' + (m.e || 0) + ' fallos · ' +
+            esc(fechaUltimo(m.ultimo)) + '</p>';
+
+          if (!agrupado.claves.length) {
+            html += '<p class="vacio">Sin historial.</p>';
+          } else {
+            for (var i = 0; i < agrupado.claves.length; i++) {
+              var clave = agrupado.claves[i];
+              var g = agrupado.grupos[clave];
+              html += '<h3>' + esc(fechaDia(clave)) +
+                '<span class="dia-tot">✅ ' + g.a + ' · ❌ ' + g.e + '</span></h3>';
+              if (!g.items.length) {
+                html += '<p class="vacio">Solo recuento del día (detalle no disponible).</p>';
+              } else {
+                html += '<ul>';
+                for (var j = g.items.length - 1; j >= 0; j--) {
+                  var it = g.items[j];
+                  var hora = new Date(it.t).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+                  var ls = Array.isArray(it.l) ? it.l : [it.l];
+                  var lineas = [];
+                  for (var w = 0; w < ls.length; w++) lineas.push(esc(ls[w]));
+                  html += '<li class="' + (it.ok ? 'ok' : 'ko') + '"><span class="hora">' + hora + '</span> ' +
+                    lineas.join('<br>') + '</li>';
+                }
+                html += '</ul>';
+              }
+            }
+          }
+          html += '</section>';
+        }
+        html += '</body></html>';
+
+        if (descargarArchivo(nombreHistorial('html'), html, 'text/html;charset=utf-8')) {
+          brindis('⬇️ Historial HTML descargado');
+        }
+      }
+
+      function importarHistorial(texto){
+        var datos;
+        try { datos = JSON.parse(texto); } catch (e) {
+          alert('El archivo no es un JSON válido.');
+          return;
+        }
+        var modulos = datos && datos.modulos;
+        if (!modulos || typeof modulos !== 'object') {
+          alert('El JSON no tiene el formato de historial esperado.');
+          return;
+        }
+        if (!confirm('¿Reemplazar TODO el historial actual por el del archivo?\nLos puntos y medallas no se borran.')) return;
+
+        for (var k in MODULOS) {
+          var m = s.mod[k] || { a: 0, e: 0 };
+          var entrada = modulos[k] || {};
+          var hist = [];
+          if (Array.isArray(entrada.hist)) {
+            for (var i = 0; i < entrada.hist.length; i++) {
+              var e = entrada.hist[i];
+              if (!e || typeof e.t !== 'number' || !isFinite(e.t)) continue;
+              var l = [];
+              if (Array.isArray(e.l)) {
+                for (var j = 0; j < e.l.length; j++) l.push(e.l[j] == null ? '' : String(e.l[j]));
+              }
+              hist.push({ t: e.t, ok: !!e.ok, l: l });
+            }
+          }
+          hist.sort(function(a, b){ return a.t - b.t; });
+
+          var dias = {};
+          if (entrada.dias && typeof entrada.dias === 'object') {
+            for (var dk in entrada.dias) {
+              var dd = entrada.dias[dk] || {};
+              dias[dk] = { a: Number(dd.a) || 0, e: Number(dd.e) || 0 };
+            }
+          }
+
+          m.hist = hist;
+          m.dias = dias;
+          m.borrado = hist.length === 0 && !Object.keys(dias).length;
+          m.ultimo = hist.length ? hist[hist.length - 1].t : 0;
+          s.mod[k] = m;
+        }
+
+        save();
+        pintar();
+        for (var kk in MODULOS) pintarHistorial(kk);
+        brindis('📥 Historial importado');
       }
 
       function confetti(){
@@ -335,6 +509,57 @@
         });
       }
 
+      var btnExport = document.getElementById('btn-export');
+      var menuExport = document.getElementById('ini-menu-export');
+      if (btnExport && menuExport) {
+        btnExport.addEventListener('click', function(ev){
+          ev.stopPropagation();
+          menuExport.hidden = !menuExport.hidden;
+          btnExport.setAttribute('aria-expanded', menuExport.hidden ? 'false' : 'true');
+        });
+        menuExport.addEventListener('click', function(ev){
+          var b = ev.target.closest ? ev.target.closest('button[data-export]') : null;
+          if (!b) return;
+          var fmt = b.getAttribute('data-export');
+          menuExport.hidden = true;
+          btnExport.setAttribute('aria-expanded', 'false');
+          if (fmt === 'json') exportarHistorialJson();
+          else exportarHistorialHtml();
+        });
+        document.addEventListener('click', function(ev){
+          if (!menuExport.hidden && !menuExport.contains(ev.target) && ev.target !== btnExport) {
+            menuExport.hidden = true;
+            btnExport.setAttribute('aria-expanded', 'false');
+          }
+        });
+        document.addEventListener('keydown', function(ev){
+          if (ev.key === 'Escape' && !menuExport.hidden) {
+            menuExport.hidden = true;
+            btnExport.setAttribute('aria-expanded', 'false');
+          }
+        });
+      }
+
+      var btnImport = document.getElementById('btn-import');
+      var inputImport = document.getElementById('ini-import-file');
+      if (btnImport && inputImport) {
+        btnImport.addEventListener('click', function(){ inputImport.click(); });
+        inputImport.addEventListener('change', function(){
+          var file = inputImport.files && inputImport.files[0];
+          if (!file) return;
+          var reader = new FileReader();
+          reader.onload = function(){
+            importarHistorial(String(reader.result || ''));
+            inputImport.value = '';
+          };
+          reader.onerror = function(){
+            alert('No se pudo leer el archivo.');
+            inputImport.value = '';
+          };
+          reader.readAsText(file);
+        });
+      }
+
       load();
       pintar();
       for (var kMod in MODULOS) pintarHistorial(kMod);
@@ -376,6 +601,9 @@
         pintar: pintar,
         pintarHistorial: pintarHistorial,
         borrarHistorial: borrarHistorial,
+        exportarHistorialJson: exportarHistorialJson,
+        exportarHistorialHtml: exportarHistorialHtml,
+        importarHistorial: importarHistorial,
         medallaNivel: medallaNivel,
         MED_EMOJI: MED_EMOJI,
         fechaHora: fechaHora,

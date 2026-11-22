@@ -100,9 +100,18 @@
 
         <h2>🏆 Progreso y medallas</h2>
         <div class="ini-logros" id="ini-logros"></div>
-        <p style="margin-top:16px;">
+        <div class="ini-tools">
           <button class="btn-reset" id="btn-reset" type="button">🗑️ Reiniciar puntos</button>
-        </p>
+          <div class="ini-menu">
+            <button class="btn-tool" id="btn-export" type="button" aria-haspopup="true" aria-expanded="false">⬇️ Descargar historial ▾</button>
+            <div class="ini-menu-lista" id="ini-menu-export" hidden>
+              <button type="button" data-export="html">📄 Como HTML</button>
+              <button type="button" data-export="json">🧾 Como JSON</button>
+            </div>
+          </div>
+          <button class="btn-tool" id="btn-import" type="button">📥 Importar JSON</button>
+          <input type="file" id="ini-import-file" accept=".json,application/json" hidden>
+        </div>
       </div>
     </section>
 

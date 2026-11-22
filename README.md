@@ -22,7 +22,7 @@ Está pensada para alumnado de **3º y 4º de Primaria**, con 16 juegos organiza
 
 ## ✨ Características generales
 
-- **Panel de inicio** con resumen del progreso: puntos, racha, medallas y aciertos totales, además de la fecha y hora de la última partida de cada juego. Cada juego se puede desplegar para ver el histórico de aciertos y fallos agrupado por fechas, ir directamente al juego o borrar solo su historial.
+- **Panel de inicio** con resumen del progreso: puntos, racha, medallas y aciertos totales, además de la fecha y hora de la última partida de cada juego. Cada juego se puede desplegar para ver el histórico de aciertos y fallos agrupado por fechas, ir directamente al juego o borrar solo su historial. El historial completo se puede **descargar en HTML o JSON** y **volver a importar desde JSON**.
 - **Sistema de puntos**: cada acierto suma `10` puntos base, con bonus creciente según la racha (hasta +10 extra) y `+5` extra cada 5 aciertos seguidos.
 - **Racha**: cuenta de aciertos consecutivos. Si se falla, vuelve a cero. Se guarda la mejor racha histórica.
 - **Medallas por juego**: 🥉 5 aciertos · 🥈 15 aciertos · 🥇 40 aciertos.
@@ -48,7 +48,7 @@ Cada juego guarda un historial completo de sus respuestas:
 - La **respuesta correcta** cuando falla, con la operación o solución completa.
 - En algunos juegos se indica también la operación resuelta paso a paso.
 
-El historial se guarda solo en el navegador del dispositivo, dentro del mismo almacenamiento que los puntos y medallas (`mates_v3_progreso`). Cada juego conserva **todas sus respuestas, sin límite**. En *Problemas* y *Unidades* se mantiene además su historial detallado propio, con botón para borrarlo.
+El historial se guarda solo en el navegador del dispositivo, dentro del mismo almacenamiento que los puntos y medallas (`mates_v3_progreso`). Cada juego conserva **todas sus respuestas, sin límite**. En *Problemas* y *Unidades* se mantiene además su historial detallado propio, con botón para borrarlo. Desde el panel de inicio se puede descargar todo el historial en **HTML** o **JSON**, e importar un JSON para reemplazarlo por completo sin tocar puntos ni medallas.
 
 ---
 
