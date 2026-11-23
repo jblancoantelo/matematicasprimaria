@@ -225,3 +225,9 @@ mates/
 - **CSS3** modular (un archivo por bloque temático).
 - **JavaScript** vanilla (sin frameworks ni dependencias externas).
 - **localStorage** para la persistencia del progreso.
+
+---
+
+## 🗺️ Roadmap
+
+Las ideas y mejoras previstas están en **[ROADMAP.md](ROADMAP.md)**. La propuesta principal es un **chat de IA con prompts predefinidos** («explícame cómo resolverlo», «dame más detalles», «¿en qué he fallado?»…) integrado en cada juego.
