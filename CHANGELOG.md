@@ -9,6 +9,7 @@ Todos los cambios relevantes de **Matemáticas Primaria**. Las entradas están o
 
 ### Cambiado
 - Los botones de **Mostrar solución** y **Mostrar cómo se resuelve** del módulo de problemas ahora alternan su texto a **Ocultar solución** y **Ocultar ayuda**, eliminando el botón de ocultar independiente.
+- Añadido en el `README.md` un enlace al **CHANGELOG.md**.
 
 ### Corregido
 - El módulo de **problemas** ya no revela el tipo de operaciones que hay que realizar en la etiqueta del problema.

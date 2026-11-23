@@ -231,3 +231,9 @@ mates/
 ## 🗺️ Roadmap
 
 Las ideas y mejoras previstas están en **[ROADMAP.md](ROADMAP.md)**. La propuesta principal es un **chat de IA con prompts predefinidos** («explícame cómo resolverlo», «dame más detalles», «¿en qué he fallado?»…) integrado en cada juego.
+
+---
+
+## 📝 Changelog
+
+Todos los cambios relevantes del proyecto están registrados en **[CHANGELOG.md](CHANGELOG.md)**, ordenados por fecha de la más reciente a la más antigua.
