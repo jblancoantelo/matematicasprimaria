@@ -93,7 +93,7 @@
       align-items: end;
     }
     .pr-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
-    .pr-hidden { display: none; }
+    .pr-wrap .pr-hidden { display: none; }
     .pr-answer {
       margin-top: 16px;
       background: #eefbf3;
