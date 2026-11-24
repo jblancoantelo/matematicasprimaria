@@ -290,6 +290,115 @@ Regla práctica: nada entra en la versión publicada sin funcionar **sin conexi�
 
 ---
 
+## 10. 🔍 Revisión completa de la aplicación (24/11/2026)
+
+> Revisión estática de los 16 juegos, `core.js`, `navegacion.js`, el HTML y los 18 ficheros JavaScript (`node --check` sin errores). No se probó en navegador. Esta sección recoge los hallazgos y las propuestas que **no estaban ya** en el roadmap; cuando una idea se solapa con otra, se indica.
+
+**Conclusión general:** la base es buena y no necesita frameworks. El margen de mejora está en tres frentes: **fiabilidad** (no perder datos ni puntuar dos veces), **feedback que enseñe** (explicar el error, no solo marcarlo) y **progresión real de 4.º** (algunos módulos permiten niveles de 6.º y otros se quedan cortos).
+
+### 10.1 🐞 Fallos y riesgos detectados
+
+#### 🔴 Prioridad alta
+
+- [ ] **El contrarreloj de tablas borra el historial.** `tm_iniciarContrarreloj()` llama a `MatesCore.borrarHistorial('tm')` sin avisar; además reinicia los contadores locales pero no los del panel.
+- [ ] **Se pueden sumar puntos infinitos.** Tras acertar se puede volver a pulsar **Verificar** o la misma opción en **fracciones**, **decimales**, **romanos**, **figuras**, **reloj** y **múltiplos**. En **sumas**, **tablas** y **aproximaciones** ocurre durante la ventana de autoavance; en **unidades**, cada pulsación de **Comprobar** recorre y puntúa todos los ejercicios otra vez.
+- [ ] **Temporizadores duplicados.** Los `setTimeout(generar, ...)` de **sumas**, **tablas**, **descomponer**, **aproximaciones**, **multiplicaciones** y **divisiones** no se guardan ni se cancelan: un temporizador antiguo puede borrar la pregunta nueva. En tablas, el de 800 ms puede borrar lo que el niño está escribiendo.
+- [ ] **Cambiar el tipo en unidades deja los ejercicios antiguos.** `setTipo()` cambia `units` pero no regenera `currentExercises`; al comprobar pueden aparecer unidades equivocadas o `undefined`. `saveHistory()` guarda los controles actuales, no los usados al generar.
+
+#### 🟠 Prioridad media
+
+- [ ] **XSS en el historial de unidades.** `renderHistory()` inserta `it.user` sin escapar dentro de `innerHTML`. Sustituir también `crypto.randomUUID()` por un generador con *fallback*.
+- [ ] **Importar historial no cuadra con el panel.** `importarHistorial()` reemplaza `hist` y `dias`, pero no recalcula `m.a`, `m.e` ni los puntos: se puede importar un historial lleno y seguir viendo 0 aciertos. Hay que decidir si se importa solo historial o todo el progreso, y validar el esquema.
+- [ ] **Historial sin límite y renderizado completo.** `pintar()` regenera el detalle de los 16 módulos en cada respuesta y `pintarHistorial()` repinta todo. Con miles de entradas la app se ralentiza. `save()` ignora los errores de cuota: si `localStorage` se llena, se pierden datos sin avisar.
+- [ ] **Valor posicional en divisiones y multiplicaciones.** En divisiones, las cajas del resto ocupan el ancho del dividendo parcial (un resto de 5 se acepta escrito en la casilla de las centenas). En multiplicaciones, `leerSuma()` concatena los dígitos ignorando huecos (3,05 se acepta como 3, [vacío], 5). Leer por posición y tratar el hueco como 0.
+- [ ] **Problemas con resultados negativos o importes irreales.** Ejemplos detectados: “Libros” (12 − 14 = −2), “Ahorro familiar” (40 € y una persona ahorra 45 €), “Colección de cromos” (12 + 6 − 20), “Gastos” (100 − 280 €), “Melones” (100 − 120), “Kiosco” (billete de 690 €) y “Juegos” (regalo de 0 €).
+- [ ] **El reinicio de puntos es incompleto.** “Reiniciar puntos” resetea el estado central, pero no los contadores locales ni los historiales propios de **Problemas** y **Unidades**; el panel y el módulo muestran cifras distintas. Un evento global de reinicio (o recargar tras el reset) lo resolvería.
+
+#### 🟡 Prioridad baja, pero muy visible
+
+- [ ] **El reloj solo dibuja 12 marcas horarias.** Las horas se generan en múltiplos de 5, pero sin marcas de minutos leer las 8:35 es ambiguo. Añadir 60 marcas pequeñas y un modo de **tiempo transcurrido**.
+- [ ] **Fracciones: se ofrece “=” pero nunca es correcta.** El generador de comparación evita a propósito las fracciones iguales. La resta se visualiza con la segunda fracción vacía, sin representar el resultado.
+- [ ] **Distributiva: los paréntesis no son obligatorios.** Se pide “coloca los paréntesis”, pero la comprobación solo valida números y operaciones: se puede dejar la expresión sin paréntesis y avanzar.
+- [ ] **Problemas guarda problemas sin responder.** `renderProblem()` los añade al historial al generarlos, antes de que el niño conteste. El historial propio está limitado a 20 y **Borrar historial** no pide confirmación.
+- [ ] **Accesibilidad y responsive.** Varios inputs no tienen `label` ni `aria-label`; no hay `:focus-visible` global; los atajos de **Enter** secuestran el Enter de los botones; las columnas de divisiones y multiplicaciones pueden desbordar a 320 px.
+
+### 10.2 🎓 Funcionalidades para 4.º de Primaria
+
+#### Las seis que priorizaría
+
+| Idea | Dónde | Por qué encaja en 4.º | Prioridad | Esfuerzo |
+| --- | --- | --- | --- | --- |
+| 🎯 **Reto diario de 5–8 ejercicios mezclados** | Nuevo módulo o capa sobre los existentes | Sesiones cortas y variadas; hoy el niño tiene que decidir qué practicar | 🔥 | M |
+| 🔁 **Repaso de mis fallos** | Historial central | Volver a los errores a los 1, 3 y 7 días es la mejora pedagógica con más impacto (solapa con *repetición espaciada*) | 🔥 | M |
+| 🎚️ **Modo 4.º con ajustes predefinidos** | Cabecera y módulos | Evita configuraciones de 6.º: divisiones con divisor de 2 cifras, combinadas de 3–5 operaciones, aproximaciones a decena/centena… | 🔥 | S–M |
+| ⚡ **Cálculo mental y estimación** | Nuevo módulo | 60 segundos de + − × ÷, dobles y mitades, “¿qué falta?” y “¿será mayor o menor que…?” (solapa con *cálculo mental exprés* y *sentido numérico*) | 🔥 | S–M |
+| 🍕 **Fracción de una cantidad y equivalentes** | Fracciones | “3/4 de 20”, comparar equivalentes y memory de parejas: contenido clave de 4.º | 🔥 | S–M |
+| 💰 **Decimales: comparar, ordenar, redondear y ×10/100** | Decimales | El módulo actual solo tiene cuadrícula, céntimos, suma y cambio; falta sentido numérico | 🔥 | S–M |
+
+#### Otras ideas muy recomendables
+
+- [ ] **Problemas con datos que sobran o faltan.** “¿Qué dato no necesitas?”, “¿qué dato falta?”, “elige la pregunta que se puede responder”. Trabaja comprensión lectora, no solo cálculo.
+- [ ] **Dinero con céntimos y presupuestos.** Compras con decimales, precio unitario, “3 por 2”, devolución y presupuesto semanal.
+- [ ] **Reloj: tiempo transcurrido y horarios.** “¿Cuánto dura una película de 17:30 a 19:15?”, horarios de trenes, formato de 24 horas y calendario.
+- [ ] **Figuras compuestas.** Perímetro de polígonos, área con cuadrícula y figuras en L; “misma área, distinto perímetro”.
+- [ ] **Unidades mixtas y problemas de medida.** “2 km 350 m → m”, ordenar medidas, “¿qué pesa más?” y duraciones.
+- [ ] **Comparar y ordenar números grandes.** Hasta 6 cifras, forma desarrollada, recta numérica y valor posicional; complementa **Descomponer** y **Aproximaciones**.
+- [ ] **Datos y gráficos.** Tablas de frecuencia y gráficos de barras: leer datos, responder preguntas y detectar el mayor/menor. Es un bloque de 4.º que ahora no está.
+- [ ] **Detective de errores.** Mostrar un ejercicio resuelto con un fallo y que el niño lo encuentre (ya está en 1.2, pero encaja especialmente en 4.º).
+- [ ] **Pizarra de cálculo.** Un lienzo para hacer la cuenta a mano en problemas, divisiones y multiplicaciones, sin corrección automática.
+- [ ] **Lectura en voz alta.** Leer enunciados e instrucciones con la voz del navegador; ayuda a quien tiene dificultades lectoras o dislexia.
+- [ ] **Modo tranquilo / sin puntos.** Ocultar puntos, rachas, confeti y cronómetro para quien se bloquea con la competición.
+- [ ] **Medallas de constancia y de revisar errores.** No solo por acertar: 7 días seguidos, corregir un fallo, explicar una estrategia.
+- [ ] **Perfiles locales.** Varios hermanos o alumnos en el mismo dispositivo, sin cuentas ni servidor.
+- [ ] **Retos por URL con semilla.** Un enlace genera los mismos 10 ejercicios en otro dispositivo; requiere un generador aleatorio con semilla.
+- [ ] **Modo profe / pizarra digital.** Pantalla grande, ayudas ocultas, temporizador y reinicio bloqueado por PIN.
+
+### 10.3 ⚙️ Mejoras técnicas
+
+#### P0 — Estabilidad (1–2 días)
+
+1. **Ciclo de vida único de pregunta** en todos los módulos: `respondido`, `timerSiguiente` y `clearTimeout` al generar, con guardia para no registrar dos veces.
+2. **Quitar el borrado de historial del contrarreloj** y separar las estadísticas de la sesión de las acumuladas.
+3. **Cancelar temporizadores** al cambiar de pestaña, al pulsar **Generar** y al cambiar de configuración.
+4. **Arreglar unidades**: regenerar al cambiar de tipo, guardar los ajustes usados y escapar el HTML del historial.
+5. **Aceptar coma decimal** en problemas y unificar el parseo numérico.
+6. **Confirmación antes de borrar** historiales propios y antes de generar una tanda nueva si hay respuestas.
+
+#### P1 — Arquitectura y datos (3–5 días)
+
+- [ ] **Historial estructurado** en lugar de solo texto: `{ t, ok, mod, tipo, enunciado, respuesta, correcta, tiempoMs, intento }`, manteniendo `l` para compatibilidad y migrando de `mates_v3_progreso` a `mates_v4_progreso`.
+- [ ] **Renderizado perezoso del historial**: pintar solo los `details` abiertos y mostrar los últimos 50 con “Ver más”.
+- [ ] **Gestión de cuota**: límite por módulo o compactación de resúmenes, `try/catch` en `save()` y aviso al usuario si no se puede guardar.
+- [ ] **Copia de seguridad completa**: exportar e importar puntos, racha, medallas, historiales y ajustes; añadir **Borrar todos los datos**.
+- [ ] **Utilidades compartidas** en `js/comun.js`: `parseNum`, `fmt`, `randInt`, `escaparHtml`, `crearId`, `programarSiguiente` y `bloquearPregunta`. Hoy `randInt`, `parseNum` y `separar` están duplicados en casi todos los módulos.
+- [ ] **Generador aleatorio con semilla** (`mulberry32` o similar): permite tests deterministas y retos por URL.
+- [ ] **Tests sin build**: `node --test` para los generadores (divisiones exactas, restas no negativas, redondeo, romanos, fracciones equivalentes, problemas sin resultados negativos) y `node --check` en GitHub Actions.
+- [ ] **Configuración centralizada de módulos**: `MODULOS` y `TAB` están duplicados en `core.js` y en las tarjetas del HTML.
+
+#### P2 — Calidad, accesibilidad y plataforma (1–2 semanas)
+
+- [ ] **Accesibilidad**: `label`/`aria-label` en todos los inputs, `:focus-visible` global, objetivos táctiles de 44 px, `aria-live` en resultados, `prefers-reduced-motion`, un solo `h1` por página y `h2` en los módulos.
+- [ ] **Responsive real**: probar a 320, 360, 768 y 1024 px; envolver divisiones y multiplicaciones en un contenedor con `overflow-x: auto` y usar variables CSS para el tamaño de celda.
+- [ ] **PWA instalable**: `manifest.json`, iconos y service worker (funciona en GitHub Pages por HTTPS; en `file://` no se instala).
+- [ ] **CSP y seguridad**: escapar todo contenido de usuario, evitar inyección de fórmulas en CSV y añadir CSP después de quitar los `onclick` inline de sumas y tablas.
+- [ ] **Limpieza**: quitar funciones muertas en `divisiones.js` (`filaProducto`, `filaGuion`, `dashSpan`, `filaGuionPuntitos`), añadir `'use strict'`, unificar `var`/`let`/`const` y estilos con tokens comunes.
+- [ ] **No pasar a módulos ES mientras se quiera abrir con doble clic**: Chrome bloquea los `import` desde `file://`. Si se adopta PWA o servidor local, entonces sí.
+
+### 10.4 🗺️ Plan por fases
+
+| Fase | Contenido | Duración |
+| --- | --- | --- |
+| **0. Estabilidad** | Arreglos P0: doble puntuación, temporizadores, contrarreloj de tablas, cambio de tipo en unidades, coma decimal y confirmaciones | 1–2 días |
+| **1. Base para 4.º** | Historial estructurado, renderizado perezoso, copia de seguridad completa, utilidades compartidas y primeros tests | 3–5 días |
+| **2. Contenido de 4.º** | Modo 4.º, cálculo mental y estimación, fracción de cantidad, decimales y problemas con datos que sobran o faltan | 1 semana |
+| **3. Plataforma** | PWA, perfiles locales, lectura en voz alta, pizarra y modo profe | 2 semanas |
+
+**Criterios de aceptación de la fase 0:** una misma respuesta no puede puntuar dos veces; cambiar de pestaña o generar no deja temporizadores vivos; el contrarreloj no borra historial; cambiar el tipo de unidad no rompe los ejercicios; no hay scroll horizontal a 320 px; todos los inputs tienen nombre accesible.
+
+**Recomendación:** empezar por la fase 0. El repaso de fallos necesita un historial fiable.
+
+---
+
 ## 📝 Registro
 
 | Fecha | Cambio |
@@ -297,3 +406,4 @@ Regla práctica: nada entra en la versión publicada sin funcionar **sin conexi�
 | 22/11/2026 | Creación del roadmap. Idea inicial: chat de IA con prompts predefinidos. |
 | 23/11/2026 | Añadidas 25 ideas: aprendizaje, aula y dispositivos, accesibilidad y técnico. |
 | 23/11/2026 | Añadidas 18 ideas más: metacognición, juegos nuevos, panel docente, instalación y gestión. |
+| 24/11/2026 | Añadida la sección 10 con la revisión completa: fallos priorizados, funcionalidades para 4.º, mejoras técnicas y plan por fases. |

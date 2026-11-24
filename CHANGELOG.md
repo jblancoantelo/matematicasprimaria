@@ -2,6 +2,11 @@
 
 Todos los cambios relevantes de **Matemáticas Primaria**. Las entradas están ordenadas por fecha, de la más reciente a la más antigua.
 
+## [2026-11-24]
+
+### Añadido
+- Nueva sección **10. Revisión completa de la aplicación** en `ROADMAP.md`, con los fallos detectados, las funcionalidades para 4.º de Primaria, las mejoras técnicas y un plan por fases.
+
 ## [2026-11-23]
 
 ### Añadido
