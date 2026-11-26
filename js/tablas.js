@@ -8,6 +8,18 @@
       let crRestantes = 0;
       let crTimer = null;
       let crAciertos = 0;
+      let crFin = false;
+      let respondido = true;
+      let timerSiguiente = null;
+
+      function cancelarSiguiente(){
+        if (timerSiguiente) { clearTimeout(timerSiguiente); timerSiguiente = null; }
+      }
+
+      function programarSiguiente(fn, ms){
+        cancelarSiguiente();
+        timerSiguiente = setTimeout(function(){ timerSiguiente = null; fn(); }, ms);
+      }
 
       const tablaSel = document.getElementById('tm-tabla');
       const respuesta = document.getElementById('tm-respuesta');
@@ -23,11 +35,19 @@
         }
       })();
 
-      function pararContrarreloj(){
+      function pararContrarreloj(fin){
         if (crTimer) { clearInterval(crTimer); crTimer = null; }
         crActivo = false;
+        crFin = !!fin;
         relojEl.textContent = '';
+        cancelarSiguiente();
       }
+
+      MatesCore.registrarCancelador(function(){
+        cancelarSiguiente();
+        if (crActivo) pararContrarreloj();
+        crFin = false;
+      });
 
       tablaSel.addEventListener('change', function () {
         const v = this.value;
@@ -53,6 +73,8 @@
       }
 
       window.tm_generarPregunta = function() {
+        cancelarSiguiente();
+        respondido = false;
         numTabla = elegirTabla();
         numAleatorio = elegirMultiplicando();
 
@@ -64,9 +86,12 @@
       };
 
       window.tm_verificar = function() {
+        if (respondido) return;
+        if (crFin) return;
         if (crActivo && crRestantes <= 0) return;
         const respuestaUsuario = parseInt(respuesta.value);
         if (Number.isNaN(respuestaUsuario)) return;
+        respondido = true;
         const resultadoCorrecto = numTabla * numAleatorio;
         const resultado = document.getElementById('tm-resultado');
 
@@ -94,29 +119,24 @@
              '✔️ Correcto: ' + operacion + ' = ' + resultadoCorrecto];
         window.MatesCore.registrar('tm', esCorrecto, lineas);
 
-        setTimeout(tm_generarPregunta, crActivo ? 800 : 1500);
+        programarSiguiente(tm_generarPregunta, crActivo ? 800 : 1500);
       };
 
       window.tm_iniciarContrarreloj = function() {
         pararContrarreloj();
+        crFin = false;
         let s = parseInt(document.getElementById('tm-segs').value, 10);
         if (!Number.isFinite(s) || s < 5) s = 60;
         if (s > 300) s = 300;
         crRestantes = s;
         crAciertos = 0;
-        aciertos = 0;
-        errores = 0;
-        document.getElementById('tm-aciertos').textContent = 0;
-        document.getElementById('tm-errores').textContent = 0;
-        document.getElementById('tm-listaHistorial').innerHTML = '';
-        window.MatesCore.borrarHistorial('tm');
         crActivo = true;
         relojEl.textContent = `⏱ ${crRestantes}s · Correctas: 0`;
         tm_generarPregunta();
         crTimer = setInterval(function(){
           crRestantes--;
           if (crRestantes <= 0) {
-            pararContrarreloj();
+            pararContrarreloj(true);
             relojEl.textContent = `⏱ ¡Tiempo! ✅ ${crAciertos} correctas`;
             document.getElementById('tm-resultado').textContent = `🕒 ¡Se acabó el tiempo! Respondiste correctamente a ${crAciertos}.`;
             document.getElementById('tm-resultado').className = '';

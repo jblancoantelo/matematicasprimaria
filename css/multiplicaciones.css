@@ -33,7 +33,7 @@
     }
     .mu-bloque-controles label { font-weight: 600; color: #000; }
     .mu-bloque-controles select { margin: 0.2rem; }
-    #mu-operacion { margin: 1rem auto; }
+    #mu-operacion { margin: 1rem auto; overflow-x: auto; }
     .mul-wrap {
       display: inline-block;
       background: #fff;

@@ -9,12 +9,27 @@
       let correcta = 0;
       let aciertos = 0;
       let errores = 0;
+      let respondido = true;
+      let timerSiguiente = null;
+
+      function cancelarSiguiente(){
+        if (timerSiguiente) { clearTimeout(timerSiguiente); timerSiguiente = null; }
+      }
+
+      function programarSiguiente(fn, ms){
+        cancelarSiguiente();
+        timerSiguiente = setTimeout(function(){ timerSiguiente = null; fn(); }, ms);
+      }
+
+      MatesCore.registrarCancelador(cancelarSiguiente);
 
       function separar(n){
         return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
       }
 
       function generar(){
+        cancelarSiguiente();
+        respondido = true;
         const cifras = parseInt(document.getElementById('ap-cifras').value, 10);
         const min = Math.pow(10, cifras - 1);
         const max = Math.pow(10, cifras) - 1;
@@ -34,11 +49,14 @@
         document.getElementById('ap-resultado').textContent = '';
         document.getElementById('ap-resultado').className = '';
         document.getElementById('ap-respuesta').focus();
+        respondido = false;
       }
 
       function comprobar(){
+        if (respondido) return;
         const txt = document.getElementById('ap-respuesta').value.trim();
         if (txt === '') return;
+        respondido = true;
         const val = parseFloat(txt.replace(/\s/g, '').replace(',', '.'));
         const esCorrecto = !isNaN(val) && val === correcta;
         const resultado = document.getElementById('ap-resultado');
@@ -60,7 +78,7 @@
           : ['❌ Tú: ' + txt, '✔️ Correcto: ' + separar(numero) + ' ≈ ' + separar(correcta)];
         window.MatesCore.registrar('ap', esCorrecto, lineas);
 
-        setTimeout(generar, 2600);
+        programarSiguiente(generar, 2600);
       }
 
       document.getElementById('ap-generar').addEventListener('click', function(){ generar(); });

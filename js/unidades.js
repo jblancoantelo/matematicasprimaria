@@ -35,8 +35,35 @@
 
       let currentExercises = [];
       let roundStartedAt = null;
+      let currentSettings = null;
+      let currentHistoryId = null;
 
       function randInt(min, max){ return Math.floor(Math.random()*(max-min+1))+min; }
+
+      function nuevoId(){
+        try {
+          if (window.crypto && typeof window.crypto.randomUUID === 'function') return window.crypto.randomUUID();
+        } catch (e) {}
+        return 'um-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10);
+      }
+
+      function escaparHtml(txt){
+        return String(txt == null ? '' : txt)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
+
+      function leerHistorial(){
+        try {
+          const datos = JSON.parse(localStorage.getItem('metricHistory') || '[]');
+          return Array.isArray(datos) ? datos : [];
+        } catch (e) {
+          return [];
+        }
+      }
 
       function setTipo(t){
         tipoActual = t;
@@ -97,11 +124,11 @@
           card.innerHTML = `
             <div>
               <h3>Ejercicio ${idx+1}</h3>
-              <div class="um-q">Convierte <strong>${fmt(ex.value)} ${units[ex.from]}</strong> a <strong>${units[ex.to]}</strong>.</div>
+              <div class="um-q">Convierte <strong>${fmt(ex.value)} ${ex.fromU}</strong> a <strong>${ex.toU}</strong>.</div>
             </div>
             <div class="um-right">
               <input type="text" inputmode="decimal" aria-label="Respuesta para el ejercicio ${idx+1}" placeholder="Tu número" id="um-ans-${ex.id}" style="width:130px;" />
-              <span class="um-badge">${units[ex.to]}</span>
+              <span class="um-badge">${ex.toU}</span>
               <span id="um-mark-${ex.id}"></span>
             </div>
           `;
@@ -109,21 +136,38 @@
         });
       }
 
-      function generate(){
+      function hayRespuestas(){
+        return currentExercises.some(ex => {
+          const inp = document.getElementById(`um-ans-${ex.id}`);
+          return inp && inp.value.trim() !== '';
+        });
+      }
+
+      function confirmarNuevaTanda(){
+        if (!hayRespuestas()) return true;
+        return confirm('Ya hay respuestas escritas en esta tanda. ¿Quieres empezar una nueva?');
+      }
+
+      function generate(forzar){
+        if (!forzar && !confirmarNuevaTanda()) return;
         const count = Math.max(1, Math.min(50, parseInt($("#um-count").value || "10", 10)));
         let maxJump = Math.max(1, Math.min(6, parseInt($("#um-maxJump").value || "3", 10)));
         if (tipoActual === 'tiempo') maxJump = Math.min(maxJump, 2);
         const allowDecimals = $("#um-decimals").checked;
 
+        currentSettings = { count, maxJump, decimals: allowDecimals, type: tipoActual };
+        currentHistoryId = null;
         currentExercises = [];
         for(let i=0;i<count;i++){
           const {from,to} = pickUnits(maxJump);
           const value = makeValue(allowDecimals);
           const correct = compute(from, to, value);
           currentExercises.push({
-            id: crypto.randomUUID(),
-            from, to, value, correct,
-            user: null, ok: null
+            id: nuevoId(),
+            from, to,
+            fromU: units[from], toU: units[to],
+            value, correct,
+            user: null, ok: null, scored: false
           });
         }
         renderExercises(currentExercises);
@@ -142,31 +186,38 @@
       }
 
       function check(){
+        if (!currentExercises.length) return;
         let ok = 0;
         currentExercises.forEach(ex=>{
           const inp = document.getElementById(`um-ans-${ex.id}`);
           const mark = document.getElementById(`um-mark-${ex.id}`);
-          const userVal = parseNum(inp.value);
-          ex.user = (inp.value || "").trim();
-          if(Number.isNaN(userVal)){
-            ex.ok = false;
-            mark.innerHTML = `<span class="um-bad">✗</span> <span class="um-small">(${fmt(ex.correct)})</span>`;
-            window.MatesCore.registrar('um', false, [
-              '❌ Tú: ' + (ex.user || '(vacío)') + ' ' + units[ex.to],
-              '✔️ Correcto: ' + fmt(ex.value) + ' ' + units[ex.from] + ' = ' + fmt(ex.correct) + ' ' + units[ex.to]
-            ]);
-          }else{
-            const isOk = roughlyEqual(userVal, ex.correct);
-            ex.ok = isOk;
-            window.MatesCore.registrar('um', isOk, isOk
-              ? ['✅ ' + fmt(ex.value) + ' ' + units[ex.from] + ' = ' + fmt(ex.correct) + ' ' + units[ex.to] + ' · Tú: ' + ex.user]
-              : ['❌ Tú: ' + ex.user + ' ' + units[ex.to],
-                 '✔️ Correcto: ' + fmt(ex.value) + ' ' + units[ex.from] + ' = ' + fmt(ex.correct) + ' ' + units[ex.to]]);
-            if(isOk){
-              ok++;
-              mark.innerHTML = `<span class="um-ok">✓</span>`;
-            }else{
-              mark.innerHTML = `<span class="um-bad">✗</span> <span class="um-small">(${fmt(ex.correct)})</span>`;
+          if (!inp || !mark) return;
+          const raw = (inp.value || "").trim();
+          if (raw === '') {
+            // Sin responder: ni acierto ni error; se puede puntuar más tarde.
+            ex.user = '';
+            ex.ok = null;
+            mark.innerHTML = `<span class="um-small">(sin responder)</span>`;
+            return;
+          }
+          const userVal = parseNum(raw);
+          const isOk = Number.isFinite(userVal) && roughlyEqual(userVal, ex.correct);
+          ex.user = raw;
+          ex.ok = isOk;
+          if (isOk) ok++;
+
+          mark.innerHTML = isOk
+            ? `<span class="um-ok">✓</span>`
+            : `<span class="um-bad">✗</span> <span class="um-small">(${fmt(ex.correct)})</span>`;
+
+          // Cada ejercicio se puntúa una sola vez por tanda.
+          if (!ex.scored) {
+            ex.scored = true;
+            const correcta = fmt(ex.value) + ' ' + ex.fromU + ' = ' + fmt(ex.correct) + ' ' + ex.toU;
+            if (isOk) {
+              window.MatesCore.registrar('um', true, ['✅ ' + correcta + ' · Tú: ' + raw]);
+            } else {
+              window.MatesCore.registrar('um', false, ['❌ Tú: ' + raw + ' ' + ex.toU, '✔️ Correcto: ' + correcta]);
             }
           }
         });
@@ -179,7 +230,7 @@
       function saveHistory(ok, total){
         const end = Date.now();
         const secs = Math.round((end - (roundStartedAt || end))/1000);
-        const settings = {
+        const settings = currentSettings || {
           count: currentExercises.length,
           maxJump: parseInt($("#um-maxJump").value,10),
           decimals: $("#um-decimals").checked,
@@ -187,56 +238,65 @@
         };
         const items = currentExercises.map((ex, i)=>({
           n: i+1,
-          from: units[ex.from],
-          to: units[ex.to],
+          from: ex.fromU,
+          to: ex.toU,
           value: ex.value,
           user: ex.user,
           correct: ex.correct,
           ok: !!ex.ok
         }));
-        const entry = {
-          id: crypto.randomUUID(),
-          when: new Date().toISOString(),
-          score: { ok, total },
-          timeSec: secs,
-          settings,
-          items
-        };
-        const key = "metricHistory";
-        const hist = JSON.parse(localStorage.getItem(key) || "[]");
-        hist.unshift(entry);
-        localStorage.setItem(key, JSON.stringify(hist));
+
+        const hist = leerHistorial();
+        let entry = currentHistoryId ? hist.find(e => e && e.id === currentHistoryId) : null;
+        if (!entry) {
+          entry = { id: nuevoId(), when: new Date().toISOString() };
+          currentHistoryId = entry.id;
+          hist.unshift(entry);
+        }
+        entry.score = { ok, total };
+        entry.timeSec = secs;
+        entry.settings = settings;
+        entry.items = items;
+
+        try {
+          localStorage.setItem("metricHistory", JSON.stringify(hist));
+        } catch (e) {}
         renderHistory();
       }
 
       function renderHistory(){
-        const key = "metricHistory";
-        const hist = JSON.parse(localStorage.getItem(key) || "[]");
+        const hist = leerHistorial();
         if(hist.length===0){
           historyBox.innerHTML = `<p class="um-small">Aún no hay tandas guardadas. Genera y comprueba ejercicios para verlas aquí.</p>`;
           return;
         }
         const parts = hist.map(entry=>{
+          if (!entry || !entry.score) return '';
           const date = new Date(entry.when);
-          const title = `${date.toLocaleDateString('es-ES')} ${date.toLocaleTimeString('es-ES', {hour:'2-digit', minute:'2-digit'})}`;
-          const scoreTxt = `${entry.score.ok}/${entry.score.total}`;
-          const tTipo = (entry.settings && TIPOS[entry.settings.type] && TIPOS[entry.settings.type].u) 
-            ? TIPOS[entry.settings.type].u.join("–") : "km–mm";
-          const setTxt = `${tTipo}, saltos≤${entry.settings.maxJump}, decimales: ${entry.settings.decimals ? 'sí':'no'}, ejercicios: ${entry.settings.count}`;
-          const rows = entry.items.map(it=>{
-            const userParsed = it.user?.replaceAll('"','""') ?? "";
+          const fechaValida = !isNaN(date.getTime());
+          const title = fechaValida
+            ? `${date.toLocaleDateString('es-ES')} ${date.toLocaleTimeString('es-ES', {hour:'2-digit', minute:'2-digit'})}`
+            : 'Tanda sin fecha';
+          const scoreTxt = `${Number(entry.score.ok) || 0}/${Number(entry.score.total) || 0}`;
+          const ajustes = entry.settings || {};
+          const tTipo = (TIPOS[ajustes.type] && TIPOS[ajustes.type].u)
+            ? TIPOS[ajustes.type].u.join("–") : "km–mm";
+          const setTxt = `${tTipo}, saltos≤${escaparHtml(ajustes.maxJump)}, decimales: ${ajustes.decimals ? 'sí':'no'}, ejercicios: ${escaparHtml(ajustes.count)}`;
+          const items = Array.isArray(entry.items) ? entry.items : [];
+          const rows = items.map(it=>{
+            const userTxt = (it.user == null || it.user === '') ? "<em>(sin respuesta)</em>" : escaparHtml(it.user);
             return `<tr>
-              <td>${it.n}</td>
-              <td>${fmt(it.value)} ${it.from}</td>
-              <td>${it.to}</td>
-              <td>${userParsed || "<em>(sin respuesta)</em>"}</td>
-              <td>${fmt(it.correct)}</td>
+              <td>${escaparHtml(it.n)}</td>
+              <td>${escaparHtml(fmt(it.value))} ${escaparHtml(it.from)}</td>
+              <td>${escaparHtml(it.to)}</td>
+              <td>${userTxt}</td>
+              <td>${escaparHtml(fmt(it.correct))}</td>
               <td>${it.ok ? "✓" : "✗"}</td>
             </tr>`;
           }).join("");
           return `
             <details class="um-panel" open>
-              <summary>${title} — <strong>${scoreTxt}</strong> <span class="um-small">(${setTxt}, tiempo: ${entry.timeSec}s)</span></summary>
+              <summary>${title} — <strong>${scoreTxt}</strong> <span class="um-small">(${setTxt}, tiempo: ${escaparHtml(entry.timeSec)}s)</span></summary>
               <table>
                 <thead>
                   <tr>
@@ -252,8 +312,7 @@
       }
 
       function exportCSV(){
-        const key = "metricHistory";
-        const hist = JSON.parse(localStorage.getItem(key) || "[]");
+        const hist = leerHistorial();
         if(hist.length===0){
           alert("No hay historial para exportar.");
           return;
@@ -264,20 +323,22 @@
         ].join(";"));
 
         hist.forEach(entry=>{
+          if (!entry || !entry.score) return;
           const d = new Date(entry.when);
-          const fecha = d.toLocaleDateString('es-ES');
-          const hora = d.toLocaleTimeString('es-ES', {hour:'2-digit', minute:'2-digit'});
-          const tTipo = (entry.settings && TIPOS[entry.settings.type] && TIPOS[entry.settings.type].u)
-            ? TIPOS[entry.settings.type].u.join("-") : "km-mm";
-          const ajustes = `${tTipo}, saltos≤${entry.settings.maxJump}, decimales=${entry.settings.decimals}, ejercicios=${entry.settings.count}`;
-          entry.items.forEach(it=>{
+          const fecha = isNaN(d.getTime()) ? "" : d.toLocaleDateString('es-ES');
+          const hora = isNaN(d.getTime()) ? "" : d.toLocaleTimeString('es-ES', {hour:'2-digit', minute:'2-digit'});
+          const ajustes = entry.settings || {};
+          const tTipo = (TIPOS[ajustes.type] && TIPOS[ajustes.type].u)
+            ? TIPOS[ajustes.type].u.join("-") : "km-mm";
+          const resumen = `${tTipo}, saltos≤${ajustes.maxJump}, decimales=${ajustes.decimals}, ejercicios=${ajustes.count}`;
+          (Array.isArray(entry.items) ? entry.items : []).forEach(it=>{
             const deStr = `${nf.format(it.value)} ${it.from}`;
             const aStr = it.to;
-            const userStr = (it.user ?? "").replaceAll('"','""');
+            const userStr = (it.user == null ? '' : String(it.user)).replaceAll('"','""');
             const corrStr = nf.format(it.correct);
             const okStr = it.ok ? "SI" : "NO";
             lines.push([
-              fecha, hora, it.n, deStr, aStr, `"${userStr}"`, corrStr, okStr, entry.timeSec, `"${ajustes}"`
+              fecha, hora, it.n, deStr, aStr, `"${userStr}"`, corrStr, okStr, entry.timeSec, `"${resumen}"`
             ].join(";"));
           });
         });
@@ -306,12 +367,16 @@
         toggleHintBtn.textContent = hintVisible ? "💡 Ocultar pista" : "💡 Mostrar pista";
       });
 
-      tipoSel.addEventListener("change", () => setTipo(tipoSel.value));
+      tipoSel.addEventListener("change", () => {
+        if (!confirmarNuevaTanda()) { tipoSel.value = tipoActual; return; }
+        setTipo(tipoSel.value);
+        generate(true);
+      });
 
-      genBtn.addEventListener("click", generate);
+      genBtn.addEventListener("click", () => generate(false));
       checkBtn.addEventListener("click", check);
       checkBtn2.addEventListener("click", check);
-      newRoundBtn.addEventListener("click", generate);
+      newRoundBtn.addEventListener("click", () => generate(false));
       exportCSVBtn.addEventListener("click", exportCSV);
       clearHistoryBtn.addEventListener("click", clearHistory);
 

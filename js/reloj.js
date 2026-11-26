@@ -3,6 +3,7 @@
       let actual = null;
       let aciertos = 0;
       let errores = 0;
+      let respondido = true;
 
       function randInt(min, max){ return Math.floor(Math.random()*(max-min+1))+min; }
 
@@ -11,12 +12,14 @@
       function svgReloj(h, m){
         const cx = 100, cy = 100;
         let ticks = '';
-        for (let i = 0; i < 12; i++) {
-          const ang = i * 30;
+        for (let i = 0; i < 60; i++) {
+          const ang = i * 6;
           const a = (ang - 90) * Math.PI / 180;
-          const x1 = cx + Math.cos(a) * 84, y1 = cy + Math.sin(a) * 84;
+          const mayor = i % 5 === 0;
+          const r1 = mayor ? 84 : 87.5;
+          const x1 = cx + Math.cos(a) * r1, y1 = cy + Math.sin(a) * r1;
           const x2 = cx + Math.cos(a) * 92, y2 = cy + Math.sin(a) * 92;
-          ticks += `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="#334155" stroke-width="3"/>`;
+          ticks += `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="#334155" stroke-width="${mayor ? 3 : 1.2}"/>`;
         }
         const numeros = [[12,100,36],[3,170,107],[6,100,174],[9,30,107]];
         let nums = '';
@@ -37,6 +40,26 @@
           <line x1="100" y1="100" x2="${mp[0].toFixed(1)}" y2="${mp[1].toFixed(1)}" stroke="#dc2626" stroke-width="4" stroke-linecap="round"/>
           <circle cx="100" cy="100" r="6" fill="#dc2626"/>
         </svg>`;
+      }
+
+      function opcionesNumero(correcta){
+        const usadas = {};
+        usadas[correcta] = true;
+        const res = [];
+        [5, -5, 10, -10, 15, -15, 1, -1].forEach(function(delta){
+          const v = correcta + delta;
+          if (v > 0 && v <= 60 && !usadas[v] && res.length < 3) {
+            usadas[v] = true;
+            res.push(v);
+          }
+        });
+        let guard = 0;
+        while (res.length < 3 && guard < 100) {
+          guard++;
+          const v = randInt(1, 60);
+          if (!usadas[v]) { usadas[v] = true; res.push(v); }
+        }
+        return [correcta].concat(res).map(String).sort(function(){ return Math.random() - 0.5; });
       }
 
       function opcionesMulti(correcta){
@@ -80,6 +103,15 @@
           m = (randInt(0, 11) * 5) % 60;
           correcta = fmtHora(h, m);
           enunciado.innerHTML = '¿Qué hora marca el reloj?';
+        } else if (tipo === 'transcurrido') {
+          h = randInt(1, 11);
+          m = (randInt(0, 11) * 5) % 60;
+          const add = randInt(1, 11) * 5;
+          const tot = h * 60 + m + add;
+          const nh = (Math.floor(tot / 60) % 12) || 12;
+          const nm = tot % 60;
+          correcta = String(add);
+          enunciado.innerHTML = `El reloj marca las <strong>${fmtHora(h, m)}</strong>. ¿Cuántos <strong>minutos</strong> faltan para las <strong>${fmtHora(nh, nm)}</strong>?`;
         } else {
           h = randInt(1, 11);
           m = (randInt(0, 11) * 5) % 60;
@@ -91,19 +123,24 @@
           enunciado.innerHTML = `El reloj marca las <strong>${fmtHora(h, m)}</strong>. ¿Qué hora será <strong>dentro de ${add} minutos</strong>?`;
         }
         visual.innerHTML = svgReloj(h, m);
-        actual = { correcta, texto: correcta };
+        actual = { correcta, texto: correcta, tipo };
 
-        opcionesMulti(correcta).forEach(function(op){
+        const opciones = tipo === 'transcurrido'
+          ? opcionesNumero(Number(correcta))
+          : opcionesMulti(correcta);
+        opciones.forEach(function(op){
           const bot = document.createElement('button');
           bot.type = 'button';
           bot.textContent = op;
           bot.addEventListener('click', function(){ elegir(bot, op); });
           caja.appendChild(bot);
         });
+        respondido = false;
       }
 
       function elegir(bot, valor){
-        if (!actual) return;
+        if (!actual || respondido) return;
+        respondido = true;
         const esCorrecto = valor === actual.correcta;
         const resultado = document.getElementById('re-resultado');
         bot.classList.add(esCorrecto ? 'seleccionada-bien' : 'seleccionada-mal');
@@ -111,17 +148,26 @@
           if (b !== bot) b.style.pointerEvents = 'none';
         });
         if (esCorrecto) {
-          resultado.textContent = '✅ ¡Correcto! Son las ' + actual.correcta + '.';
+          resultado.textContent = actual.tipo === 'transcurrido'
+            ? '✅ ¡Correcto! Faltan ' + actual.correcta + ' minutos.'
+            : '✅ ¡Correcto! Son las ' + actual.correcta + '.';
           resultado.className = 're-correcto';
           aciertos++;
         } else {
-          resultado.textContent = '❌ Incorrecto. Son las ' + actual.correcta + '.';
+          resultado.textContent = actual.tipo === 'transcurrido'
+            ? '❌ Incorrecto. Faltan ' + actual.correcta + ' minutos.'
+            : '❌ Incorrecto. Son las ' + actual.correcta + '.';
           resultado.className = 're-incorrecto';
           errores++;
         }
         const lineas = esCorrecto
-          ? ['✅ Son las ' + actual.correcta]
-          : ['❌ Tú: ' + (bot.textContent || '').trim(), '✔️ Correcto: ' + actual.correcta];
+          ? [actual.tipo === 'transcurrido'
+              ? '✅ Faltan ' + actual.correcta + ' minutos'
+              : '✅ Son las ' + actual.correcta]
+          : ['❌ Tú: ' + (bot.textContent || '').trim() + (actual.tipo === 'transcurrido' ? ' minutos' : ''),
+             '✔️ Correcto: ' + (actual.tipo === 'transcurrido'
+                ? 'faltan ' + actual.correcta + ' minutos'
+                : actual.correcta)];
         window.MatesCore.registrar('re', esCorrecto, lineas);
         document.getElementById('re-aciertos').textContent = aciertos;
         document.getElementById('re-errores').textContent = errores;

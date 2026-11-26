@@ -10,6 +10,13 @@
       var errores = 0;
       var temporizador = null;
 
+      MatesCore.registrarCancelador(function(){
+        if (temporizador) {
+          clearTimeout(temporizador);
+          temporizador = null;
+        }
+      });
+
       function r(min, max){ return Math.floor(Math.random() * (max - min + 1)) + min; }
       function el(id){ return document.getElementById(id); }
 
@@ -594,7 +601,7 @@
         if (!panel || !panel.classList.contains('active')) return;
 
         var destino = e.target;
-        if (destino && (destino.tagName === 'SELECT' || destino.tagName === 'BUTTON')) return;
+        if (destino && (destino.tagName === 'SELECT' || destino.tagName === 'BUTTON' || destino.tagName === 'TEXTAREA' || destino.tagName === 'A')) return;
 
         e.preventDefault();
 

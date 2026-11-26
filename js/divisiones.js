@@ -7,6 +7,18 @@
       let aciertos = 0;
       let errores = 0;
       let comprobado = true;
+      let timerSiguiente = null;
+
+      function cancelarSiguiente(){
+        if (timerSiguiente) { clearTimeout(timerSiguiente); timerSiguiente = null; }
+      }
+
+      function programarSiguiente(fn, ms){
+        cancelarSiguiente();
+        timerSiguiente = setTimeout(function(){ timerSiguiente = null; fn(); }, ms);
+      }
+
+      MatesCore.registrarCancelador(cancelarSiguiente);
 
       function aleatorioInt(min, max){ return min + Math.floor(Math.random() * (max - min + 1)); }
       function separar(n){ return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' '); }
@@ -63,6 +75,7 @@
       }
 
       function generar(){
+        cancelarSiguiente();
         actualizarOpcionesDvs();
         const dvdC = parseInt(document.getElementById('dv-dvdCifras').value, 10);
         const dvsC = parseInt(document.getElementById('dv-dvsCifras').value, 10);
@@ -140,7 +153,7 @@
         let r = '<div class="dv-fila">';
         for (let i = 0; i < start; i++) r += celdaVacia();
         for (let i = 0; i < nCajas; i++) {
-          r += '<input class="dv-r-cel" id="dv-r-' + k + '-' + i + '" data-step="' + k + '" data-idx="' + i + '" maxlength="1" inputmode="numeric" autocomplete="off">';
+          r += '<input class="dv-r-cel" id="dv-r-' + k + '-' + i + '" data-step="' + k + '" data-idx="' + i + '" maxlength="1" inputmode="numeric" autocomplete="off" aria-label="Cifra ' + (i + 1) + ' del resto del paso ' + (k + 1) + '">';
         }
         r += '</div>';
         return r;
@@ -211,7 +224,7 @@
           if (k < pasoActual) {
             html += '<span class="dv-cel dv-cel-q">' + pasos[k].typedQd + '</span>';
           } else if (k === pasoActual) {
-            html += '<input class="dv-q" id="dv-q-' + k + '" data-step="' + k + '" maxlength="1" inputmode="numeric" autocomplete="off" value="' + (pasos[k].typedQd || '') + '">';
+            html += '<input class="dv-q" id="dv-q-' + k + '" data-step="' + k + '" maxlength="1" inputmode="numeric" autocomplete="off" aria-label="Cifra ' + (k + 1) + ' del cociente" value="' + (pasos[k].typedQd || '') + '">';
           } else {
             html += celdaVacia();
           }
@@ -245,10 +258,18 @@
         if (qTxt === '') return;
         const qNum = parseInt(qTxt, 10);
         const inputs = document.querySelectorAll('#dv-operacion .dv-r-cel[data-step="' + k + '"]');
-        let sResto = '';
-        inputs.forEach(function(inp){ sResto += inp.value; });
-        sResto = sResto.replace(/[^0-9]/g, '');
-        const rNum = sResto === '' ? 0 : parseInt(sResto, 10);
+        // Lee el resto por posición: un hueco vale 0 y 5 en las centenas no es lo mismo que 005.
+        let rNum = 0;
+        let hayResto = false;
+        inputs.forEach(function(inp){
+          const v = inp.value.replace(/\D/g, '');
+          if (v !== '') hayResto = true;
+          rNum = rNum * 10 + (v === '' ? 0 : parseInt(v, 10));
+        });
+        if (!hayResto) {
+          if (inputs[0]) inputs[0].focus();
+          return;
+        }
         const exacto = qNum === p.qd && rNum === p.rem;
         const resultado = document.getElementById('dv-resultado');
 
@@ -312,7 +333,7 @@
           : ['❌ Tú: ' + tu, '✔️ Correcto: ' + correcta];
         window.MatesCore.registrar('dv', bien, lineas);
 
-        setTimeout(generar, 3000);
+        programarSiguiente(generar, 3000);
       }
 
       function accion(){

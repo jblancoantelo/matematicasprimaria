@@ -3,6 +3,7 @@
       let actual = null;
       let aciertos = 0;
       let errores = 0;
+      let respondido = true;
 
       function mostrarDecimales(){ return document.getElementById('tab-decimales').classList.contains('active'); }
 
@@ -26,7 +27,13 @@
       function fmtNum(x){ return ('' + x).replace('.', ','); }
 
       document.addEventListener('keydown', function(e){
-        if (e.key === 'Enter' && mostrarDecimales()) verificar();
+        if (e.key !== 'Enter') return;
+        const t = e.target;
+        if (t && (t.tagName === 'BUTTON' || t.tagName === 'SELECT' || t.tagName === 'TEXTAREA' || t.tagName === 'A')) return;
+        if (mostrarDecimales()) {
+          e.preventDefault();
+          verificar();
+        }
       });
 
       document.getElementById('de-generar').addEventListener('click', generar);
@@ -39,6 +46,7 @@
         document.getElementById('de-resultado').className = '';
         document.getElementById('de-respuesta').value = '';
         actual = null;
+        respondido = true;
 
         const visual = document.getElementById('de-visual');
         const enunciado = document.getElementById('de-enunciado');
@@ -74,12 +82,14 @@
           actual = { tipo, correcta: paga - precio / 100, texto: `${fmtEuro(paga)} - ${fmtEuro(precio / 100)} = ${fmtEuro(paga - precio / 100)}`, etiqueta: 'devolución' };
           enunciado.innerHTML = `Una compra cuesta <strong>${fmtEuro(precio / 100)}</strong> y pagas con <strong>${fmtEuro(paga)}</strong>. ¿Cuánto te devuelven?`;
         }
+        respondido = false;
       }
 
       function verificar(){
-        if (!actual) return;
+        if (!actual || respondido) return;
         const entrada = document.getElementById('de-respuesta').value.trim();
         if (entrada === '') return;
+        respondido = true;
         const valor = parseNum(entrada);
         const esCorrecto = Number.isFinite(valor) && roughlyEqual(valor, actual.correcta);
         const resultado = document.getElementById('de-resultado');

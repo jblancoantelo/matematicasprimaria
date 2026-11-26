@@ -3,6 +3,7 @@
       let actual = null;
       let aciertos = 0;
       let errores = 0;
+      let respondido = true;
 
       function mostrarFraccion(){ return document.getElementById('tab-fracciones').classList.contains('active'); }
 
@@ -14,9 +15,9 @@
         return a || 1;
       }
 
-      function barra(num, den){
+      function barra(num, den, clase){
         let h = '<div class="fr-bar">';
-        for (let i = 0; i < den; i++) h += `<div class="fr-cell${i < num ? ' fr-llena' : ''}"></div>`;
+        for (let i = 0; i < den; i++) h += `<div class="fr-cell${i < num ? ' fr-llena' + (clase || '') : ''}"></div>`;
         h += '</div>';
         return h;
       }
@@ -38,7 +39,13 @@
       function iguales(a, b){ return a.n * b.d === b.n * a.d; }
 
       document.addEventListener('keydown', function(e){
-        if (e.key === 'Enter' && mostrarFraccion()) verificar();
+        if (e.key !== 'Enter') return;
+        const t = e.target;
+        if (t && (t.tagName === 'BUTTON' || t.tagName === 'SELECT' || t.tagName === 'TEXTAREA' || t.tagName === 'A')) return;
+        if (mostrarFraccion()) {
+          e.preventDefault();
+          verificar();
+        }
       });
 
       document.getElementById('fr-generar').addEventListener('click', generar);
@@ -51,6 +58,7 @@
         document.getElementById('fr-resultado').className = '';
         document.getElementById('fr-respuesta').value = '';
         actual = null;
+        respondido = true;
 
         const visual = document.getElementById('fr-visual');
         const enunciado = document.getElementById('fr-enunciado');
@@ -69,26 +77,36 @@
           const numr = op === '+' ? a + b : a - b;
           const sim = simplificar(numr, den);
           actual = { tipo, ref: sim, texto: `${a}/${den} ${op} ${b}/${den} = ${numr}/${den}` };
-          visual.innerHTML = `<div class="fr-fila"><div class="fr-bloque"><p>${a}/${den}</p>${barra(a, den)}</div><div class="fr-bloque"><p>${b}/${den}</p>${barra(op === '-' ? 0 : b, den)}</div></div>`;
+          visual.innerHTML = `<div class="fr-fila"><div class="fr-bloque"><p>${a}/${den}</p>${barra(a, den)}</div><div class="fr-bloque"><p>${b}/${den}</p>${barra(b, den, op === '-' ? ' fr-quita' : '')}</div></div>`;
           enunciado.innerHTML = `¿Cuánto es <strong>${a}/${den} ${op} ${b}/${den}</strong>? Escribe la fracción resultado (por ejemplo <strong>5/8</strong>).`;
         } else {
           let d1, n1, d2, n2, v1, v2;
-          do {
-            d1 = randInt(2, 8); n1 = randInt(1, d1 - 1);
-            d2 = randInt(2, 8); n2 = randInt(1, d2 - 1);
+          if (Math.random() < 0.35) {
+            // Fracciones equivalentes: a veces el símbolo correcto es «=».
+            d1 = randInt(2, 5); n1 = randInt(1, d1 - 1);
+            const k = randInt(2, 3);
+            d2 = d1 * k; n2 = n1 * k;
             v1 = n1 / d1; v2 = n2 / d2;
-          } while (Math.abs(v1 - v2) < 1e-9);
-          const simbolo = v1 < v2 ? '<' : '>';
+          } else {
+            do {
+              d1 = randInt(2, 8); n1 = randInt(1, d1 - 1);
+              d2 = randInt(2, 8); n2 = randInt(1, d2 - 1);
+              v1 = n1 / d1; v2 = n2 / d2;
+            } while (Math.abs(v1 - v2) < 1e-9);
+          }
+          const simbolo = Math.abs(v1 - v2) < 1e-9 ? '=' : (v1 < v2 ? '<' : '>');
           actual = { tipo, simbolo, texto: `${n1}/${d1} ${simbolo} ${n2}/${d2}` };
           visual.innerHTML = `<div class="fr-fila"><div class="fr-bloque"><p>${n1}/${d1}</p>${barra(n1, d1)}</div><div class="fr-bloque"><p>${n2}/${d2}</p>${barra(n2, d2)}</div></div>`;
           enunciado.innerHTML = `¿Qué símbolo va en el hueco? <strong>${n1}/${d1} [ ] ${n2}/${d2}</strong>. Escribe <strong>&gt;</strong>, <strong>&lt;</strong> o <strong>=</strong>.`;
         }
+        respondido = false;
       }
 
       function verificar(){
-        if (!actual) return;
+        if (!actual || respondido) return;
         const entrada = document.getElementById('fr-respuesta').value.trim();
         if (entrada === '') return;
+        respondido = true;
         let esCorrecto = false;
         const resultado = document.getElementById('fr-resultado');
 

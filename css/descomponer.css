@@ -79,7 +79,7 @@
       border-color: #0891b2;
       box-shadow: 0 0 0 3px rgba(8, 145, 178, 0.15);
     }
-    #dv-operacion { text-align: center; margin: 1rem auto; }
+    #dv-operacion { text-align: center; margin: 1rem auto; overflow-x: auto; }
     .dv-layout {
       display: inline-block;
       background: #fff;

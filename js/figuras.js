@@ -3,6 +3,7 @@
       let actual = null;
       let aciertos = 0;
       let errores = 0;
+      let respondido = true;
 
       function randInt(min, max){ return Math.floor(Math.random()*(max-min+1))+min; }
 
@@ -16,7 +17,13 @@
       function mostrarFiguras(){ return document.getElementById('tab-figuras').classList.contains('active'); }
 
       document.addEventListener('keydown', function(e){
-        if (e.key === 'Enter' && mostrarFiguras()) verificar();
+        if (e.key !== 'Enter') return;
+        const t = e.target;
+        if (t && (t.tagName === 'BUTTON' || t.tagName === 'SELECT' || t.tagName === 'TEXTAREA' || t.tagName === 'A')) return;
+        if (mostrarFiguras()) {
+          e.preventDefault();
+          verificar();
+        }
       });
 
       function svgRect(a, b, conCuadraditos){
@@ -51,12 +58,14 @@
         document.getElementById('pa-enunciado').innerHTML =
           'Un ' + figura + '.' +
           (tipo === 'perimetro' ? '<br>¿Cuál es su <strong>perímetro</strong> (en cm)?' : '<br>¿Cuál es su <strong>área</strong> (en cm²)?');
+        respondido = false;
       }
 
       function verificar(){
-        if (!actual) return;
+        if (!actual || respondido) return;
         const entrada = document.getElementById('pa-respuesta').value.trim();
         if (entrada === '') return;
+        respondido = true;
         const valor = parseNum(entrada);
         const esCorrecto = Number.isFinite(valor) && Math.abs(valor - actual.correcta) < 1e-9;
         const resultado = document.getElementById('pa-resultado');

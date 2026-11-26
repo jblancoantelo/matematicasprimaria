@@ -27,6 +27,7 @@
     }
     .fr-cell { height: 30px; flex: 1; background: #eef2ff; border-radius: 3px; }
     .fr-llena { background: #6366f1; }
+    .fr-quita { background: #f87171; }
     .fr-fila { display: flex; gap: 18px; justify-content: center; flex-wrap: wrap; margin-top: 6px; }
     #fr-resultado { margin-top: 1rem; font-weight: bold; font-size: 1.3rem; }
     #fr-contador, #de-contador { margin-top: 1.5rem; font-size: 1.15rem; }

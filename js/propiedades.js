@@ -127,7 +127,7 @@
           formula: REGLA_DISTRIBUTIVA.formula,
           ejemplo: REGLA_DISTRIBUTIVA.ejemplo,
           pista: 'Multiplica el número de fuera por cada número del paréntesis. Elige tú la operación' +
-            ' de cada hueco y coloca los paréntesis si quieres. Después comprueba el resultado' +
+            ' de cada hueco y coloca los paréntesis en cada producto. Después comprueba el resultado' +
             ' resolviendo primero el paréntesis.'
         };
       }
@@ -506,7 +506,7 @@
         if (vals.some(function(v){ return v === ''; })) {
           const vacio = inputs[vals.indexOf('')];
           if (vacio) vacio.focus();
-          mostrarAviso('Escribe los cuatro números y coloca los paréntesis si quieres.');
+          mostrarAviso('Escribe los cuatro números y coloca los paréntesis en cada producto.');
           return;
         }
         if (ops.some(function(o){ return o === ''; })) {
@@ -521,8 +521,9 @@
           return Number.isFinite(n) && n === actual.esperados[i];
         });
         const opsOk = ops.every(function(o, i){ return o === actual.opsEsperadas[i]; });
-        const ok = numsOk && opsOk;
         const pares = parentesisDist();
+        const parensOk = pares[0] === true && pares[1] === true;
+        const ok = numsOk && opsOk && parensOk;
         const tu = textoDist(actual, vals, pares, ops);
 
         if (ok) {
@@ -565,15 +566,21 @@
           actualizarContadores();
 
           const r = el('pm-resultado');
-          r.textContent = numsOk
-            ? '❌ Revisa las operaciones que has elegido en cada hueco.'
-            : '❌ No es correcto. Aplica la propiedad distributiva y vuelve a intentarlo.';
+          if (!numsOk) {
+            r.textContent = '❌ No es correcto. Aplica la propiedad distributiva y vuelve a intentarlo.';
+          } else if (!opsOk) {
+            r.textContent = '❌ Revisa las operaciones que has elegido en cada hueco.';
+          } else {
+            r.textContent = '❌ Coloca los paréntesis alrededor de cada producto.';
+          }
           r.className = 'pm-resultado pm-ko';
 
           const primerMal = inputs.filter(function(inp, i){ return nums[i] !== actual.esperados[i]; })[0];
           const primerOpMal = cadena.querySelector('.pm-op.pm-mal');
+          const primerGrupo = cadena.parentElement.querySelector('.pm-agrupa-btn');
           if (primerMal) { primerMal.focus(); primerMal.select(); }
           else if (primerOpMal) { primerOpMal.focus(); }
+          else if (primerGrupo) { primerGrupo.focus(); }
         }
       }
 
@@ -813,7 +820,7 @@
         if (!panel || !panel.classList.contains('active')) return;
 
         const destino = e.target;
-        if (destino && destino.tagName === 'SELECT') return;
+        if (destino && (destino.tagName === 'SELECT' || destino.tagName === 'BUTTON' || destino.tagName === 'TEXTAREA' || destino.tagName === 'A')) return;
 
         e.preventDefault();
         comprobar();

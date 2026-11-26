@@ -6,6 +6,18 @@
       let aciertos = 0;
       let errores = 0;
       let comprobado = true;
+      let timerSiguiente = null;
+
+      function cancelarSiguiente(){
+        if (timerSiguiente) { clearTimeout(timerSiguiente); timerSiguiente = null; }
+      }
+
+      function programarSiguiente(fn, ms){
+        cancelarSiguiente();
+        timerSiguiente = setTimeout(function(){ timerSiguiente = null; fn(); }, ms);
+      }
+
+      MatesCore.registrarCancelador(cancelarSiguiente);
 
       function aleatorioInt(min, max){ return min + Math.floor(Math.random() * (max - min + 1)); }
       function separar(n){ return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' '); }
@@ -50,7 +62,7 @@
         return cellsFromRight(function(c){
           const rel = c - jshift;
           if (rel >= 0 && rel < nCajas) {
-            return '<input class="mul-caja" id="p-' + ident + '-' + rel + '" data-fila="' + ident + '" data-idx="' + rel + '" maxlength="1" inputmode="numeric" autocomplete="off">';
+            return '<input class="mul-caja" id="p-' + ident + '-' + rel + '" data-fila="' + ident + '" data-idx="' + rel + '" maxlength="1" inputmode="numeric" autocomplete="off" aria-label="Cifra ' + (rel + 1) + ' del producto parcial ' + (Number(ident) + 1) + '">';
           }
           return celdaVacia();
         });
@@ -59,7 +71,7 @@
       // Fila de casillas para la suma final (con la coma integrada)
       function cellsSumaInput(){
         return cellsFromRight(function(c){
-          const inp = '<input class="mul-caja mul-caja-suma" id="sum-' + c + '" data-c="' + c + '" maxlength="1" inputmode="numeric" autocomplete="off">';
+          const inp = '<input class="mul-caja mul-caja-suma" id="sum-' + c + '" data-c="' + c + '" maxlength="1" inputmode="numeric" autocomplete="off" aria-label="Cifra ' + (c + 1) + ' de la suma final">';
           if (decP > 0 && c === decP) return '<span class="mul-caja-wrap mul-con-coma">' + inp + '</span>';
           return inp;
         });
@@ -142,6 +154,7 @@
       }
 
       function generar(){
+        cancelarSiguiente();
         leerCifras();
         const la = ea + da;
         const lbb = eb + db;
@@ -164,24 +177,27 @@
 
       function leerFila(ident){
         const inputs = document.querySelectorAll('#mu-operacion .mul-caja[data-fila="' + ident + '"]');
-        let s = '';
-        inputs.forEach(function(inp){ s += inp.value; });
-        s = s.replace(/[^0-9]/g, '');
-        return s === '' ? 0 : parseInt(s, 10);
+        // Cada casilla tiene un valor posicional (data-idx): 0 son las unidades.
+        let total = 0;
+        inputs.forEach(function(inp){
+          const rel = parseInt(inp.getAttribute('data-idx'), 10);
+          const d = parseInt((inp.value || '').replace(/[^0-9]/g, ''), 10);
+          if (Number.isFinite(d)) total += d * Math.pow(10, rel);
+        });
+        return total;
       }
 
       function leerSuma(){
         const inputs = document.querySelectorAll('#mu-operacion .mul-caja-suma');
-        let intStr = '', decStr = '';
+        let intVal = 0, decVal = 0;
         inputs.forEach(function(inp){
           const c = parseInt(inp.getAttribute('data-c'), 10);
-          const v = (inp.value || '').replace(/[^0-9]/g, '');
-          if (decP > 0 && c < decP) decStr += v;
-          else intStr += v;
+          const d = parseInt((inp.value || '').replace(/[^0-9]/g, ''), 10);
+          if (!Number.isFinite(d)) return;
+          if (decP > 0 && c < decP) decVal += d * Math.pow(10, c);
+          else intVal += d * Math.pow(10, c - decP);
         });
-        const intN = intStr === '' ? 0 : parseInt(intStr, 10);
-        const decN = decStr === '' ? 0 : parseInt(decStr, 10);
-        return intN * Math.pow(10, decP) + decN;
+        return intVal * Math.pow(10, decP) + decVal;
       }
 
       function comprobar(){
@@ -192,9 +208,10 @@
         for (let j = 0; j < lb && lb > 1; j++) {
           const digit = parseInt(String(B)[lb - 1 - j], 10);
           const esperado = A * digit;
+          // Cada fila está desplazada j columnas: el valor posicional incluye ese 10^j.
           const obtenido = leerFila(j);
           const cajas = document.querySelectorAll('#mu-operacion .mul-caja[data-fila="' + j + '"]');
-          if (obtenido === esperado) {
+          if (obtenido === esperado * Math.pow(10, j)) {
             cajas.forEach(function(c){ if (c.value !== '') c.classList.add('mul-bien'); });
           } else {
             todoBien = false;
@@ -239,7 +256,7 @@
              '✔️ Correcto: ' + aTxt + ' × ' + bTxt + ' = ' + pTxt];
         window.MatesCore.registrar('mu', todoBien, lineas);
 
-        if (todoBien) setTimeout(generar, 3000);
+        if (todoBien) programarSiguiente(generar, 3000);
       }
 
       document.getElementById('mu-operacion').addEventListener('input', function(e){

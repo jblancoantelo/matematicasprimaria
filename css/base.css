@@ -17,6 +17,17 @@
     }
     .tab-panel { display: none; }
     .tab-panel.active { display: block; }
+
+    /* Foco visible para navegar con teclado */
+    button:focus-visible,
+    a:focus-visible,
+    summary:focus-visible,
+    select:focus-visible,
+    input:focus-visible,
+    textarea:focus-visible {
+      outline: 3px solid #2563eb;
+      outline-offset: 2px;
+    }
     .wrap-app { max-width: 1000px; margin: 0 auto; padding: 10px 16px 40px; }
 
     /* Entradas de historial: fecha/hora y detalle */

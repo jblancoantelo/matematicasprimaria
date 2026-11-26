@@ -3,6 +3,7 @@
       let actual = null;
       let aciertos = 0;
       let errores = 0;
+      let respondido = true;
 
       function randInt(min, max){ return Math.floor(Math.random()*(max-min+1))+min; }
 
@@ -62,10 +63,12 @@
             caja.appendChild(bot);
           });
         }
+        respondido = false;
       }
 
       function elegir(bot, valor){
-        if (!actual) return;
+        if (!actual || respondido) return;
+        respondido = true;
         const esCorrecto = valor === actual.correcta;
         const resultado = document.getElementById('md-resultado');
         bot.classList.add(esCorrecto ? 'seleccionada-bien' : 'seleccionada-mal');

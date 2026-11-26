@@ -1,6 +1,7 @@
 
     (function(){
       var KEY = 'mates_v3_progreso';
+      var HIST_MAX = 1000;          // respuestas guardadas por juego (las más recientes)
 
       var MODULOS = {
         sy:  { n: 'Sumas y Restas',         e: '🧮' },
@@ -37,8 +38,18 @@
         try { s = JSON.parse(localStorage.getItem(KEY)); } catch(e){ s = null; }
         if (!s || typeof s !== 'object') s = defaultState();
       }
+      var avisoGuardado = false;
       function save(){
-        try { localStorage.setItem(KEY, JSON.stringify(s)); } catch(e){}
+        try {
+          localStorage.setItem(KEY, JSON.stringify(s));
+          return true;
+        } catch(e){
+          if (!avisoGuardado) {
+            avisoGuardado = true;
+            brindis('⚠️ No se pudo guardar: el almacenamiento del navegador está lleno.');
+          }
+          return false;
+        }
       }
 
       function medallaNivel(a){
@@ -69,6 +80,18 @@
           .replace(/>/g, '&gt;')
           .replace(/"/g, '&quot;')
           .replace(/'/g, '&#39;');
+      }
+
+      // Temporizadores de los módulos: se cancelan al cambiar de pestaña
+      // para que una pregunta antigua no borre la nueva.
+      var canceladores = [];
+      function registrarCancelador(fn){
+        if (typeof fn === 'function') canceladores.push(fn);
+      }
+      function cancelarTemporizadores(){
+        for (var i = 0; i < canceladores.length; i++) {
+          try { canceladores[i](); } catch (e) {}
+        }
       }
 
       function fechaUltimo(ts){
@@ -192,10 +215,11 @@
           for (var k in MODULOS) {
             var m = s.mod[k] || { a: 0, e: 0 };
             var lvl = medallaNivel(m.a);
+            var abierto = !!abiertos[k];
             var fila = document.createElement('details');
             fila.className = 'ini-logro';
             fila.setAttribute('data-mod', k);
-            if (abiertos[k]) fila.open = true;
+            if (abierto) fila.open = true;
             fila.innerHTML = '<summary class="ini-resumen">' +
                 '<span class="ini-nombre">' + MODULOS[k].e + ' ' + MODULOS[k].n +
                   '<small class="ini-fecha">' + fechaUltimo(m.ultimo) + '</small></span>' +
@@ -207,22 +231,41 @@
                   '<button type="button" class="ini-btn" data-ir="' + TAB[k] + '" title="Ir a ' + MODULOS[k].n + '">🎮 Ir al juego</button>' +
                   '<button type="button" class="ini-btn ini-btn-peligro" data-borrar="' + k + '" title="Borrar solo el historial de ' + MODULOS[k].n + '">🗑️ Borrar historial</button>' +
                 '</div>' +
-                detalleHtml(m) +
+                '<div class="ini-detalle-historico" data-render="' + (abierto ? '1' : '0') + '">' +
+                  (abierto ? detalleHtml(m) : '') +
+                '</div>' +
               '</div>';
             lista.appendChild(fila);
           }
         }
       }
 
+      var visiblesHistorial = {};
+
       function pintarHistorial(mod){
         var lista = document.getElementById(mod + '-listaHistorial');
         if (!lista) return;
         var m = s.mod[mod];
         var hist = m && Array.isArray(m.hist) ? m.hist : [];
+        var limite = visiblesHistorial[mod] || 50;
         lista.innerHTML = '';
-        for (var i = hist.length - 1; i >= 0; i--) {
+        var desde = Math.max(0, hist.length - limite);
+        for (var i = hist.length - 1; i >= desde; i--) {
           var e = hist[i];
           lista.appendChild(itemHistorial(claseHist(mod, e.ok), e.l, e.t));
+        }
+        if (desde > 0) {
+          var li = document.createElement('li');
+          var btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'ini-btn';
+          btn.textContent = 'Ver más (' + desde + ' anteriores)';
+          btn.addEventListener('click', function(){
+            visiblesHistorial[mod] = limite + 50;
+            pintarHistorial(mod);
+          });
+          li.appendChild(btn);
+          lista.appendChild(li);
         }
       }
 
@@ -362,7 +405,7 @@
           alert('El JSON no tiene el formato de historial esperado.');
           return;
         }
-        if (!confirm('¿Reemplazar TODO el historial actual por el del archivo?\nLos puntos y medallas no se borran.')) return;
+        if (!confirm('¿Reemplazar TODO el historial actual por el del archivo?\nLos puntos se mantienen y los aciertos y las medallas se recalculan desde el historial importado.')) return;
 
         for (var k in MODULOS) {
           var m = s.mod[k] || { a: 0, e: 0 };
@@ -380,6 +423,7 @@
             }
           }
           hist.sort(function(a, b){ return a.t - b.t; });
+          if (hist.length > HIST_MAX) hist = hist.slice(hist.length - HIST_MAX);
 
           var dias = {};
           if (entrada.dias && typeof entrada.dias === 'object') {
@@ -393,8 +437,34 @@
           m.dias = dias;
           m.borrado = hist.length === 0 && !Object.keys(dias).length;
           m.ultimo = hist.length ? hist[hist.length - 1].t : 0;
+
+          // Recalcula los contadores del módulo para que coincidan con el historial.
+          var ca = 0, ce = 0, i2;
+          if (hist.length) {
+            for (i2 = 0; i2 < hist.length; i2++) {
+              if (hist[i2].ok) ca++; else ce++;
+            }
+          } else {
+            for (var dk2 in dias) {
+              ca += dias[dk2].a || 0;
+              ce += dias[dk2].e || 0;
+            }
+          }
+          m.a = ca;
+          m.e = ce;
           s.mod[k] = m;
         }
+
+        // Los totales globales también se recalculan a partir de los módulos.
+        var totA = 0, totE = 0;
+        for (var k2 in MODULOS) {
+          if (s.mod[k2]) {
+            totA += s.mod[k2].a || 0;
+            totE += s.mod[k2].e || 0;
+          }
+        }
+        s.aciertos = totA;
+        s.errores = totE;
 
         save();
         pintar();
@@ -459,6 +529,7 @@
           var l = [];
           for (var i = 0; i < arr.length; i++) l.push(arr[i] == null ? '' : String(arr[i]));
           m.hist.push({ t: ahora, ok: ok, l: l });
+          if (m.hist.length > HIST_MAX) m.hist.splice(0, m.hist.length - HIST_MAX);
           m.borrado = false;
         }
 
@@ -484,11 +555,27 @@
           save();
           pintar();
           for (var k in MODULOS) pintarHistorial(k);
+          brindis('🧹 Puntos y medallas reiniciados');
+          // Recarga para que los contadores locales de cada juego queden a cero.
+          setTimeout(function(){ window.location.reload(); }, 700);
         }
       });
 
       var listaLogros = document.getElementById('ini-logros');
       if (listaLogros) {
+        // El detalle se genera solo al abrir cada módulo (rendimiento).
+        listaLogros.addEventListener('toggle', function(ev){
+          var det = ev.target;
+          if (!det || det.tagName !== 'DETAILS' || !det.open) return;
+          var k = det.getAttribute('data-mod');
+          var cont = det.querySelector('.ini-detalle-historico');
+          if (k && cont && cont.getAttribute('data-render') !== '1') {
+            var m = s.mod[k] || { a: 0, e: 0 };
+            cont.innerHTML = detalleHtml(m);
+            cont.setAttribute('data-render', '1');
+          }
+        }, true);
+
         listaLogros.addEventListener('click', function(ev){
           var btn = ev.target.closest ? ev.target.closest('button[data-ir], button[data-borrar]') : null;
           if (!btn) return;
@@ -604,6 +691,8 @@
         exportarHistorialJson: exportarHistorialJson,
         exportarHistorialHtml: exportarHistorialHtml,
         importarHistorial: importarHistorial,
+        registrarCancelador: registrarCancelador,
+        cancelarTemporizadores: cancelarTemporizadores,
         medallaNivel: medallaNivel,
         MED_EMOJI: MED_EMOJI,
         fechaHora: fechaHora,

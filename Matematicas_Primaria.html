@@ -178,11 +178,11 @@
         </select>
 
         <div id="tm-pregunta" style="margin-top: 2rem; font-size: 1.2rem;"></div>
-        <input type="number" id="tm-respuesta" placeholder="Tu respuesta" />
+        <input type="number" id="tm-respuesta" placeholder="Tu respuesta" aria-label="Resultado de la multiplicación" />
         <button onclick="tm_verificar()">Verificar</button>
 
         <div>
-          <input type="number" id="tm-segs" min="5" max="300" value="60" style="width:80px;" />
+          <input type="number" id="tm-segs" min="5" max="300" value="60" style="width:80px;" aria-label="Segundos del contrarreloj" />
           segundos
           <button onclick="tm_iniciarContrarreloj()">Iniciar cronómetro</button>
           <span id="tm-reloj" style="font-weight:bold; margin-left:.5rem;"></span>
@@ -344,7 +344,7 @@
             <div class="pr-student-area">
               <div>
                 <label for="pr-studentAnswer">Tu respuesta</label>
-                <input type="number" id="pr-studentAnswer" placeholder="Escribe aquí tu resultado" />
+                <input type="text" inputmode="decimal" id="pr-studentAnswer" placeholder="Escribe aquí tu resultado" />
               </div>
               <button class="pr-btn-light" id="pr-checkBtn">Comprobar respuesta</button>
             </div>
@@ -406,7 +406,7 @@
         <div id="fr-enunciado" class="fr-enunciado"></div>
 
         <div>
-          <input type="text" id="fr-respuesta" placeholder="Tu respuesta" autocomplete="off" />
+          <input type="text" id="fr-respuesta" placeholder="Tu respuesta" aria-label="Respuesta de fracción" autocomplete="off" />
           <button id="fr-verificar">Verificar</button>
         </div>
         <div id="fr-resultado"></div>
@@ -444,7 +444,7 @@
         <div id="de-enunciado" class="de-enunciado"></div>
 
         <div>
-          <input type="text" id="de-respuesta" placeholder="Tu respuesta" autocomplete="off" />
+          <input type="text" id="de-respuesta" placeholder="Tu respuesta" aria-label="Respuesta de decimales" autocomplete="off" />
           <button id="de-verificar">Verificar</button>
         </div>
         <div id="de-resultado"></div>
@@ -473,6 +473,7 @@
         <select id="re-tipo">
           <option value="leer">¿Qué hora marca el reloj?</option>
           <option value="adelantar">¿Qué hora será dentro de un rato?</option>
+          <option value="transcurrido">¿Cuántos minutos faltan?</option>
         </select>
         <button id="re-generar">🎲 Generar hora</button>
 
@@ -511,7 +512,7 @@
         <div id="nr-enunciado" class="nr-enunciado"></div>
 
         <div>
-          <input type="text" id="nr-respuesta" placeholder="Tu respuesta" autocomplete="off" />
+          <input type="text" id="nr-respuesta" placeholder="Tu respuesta" aria-label="Respuesta en números romanos o normales" autocomplete="off" />
           <button id="nr-verificar">Verificar</button>
         </div>
         <div id="nr-resultado"></div>
@@ -547,7 +548,7 @@
         <div id="pa-enunciado"></div>
 
         <div>
-          <input type="text" id="pa-respuesta" placeholder="Tu respuesta" autocomplete="off" />
+          <input type="text" id="pa-respuesta" placeholder="Tu respuesta" aria-label="Respuesta de perímetro o área" autocomplete="off" />
           <button id="pa-verificar">Verificar</button>
         </div>
         <div id="pa-resultado"></div>
@@ -717,7 +718,7 @@
 
         <div id="ap-enunciado" class="ap-enunciado"></div>
         <div>
-          <input type="text" id="ap-respuesta" placeholder="Tu respuesta" autocomplete="off" />
+          <input type="text" id="ap-respuesta" placeholder="Tu respuesta" aria-label="Respuesta de aproximación" autocomplete="off" />
           <button id="ap-comprobar">✔️ Comprobar</button>
         </div>
         <div id="ap-resultado"></div>

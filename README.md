@@ -89,9 +89,10 @@ Con apoyo visual (figuras divididas).
 - Cálculo de la devolución (cambio) con euros.
 
 ### 6. 🕐 El Reloj
-Reloj de agujas dibujado.
+- Reloj de agujas dibujado.
 - Leer la hora que marca el reloj.
 - Calcular qué hora será dentro de un rato.
+- Calcular cuántos minutos faltan para una hora dada.
 
 ### 7. 🏛️ Números Romanos
 - Convertir de número normal a romano.

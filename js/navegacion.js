@@ -14,6 +14,11 @@
         } catch (e) {}
       }
       window.irA = function(ir){
+        // Cancela los temporizadores pendientes de los módulos: al volver,
+        // la pregunta anterior no debe regenerarse por sorpresa.
+        if (window.MatesCore && window.MatesCore.cancelarTemporizadores) {
+          window.MatesCore.cancelarTemporizadores();
+        }
         activar(ir);
         actualizarUrl(ir);
         window.scrollTo({ top: 0, behavior: 'smooth' });

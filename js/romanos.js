@@ -3,6 +3,7 @@
       let actual = null;
       let aciertos = 0;
       let errores = 0;
+      let respondido = true;
 
       function randInt(min, max){ return Math.floor(Math.random()*(max-min+1))+min; }
 
@@ -28,7 +29,13 @@
       function mostrarRomanos(){ return document.getElementById('tab-romanos').classList.contains('active'); }
 
       document.addEventListener('keydown', function(e){
-        if (e.key === 'Enter' && mostrarRomanos()) verificar();
+        if (e.key !== 'Enter') return;
+        const t = e.target;
+        if (t && (t.tagName === 'BUTTON' || t.tagName === 'SELECT' || t.tagName === 'TEXTAREA' || t.tagName === 'A')) return;
+        if (mostrarRomanos()) {
+          e.preventDefault();
+          verificar();
+        }
       });
 
       function generar(){
@@ -49,12 +56,14 @@
           actual = { tipo, correcta: String(n), texto: rom + ' = ' + n };
           enunciado.innerHTML = '¿Qué número normal es <strong>' + rom + '</strong>?';
         }
+        respondido = false;
       }
 
       function verificar(){
-        if (!actual) return;
+        if (!actual || respondido) return;
         const entrada = document.getElementById('nr-respuesta').value.trim();
         if (entrada === '') return;
+        respondido = true;
         let esCorrecto = false;
         if (actual.tipo === 'aromano') {
           esCorrecto = entrada.toUpperCase().replace(/\s+/g, '') === actual.correcta;

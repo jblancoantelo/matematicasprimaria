@@ -7,11 +7,28 @@
       let M = 1;                 // 10^maxDec
       let totalAciertos = 0;
       let totalErrores = 0;
+      let respondido = true;
+      let timerSiguiente = null;
+
+      function cancelarSiguiente(){
+        if (timerSiguiente) { clearTimeout(timerSiguiente); timerSiguiente = null; }
+      }
+
+      function programarSiguiente(fn, ms){
+        cancelarSiguiente();
+        timerSiguiente = setTimeout(function(){ timerSiguiente = null; fn(); }, ms);
+      }
+
+      MatesCore.registrarCancelador(cancelarSiguiente);
 
       function mostrarSumas(){ return document.getElementById('tab-sumas').classList.contains('active'); }
 
       document.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter' && mostrarSumas()) {
+        if (e.key !== 'Enter') return;
+        const t = e.target;
+        if (t && (t.tagName === 'BUTTON' || t.tagName === 'SELECT' || t.tagName === 'TEXTAREA' || t.tagName === 'A')) return;
+        if (mostrarSumas()) {
+          e.preventDefault();
           sy_verificar();
         }
       });
@@ -91,6 +108,8 @@
       }
 
       window.sy_generarPregunta = function() {
+        cancelarSiguiente();
+        respondido = true;
         operacion = document.getElementById('sy-tipo').value;
         if (operacion === '') {
           document.getElementById('sy-resultado').textContent = '⚠️ Elige primero «Suma» o «Resta».';
@@ -144,6 +163,7 @@
         document.getElementById('sy-resultado').className = '';
 
         sy_generarInputsRespuesta();
+        respondido = false;
       };
 
       function resultadoCorrecto() {
@@ -167,6 +187,7 @@
         input.style.textAlign = 'center';
         input.inputMode = 'numeric';
         input.autocomplete = 'off';
+        input.setAttribute('aria-label', 'Cifra del resultado');
         if (conClaseDec) input.className = 'sy-dec';
         container.appendChild(input);
         return input;
@@ -202,6 +223,7 @@
       }
 
       window.sy_verificar = function() {
+        if (respondido) return;
         const inputs = Array.prototype.slice.call(document.querySelectorAll('#sy-respuestaContainer input'));
         const intInputs = inputs.filter(i => !i.classList.contains('sy-dec'));
         const decInputs = inputs.filter(i => i.classList.contains('sy-dec'));
@@ -220,6 +242,7 @@
 
         if (intTxt === '' && decScaled === 0) return;
 
+        respondido = true;
         const numUsuario = (intTxt === '' ? 0 : parseInt(intTxt, 10)) * M + decScaled;
         const r = resultadoCorrecto();
         const correctoMostrar = formatearRes(r);
@@ -248,11 +271,11 @@
           : ['❌ Tú: ' + expresion + ' = ' + usr, '✔️ Correcto: ' + expresion + ' = ' + correctoMostrar];
         window.MatesCore.registrar('sy', esCorrecto, lineas);
 
-        setTimeout(sy_generarPregunta, 2000);
+        programarSiguiente(sy_generarPregunta, 2000);
       };
 
-      document.getElementById('sy-tipo').addEventListener('change', function(){ renderizarSelectoCifras(); });
-      document.getElementById('sy-veces').addEventListener('change', function(){ renderizarSelectoCifras(); });
+      document.getElementById('sy-tipo').addEventListener('change', function(){ cancelarSiguiente(); renderizarSelectoCifras(); });
+      document.getElementById('sy-veces').addEventListener('change', function(){ cancelarSiguiente(); renderizarSelectoCifras(); });
       renderizarSelectoCifras();
     })();
   

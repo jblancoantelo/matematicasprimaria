@@ -19,12 +19,25 @@
       let aciertos = 0;
       let errores = 0;
       let comprobado = true;
+      let timerSiguiente = null;
+
+      function cancelarSiguiente(){
+        if (timerSiguiente) { clearTimeout(timerSiguiente); timerSiguiente = null; }
+      }
+
+      function programarSiguiente(fn, ms){
+        cancelarSiguiente();
+        timerSiguiente = setTimeout(function(){ timerSiguiente = null; fn(); }, ms);
+      }
+
+      MatesCore.registrarCancelador(cancelarSiguiente);
 
       function separar(n){
         return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
       }
 
       function generar(){
+        cancelarSiguiente();
         const cifras = parseInt(document.getElementById('dm-cifras').value, 10);
         const min = Math.pow(10, cifras - 1);
         const max = Math.pow(10, cifras) - 1;
@@ -56,6 +69,7 @@
           input.inputMode = 'numeric';
           input.autocomplete = 'off';
           input.className = 'dm-input';
+          input.setAttribute('aria-label', 'Valor de ' + p.c + ' (' + p.n + ')');
           input.maxLength = String(9 * p.m).length;
           input.addEventListener('keydown', function(e){ if (e.key === 'Enter') comprobar(); });
           fila.appendChild(etq);
@@ -105,7 +119,7 @@
           resultado.className = 'dm-correcto';
           aciertos++;
           comprobado = true;
-          setTimeout(generar, 2600);
+          programarSiguiente(generar, 2600);
         } else {
           resultado.textContent = '❌ Revisa las filas en rojo: ' + bien + ' de ' + total + ' bien. Corrige y vuelve a pulsar «Comprobar».';
           resultado.className = 'dm-incorrecto';
