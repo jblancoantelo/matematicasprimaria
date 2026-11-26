@@ -9,6 +9,7 @@ Todos los cambios relevantes de **Matemáticas Primaria**. Las entradas están o
 - `aria-label` en las casillas generadas de **sumas**, **descomponer**, **divisiones**, **multiplicaciones**, **propiedades** y **combinadas**, y en el campo de segundos del contrarreloj de **tablas**.
 
 ### Cambiado
+- Se retiró del `ROADMAP.md` la lista de fallos ya corregidos para dejar solo las propuestas pendientes.
 - Las columnas de **divisiones** y **multiplicaciones** se pueden desplazar en horizontal en pantallas estrechas.
 
 ### Corregido

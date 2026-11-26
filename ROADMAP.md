@@ -292,37 +292,9 @@ Regla práctica: nada entra en la versión publicada sin funcionar **sin conexi�
 
 ## 10. 🔍 Revisión completa de la aplicación (24/11/2026)
 
-> Revisión estática de los 16 juegos, `core.js`, `navegacion.js`, el HTML y los 18 ficheros JavaScript (`node --check` sin errores). No se probó en navegador. Esta sección recoge los hallazgos y las propuestas que **no estaban ya** en el roadmap; cuando una idea se solapa con otra, se indica.
+> Revisión estática de los 16 juegos, `core.js`, `navegacion.js`, el HTML y los 18 ficheros JavaScript (`node --check` sin errores). No se probó en navegador. Esta sección recoge las propuestas que **no estaban ya** en el roadmap; cuando una idea se solapa con otra, se indica.
 
 **Conclusión general:** la base es buena y no necesita frameworks. El margen de mejora está en tres frentes: **fiabilidad** (no perder datos ni puntuar dos veces), **feedback que enseñe** (explicar el error, no solo marcarlo) y **progresión real de 4.º** (algunos módulos permiten niveles de 6.º y otros se quedan cortos).
-
-### 10.1 🐞 Fallos y riesgos detectados
-
-> **Estado (25/11/2026):** los 15 fallos de esta sección están corregidos en el código. Se marcan abajo para dejar constancia.
-
-#### 🔴 Prioridad alta
-
-- [x] **El contrarreloj de tablas borra el historial.** `tm_iniciarContrarreloj()` llama a `MatesCore.borrarHistorial('tm')` sin avisar; además reinicia los contadores locales pero no los del panel.
-- [x] **Se pueden sumar puntos infinitos.** Tras acertar se puede volver a pulsar **Verificar** o la misma opción en **fracciones**, **decimales**, **romanos**, **figuras**, **reloj** y **múltiplos**. En **sumas**, **tablas** y **aproximaciones** ocurre durante la ventana de autoavance; en **unidades**, cada pulsación de **Comprobar** recorre y puntúa todos los ejercicios otra vez.
-- [x] **Temporizadores duplicados.** Los `setTimeout(generar, ...)` de **sumas**, **tablas**, **descomponer**, **aproximaciones**, **multiplicaciones** y **divisiones** no se guardan ni se cancelan: un temporizador antiguo puede borrar la pregunta nueva. En tablas, el de 800 ms puede borrar lo que el niño está escribiendo.
-- [x] **Cambiar el tipo en unidades deja los ejercicios antiguos.** `setTipo()` cambia `units` pero no regenera `currentExercises`; al comprobar pueden aparecer unidades equivocadas o `undefined`. `saveHistory()` guarda los controles actuales, no los usados al generar.
-
-#### 🟠 Prioridad media
-
-- [x] **XSS en el historial de unidades.** `renderHistory()` inserta `it.user` sin escapar dentro de `innerHTML`. Sustituir también `crypto.randomUUID()` por un generador con *fallback*.
-- [x] **Importar historial no cuadra con el panel.** `importarHistorial()` reemplaza `hist` y `dias`, pero no recalcula `m.a`, `m.e` ni los puntos: se puede importar un historial lleno y seguir viendo 0 aciertos. Hay que decidir si se importa solo historial o todo el progreso, y validar el esquema.
-- [x] **Historial sin límite y renderizado completo.** `pintar()` regenera el detalle de los 16 módulos en cada respuesta y `pintarHistorial()` repinta todo. Con miles de entradas la app se ralentiza. `save()` ignora los errores de cuota: si `localStorage` se llena, se pierden datos sin avisar.
-- [x] **Valor posicional en divisiones y multiplicaciones.** En divisiones, las cajas del resto ocupan el ancho del dividendo parcial (un resto de 5 se acepta escrito en la casilla de las centenas). En multiplicaciones, `leerSuma()` concatena los dígitos ignorando huecos (3,05 se acepta como 3, [vacío], 5). Leer por posición y tratar el hueco como 0.
-- [x] **Problemas con resultados negativos o importes irreales.** Ejemplos detectados: “Libros” (12 − 14 = −2), “Ahorro familiar” (40 € y una persona ahorra 45 €), “Colección de cromos” (12 + 6 − 20), “Gastos” (100 − 280 €), “Melones” (100 − 120), “Kiosco” (billete de 690 €) y “Juegos” (regalo de 0 €).
-- [x] **El reinicio de puntos es incompleto.** “Reiniciar puntos” resetea el estado central, pero no los contadores locales ni los historiales propios de **Problemas** y **Unidades**; el panel y el módulo muestran cifras distintas. Un evento global de reinicio (o recargar tras el reset) lo resolvería.
-
-#### 🟡 Prioridad baja, pero muy visible
-
-- [x] **El reloj solo dibuja 12 marcas horarias.** Las horas se generan en múltiplos de 5, pero sin marcas de minutos leer las 8:35 es ambiguo. Añadir 60 marcas pequeñas y un modo de **tiempo transcurrido**.
-- [x] **Fracciones: se ofrece “=” pero nunca es correcta.** El generador de comparación evita a propósito las fracciones iguales. La resta se visualiza con la segunda fracción vacía, sin representar el resultado.
-- [x] **Distributiva: los paréntesis no son obligatorios.** Se pide “coloca los paréntesis”, pero la comprobación solo valida números y operaciones: se puede dejar la expresión sin paréntesis y avanzar.
-- [x] **Problemas guarda problemas sin responder.** `renderProblem()` los añade al historial al generarlos, antes de que el niño conteste. El historial propio está limitado a 20 y **Borrar historial** no pide confirmación.
-- [x] **Accesibilidad y responsive.** Varios inputs no tienen `label` ni `aria-label`; no hay `:focus-visible` global; los atajos de **Enter** secuestran el Enter de los botones; las columnas de divisiones y multiplicaciones pueden desbordar a 320 px.
 
 ### 10.2 🎓 Funcionalidades para 4.º de Primaria
 
@@ -409,4 +381,5 @@ Regla práctica: nada entra en la versión publicada sin funcionar **sin conexi�
 | 23/11/2026 | Añadidas 25 ideas: aprendizaje, aula y dispositivos, accesibilidad y técnico. |
 | 23/11/2026 | Añadidas 18 ideas más: metacognición, juegos nuevos, panel docente, instalación y gestión. |
 | 24/11/2026 | Añadida la sección 10 con la revisión completa: fallos priorizados, funcionalidades para 4.º, mejoras técnicas y plan por fases. |
-| 25/11/2026 | Fase 0 y las tres prioridades de la sección 10.1 aplicadas y marcadas como corregidas. |
+| 25/11/2026 | Fase 0 y las tres prioridades de la revisión aplicadas en el código. |
+| 26/11/2026 | Retirada del roadmap la lista de fallos ya corregidos. |
