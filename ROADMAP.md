@@ -373,6 +373,103 @@ Regla práctica: nada entra en la versión publicada sin funcionar **sin conexi�
 
 ---
 
+## 11. ✨ Nuevas propuestas — Gemini 4 Hydrogen (26/11/2026)
+
+> Revisión realizada por **Gemini 4 Hydrogen** contrastando `ROADMAP.md` con `CHANGELOG.md`, `README.md` y `js/core.js`. Recoge una lista detallada de **nuevas ideas** adaptadas a 3.º–4.º de Primaria y a la arquitectura estática sin servidor, además de apuntes de estado para mantener el roadmap al día.
+
+### 11.1 🔍 Apuntes sobre el estado actual del roadmap
+
+- **Ya completado pero aún listado como pendiente:** en `js/core.js` ya funcionan `mates_v4_progreso` (con migración desde `mates_v3_progreso`), el aviso de almacenamiento lleno (`quota`), el renderizado perezoso de `<details>` abiertos y el botón **Ver más** de 50 en 50. También se completaron P0 (Fase 0) y parte de P2 (`:focus-visible`, `aria-label` en casillas de 6 módulos y `overflow-x: auto` en divisiones/multiplicaciones). Conviene marcarlos como hechos y actualizar las referencias a `mates_v3_progreso` en `README.md` y `AGENTS.md`.
+- **Hook ya preparado:** `js/core.js` consulta `window.Comun.escaparHtml`, aunque `js/comun.js` aún no se ha creado.
+- **Duplicidades y tensiones a consolidar en una próxima limpieza:** varias ideas aparecen repetidas entre las secciones 1–7 y la 10 (*Detective de errores*, *Repetición espaciada*, *Cálculo mental*, *Reto diario*, *Perfiles locales*, *Retos por URL*, *Modo proyector/profe*, *Modo sin puntos*, *Lectura en voz alta*, *Pizarra*, *PWA* y *Tests*). Además, conviene alinear la propuesta de *módulos ES* (sección 4) con la restricción de doble clic `file://` (10.3 P2), y revisar si *cuentas opcionales* / *telemetría* encajan con la política de privacidad cero-servidor (sección 6).
+- **Enfoque para la IA (sección 1.1):** antes de conectar un LLM con clave o proxy, conviene implementar primero la **opción D (explicaciones deterministas por reglas)** según el error típico (llevadas, decimales, orden de operaciones), garantizando uso 100 % offline y sin riesgos de exposición de claves.
+
+### 11.2 📚 Nuevos contenidos y mecánicas matemáticas
+
+#### 🔎 El número escondido y prueba de la operación 🔥 · S
+- **Dónde:** nuevos modos dentro de **Sumas y Restas**, **Tablas de Multiplicar** y **Divisiones**.
+- **Qué es:** ejercicios inversos del tipo `? + 38 = 100`, `145 − ? = 67`, `□ × 7 = 56` y, en divisiones, comprobar el resultado aplicando la prueba real (`divisor × cociente + resto = dividendo`).
+- **Por qué encaja en 3.º–4.º:** refuerza la relación entre operaciones inversas y enseña al alumno a autocorregirse en papel.
+- **Implementación:** reutiliza los generadores existentes ocultando uno de los operandos en lugar del resultado; sin nuevos archivos CSS ni dependencias.
+
+#### ✖️ Multiplicar y dividir por 10, 100 y 1000 🔥 · S
+- **Dónde:** nuevo modo en **Multiplicaciones** / **Divisiones** o dentro del futuro bloque de **Cálculo mental**.
+- **Qué es:** práctica específica de patrones con ceros (`45 × 100`, `3.200 ÷ 10`, `2,5 × 10`, y dobles, mitades, triples y tercios de números redondos).
+- **Por qué encaja en 3.º–4.º:** es el puente imprescindible entre el cálculo natural, las **Unidades Métricas** (subir y bajar la escalera) y los **Decimales**.
+- **Implementación:** generador ligero con validación directa y pista visual mostrando el desplazamiento de cifras/coma.
+
+#### ⚖️ Balanza de igualdades (pre-álgebra visual) ⭐ · M
+- **Dónde:** nuevo módulo o ampliación visual de **Propiedades**.
+- **Qué es:** una balanza de dos platillos en SVG/Canvas que debe quedar equilibrada: primero igualdades numéricas (`15 + 12 = 20 + ?`) y luego incógnitas visuales sencillas (`2 cajas iguales + 4 = 18`).
+- **Por qué encaja en 3.º–4.º:** trabaja el significado real del signo `=` (equivalencia, no «aquí viene el resultado») de forma mucho más adecuada para Primaria que las ecuaciones con letras.
+- **Implementación:** dibujo SVG ligero con animación de inclinación según si el plato izquierdo pesa más, menos o igual.
+
+#### 📏 Fracciones en la recta numérica y números mixtos ⭐ · S–M
+- **Dónde:** módulo de **Fracciones**.
+- **Qué es:** además de colorear figuras, colocar una fracción en una recta graduada entre `0` y `1` (o `0` y `2`) e identificar cuándo supera la unidad (`5/4 = 1 + 1/4`).
+- **Por qué encaja en 3.º–4.º:** evita la idea limitada de que una fracción es solo «trozos de pizza» y la conecta con la medida y los decimales.
+- **Implementación:** barra/recta interactiva con marcas clicables según el denominador.
+
+#### 📐 Rectas, ángulos y simetría visual ⭐ · M
+- **Dónde:** ampliación de **Perímetro y Área** (pasando a bloque de Geometría) o módulo propio.
+- **Qué es:** antes de introducir regla y transportador virtual, identificar rectas paralelas, secantes y perpendiculares, clasificar ángulos (agudo, recto, obtuso) y completar figuras simétricas sobre una cuadrícula clicable.
+- **Por qué encaja en 3.º–4.º:** cubre el bloque geométrico básico del currículo de 3.º y 4.º que actualmente se limita a cuadrados y rectángulos.
+- **Implementación:** cuadrícula HTML/CSS o SVG interactiva por clic en celdas/vértices, totalmente accesible con teclado.
+
+#### 🎲 Azar y probabilidad intuitiva 💭 · S
+- **Dónde:** junto al bloque propuesto de **Datos y gráficos** o como minijuego propio.
+- **Qué es:** situaciones con bolsas de bolas de colores, ruletas y dados para clasificar sucesos en **seguro, posible o imposible** y decidir qué resultado es **más probable**.
+- **Por qué encaja en 3.º–4.º:** introduce el bloque de Estadística y Azar del currículo con apoyo gráfico inmediato y sin fórmulas complejas.
+- **Implementación:** SVG dinámico de urna/ruleta con preguntas de opción múltiple.
+
+### 11.3 🎮 Mejoras sobre los 16 juegos actuales
+
+#### 🧮 Casillas opcionales de llevadas y guía columna a columna 🔥 · M
+- **Dónde:** **Sumas y Restas**, **Multiplicaciones** y **Divisiones**.
+- **Qué es:** un interruptor «Mostrar casillas de llevadas» que añade una fila superior pequeña para apuntar lo que «me llevo» y resalta la columna activa (U → D → C → UM) mientras se escribe.
+- **Por qué encaja en 3.º–4.º:** ayuda a quienes aún automatizan el algoritmo vertical a no perder el hilo sin penalizar a quien ya lo hace de cabeza.
+- **Implementación:** inputs auxiliares opcionales (no obligatorios para validar la respuesta) y clase CSS de resaltado por columna.
+
+#### 📱 Teclado numérico integrado en pantalla 🔥 · M
+- **Dónde:** módulos de casillas verticales (**Sumas**, **Multiplicaciones**, **Divisiones**, **Descomponer**) y **Tablas**.
+- **Qué es:** un pad numérico compacto integrado en la propia interfaz (`0–9`, `,`, `←`, `✔` y flechas de casilla) activable en pantallas táctiles.
+- **Por qué encaja:** en móviles y tabletas escolares, el teclado virtual del sistema tapa media operación y provoca saltos de scroll al cambiar de casilla.
+- **Implementación:** componente ligero en `js/comun.js` que escribe en el `input` con foco (`inputmode="none"` cuando está activo) y avanza automáticamente de casilla.
+
+#### 🎯 Selector de «tablas concretas» 🔥 · S
+- **Dónde:** **Tablas de Multiplicar**.
+- **Qué es:** casillas de selección múltiple para practicar solo un grupo elegido (por ejemplo, `6`, `7` y `8`), en lugar de limitarse a una única tabla o a todas a la vez.
+- **Por qué encaja:** permite centrar sesiones cortas justo en las 2 o 3 tablas que más cuestan sin mezclar las ya dominadas (`1`, `2`, `5`, `10`).
+- **Implementación:** array de tablas marcadas en `js/tablas.js` guardado en preferencias locales.
+
+#### 🏁 Sesiones con meta corta (5, 10 o 15 ejercicios) ⭐ · S
+- **Dónde:** barra superior opcional dentro de cada módulo.
+- **Qué es:** elegir una meta cerrada antes de empezar («Hoy hago 10») con barra de progreso y tarjeta final de resumen de sesión (`9/10`, tiempo y racha máxima).
+- **Por qué encaja:** transforma la práctica infinita en objetivos asumibles para niños de 8–10 años y reduce el abandono por cansancio.
+- **Implementación:** contador de sesión independiente del historial acumulado; se desactiva libremente para práctica continua.
+
+### 11.4 🏫 Aula, familias y distribución offline
+
+#### 🖨️ Modo impresión directa (`@media print`) 🔥 · S
+- **Dónde:** hoja de estilos global + vistas de **Problemas**, **Sumas**, **Divisiones** y **Unidades**.
+- **Qué es:** reglas `@media print` para que pulsar `Ctrl+P` / Imprimir oculte cabecera, pestañas, botones e historiales y genere una ficha limpia en papel con espacio para **Nombre**, **Fecha** y cálculo manual.
+- **Por qué encaja:** aporta fichas imprimibles reales de forma inmediata, sin librerías de PDF ni mantenimiento adicional.
+- **Implementación:** CSS puro en `css/base.css` / `css/global.css`.
+
+#### 🧭 Bloque «¿Por dónde empiezo?» en el inicio ⭐ · S
+- **Dónde:** pantalla principal (`tab-inicio`).
+- **Qué es:** una tarjeta destacada arriba con dos accesos rápidos: **«Seguir con [último juego]»** y un selector de ruta sugerida según curso (**3.º repaso** / **4.º curso**).
+- **Por qué encaja:** con 16 tarjetas disponibles desde el primer segundo, evita la parálisis de elección en alumnos nuevos o familias.
+- **Implementación:** lectura del último módulo usado desde `mates_v4_progreso` y lista estática de recomendaciones por curso.
+
+#### 📦 Generador de HTML único portable (`dist/`) ⭐ · S
+- **Dónde:** script de utilidad opcional en Node (solo para publicar/empaquetar, sin afectar al desarrollo modular).
+- **Qué es:** un script sencillo que incrusta `css/*.css` y `js/*.js` dentro de una copia única `Aventuras_Matematicas_portable.html`.
+- **Por qué encaja:** en colegios es muy frecuente que un docente haga «Guardar página como» o descargue solo `Matematicas_Primaria.html` y al abrirlo en otro equipo le falten los estilos y scripts. Con una versión portable en `dist/` o en *Releases* de GitHub, el archivo funciona de verdad con un doble clic en cualquier sitio.
+- **Implementación:** script Node sin dependencias externas (`fs.readFileSync` + sustitución de `<link>` y `<script>`).
+
+---
+
 ## 📝 Registro
 
 | Fecha | Cambio |
@@ -383,3 +480,4 @@ Regla práctica: nada entra en la versión publicada sin funcionar **sin conexi�
 | 24/11/2026 | Añadida la sección 10 con la revisión completa: fallos priorizados, funcionalidades para 4.º, mejoras técnicas y plan por fases. |
 | 25/11/2026 | Fase 0 y las tres prioridades de la revisión aplicadas en el código. |
 | 26/11/2026 | Retirada del roadmap la lista de fallos ya corregidos. |
+| 26/11/2026 | Añadida la sección 11 con la revisión de estado y 13 nuevas propuestas detalladas (Gemini 4 Hydrogen). |
