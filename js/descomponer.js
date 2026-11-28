@@ -20,6 +20,7 @@
       let errores = 0;
       let comprobado = true;
       let timerSiguiente = null;
+      let inicioPregunta = 0;
 
       function cancelarSiguiente(){
         if (timerSiguiente) { clearTimeout(timerSiguiente); timerSiguiente = null; }
@@ -82,6 +83,7 @@
         document.getElementById('dm-resultado').className = '';
         comprobado = false;
         if (filas[0]) filas[0].input.focus();
+        inicioPregunta = Date.now();
       }
 
       function comprobar(){
@@ -137,7 +139,13 @@
         const lineas = todosBien
           ? ['✅ ' + textoNum + ' = ' + correcta + ' · Tú: ' + hecho]
           : ['❌ Tú: ' + textoNum + ' = ' + hecho, '✔️ Correcto: ' + textoNum + ' = ' + correcta];
-        window.MatesCore.registrar('dm', todosBien, lineas);
+        window.MatesCore.registrar('dm', todosBien, lineas, {
+          tipo: 'descomponer',
+          enunciado: textoNum,
+          respuesta: hecho,
+          correcta: correcta,
+          tiempoMs: Date.now() - inicioPregunta
+        });
       }
 
       document.getElementById('dm-generar').addEventListener('click', function(){ generar(); });

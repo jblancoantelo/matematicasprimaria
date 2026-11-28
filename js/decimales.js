@@ -4,6 +4,7 @@
       let aciertos = 0;
       let errores = 0;
       let respondido = true;
+      let inicioPregunta = 0;
 
       function mostrarDecimales(){ return document.getElementById('tab-decimales').classList.contains('active'); }
 
@@ -82,7 +83,9 @@
           actual = { tipo, correcta: paga - precio / 100, texto: `${fmtEuro(paga)} - ${fmtEuro(precio / 100)} = ${fmtEuro(paga - precio / 100)}`, etiqueta: 'devolución' };
           enunciado.innerHTML = `Una compra cuesta <strong>${fmtEuro(precio / 100)}</strong> y pagas con <strong>${fmtEuro(paga)}</strong>. ¿Cuánto te devuelven?`;
         }
+        if (actual) actual.enunciado = enunciado.textContent;
         respondido = false;
+        inicioPregunta = Date.now();
       }
 
       function verificar(){
@@ -110,7 +113,13 @@
         const lineas = esCorrecto
           ? ['✅ ' + actual.texto + ' · Tú: ' + entrada]
           : ['❌ Tú: ' + entrada, '✔️ Correcto: ' + actual.texto];
-        window.MatesCore.registrar('de', esCorrecto, lineas);
+        window.MatesCore.registrar('de', esCorrecto, lineas, {
+          tipo: actual.tipo,
+          enunciado: actual.enunciado,
+          respuesta: entrada,
+          correcta: String(actual.correcta),
+          tiempoMs: Date.now() - inicioPregunta
+        });
       }
     })();
   

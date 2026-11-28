@@ -4,6 +4,7 @@
       let aciertos = 0;
       let errores = 0;
       let respondido = true;
+      let inicioPregunta = 0;
 
       function randInt(min, max){ return Math.floor(Math.random()*(max-min+1))+min; }
 
@@ -123,7 +124,7 @@
           enunciado.innerHTML = `El reloj marca las <strong>${fmtHora(h, m)}</strong>. ¿Qué hora será <strong>dentro de ${add} minutos</strong>?`;
         }
         visual.innerHTML = svgReloj(h, m);
-        actual = { correcta, texto: correcta, tipo };
+        actual = { correcta, texto: correcta, tipo, enunciado: enunciado.textContent };
 
         const opciones = tipo === 'transcurrido'
           ? opcionesNumero(Number(correcta))
@@ -136,6 +137,7 @@
           caja.appendChild(bot);
         });
         respondido = false;
+        inicioPregunta = Date.now();
       }
 
       function elegir(bot, valor){
@@ -168,7 +170,13 @@
              '✔️ Correcto: ' + (actual.tipo === 'transcurrido'
                 ? 'faltan ' + actual.correcta + ' minutos'
                 : actual.correcta)];
-        window.MatesCore.registrar('re', esCorrecto, lineas);
+        window.MatesCore.registrar('re', esCorrecto, lineas, {
+          tipo: actual.tipo,
+          enunciado: actual.enunciado,
+          respuesta: esCorrecto ? actual.correcta : (bot.textContent || '').trim(),
+          correcta: actual.correcta,
+          tiempoMs: Date.now() - inicioPregunta
+        });
         document.getElementById('re-aciertos').textContent = aciertos;
         document.getElementById('re-errores').textContent = errores;
       }

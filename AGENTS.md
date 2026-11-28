@@ -8,7 +8,7 @@ Este repositorio es **Matemáticas Primaria** (título visible: *Aventuras Matem
 
 - **SPA sin build**: no hay `package.json`, bundler, framework ni dependencias externas. Todo es **HTML5 + CSS3 + JavaScript vanilla** y se ejecuta abriendo el HTML en el navegador (también publicado en GitHub Pages).
 - **Una sola página con pestañas**: el HTML contiene todos los módulos como `<section id="tab-<modulo>" class="tab-panel">`; solo la que tiene la clase `active` se muestra (`css/base.css`).
-- **Orden de carga importante**: primero `js/navegacion.js`, después `js/core.js` y a continuación cada módulo. Los módulos dependen de `window.MatesCore` y de `window.irA`, así que no deben cargarse antes.
+- **Orden de carga importante**: primero `js/navegacion.js`, después `js/comun.js` (utilidades compartidas), luego `js/core.js` y a continuación cada módulo. Los módulos dependen de `window.MatesCore` y de `window.irA`, así que no deben cargarse antes.
 - **Persistencia local**: todo el progreso e historial vive en `localStorage`. No hay backend ni envío de datos.
 
 ### `js/navegacion.js`
@@ -19,25 +19,33 @@ Gestiona el cambio de pestaña sin recargar:
 - El botón `#btn-inicio` vuelve al panel inicial (`inicio`).
 - Al cargar, restaura el módulo indicado en `?modulo=...`, por lo que cada juego tiene URL directa (p. ej. `?modulo=combinadas`).
 
+### `js/comun.js` (utilidades compartidas)
+
+Se carga antes que `core.js` y expone **`window.Comun`** (y `module.exports` para las pruebas en Node):
+
+- `escaparHtml`, `separarMiles`/`separar`, `randInt`/`aleatorioInt`, `elegir`, `barajar`.
+- `mulberry32`, `hashSemilla`, `leerSemilla`, `activarSemilla`, `semilla`.
+- Al cargarse, si la URL lleva `?semilla=...`, sustituye `Math.random` por un generador `mulberry32` determinista. Sin ese parámetro no cambia nada.
+
 ### `js/core.js` (núcleo compartido)
 
 Se ejecuta como IIFE y expone **`window.MatesCore`** con:
 
-- `puntuar(mod, ok)` / `registrar(mod, ok, lineas)`: suma puntos, racha, aciertos/errores, medallas, día y entrada de historial. `lineas` puede ser una cadena o un array de líneas.
+- `puntuar(mod, ok)` / `registrar(mod, ok, lineas, extra)`: suma puntos, racha, aciertos/errores, medallas, día y entrada de historial. `lineas` puede ser una cadena o un array de líneas. `extra` es opcional y acepta `{ tipo, enunciado, respuesta, correcta, tiempoMs, intento }`.
 - `pintar()`: refresca cabecera de progreso y listado de logros del inicio.
 - `pintarHistorial(mod)`: pinta la lista `<ul id="<prefijo>-listaHistorial">` de un módulo.
-- `borrarHistorial(mod)`, `exportarHistorialJson()`, `exportarHistorialHtml()`, `importarHistorial(texto)`.
+- `borrarHistorial(mod)`, `borrarTodo()`, `exportarHistorialJson()`, `exportarHistorialHtml()`, `importarHistorial(texto)`.
 - Utilidades: `medallaNivel`, `MED_EMOJI`, `fechaHora`, `itemHistorial`.
 
 Detalles internos relevantes:
 
-- Clave de almacenamiento global: **`mates_v3_progreso`**.
+- Clave de almacenamiento global: **`mates_v4_progreso`** (migra automáticamente desde `mates_v3_progreso` al arrancar).
 - Estado: `{ puntos, racha, mejorRacha, aciertos, errores, mod: { <clave>: { a, e, ultimo, dias, hist, borrado } } }`.
 - Claves de módulo usadas en el estado: `sy`, `tm`, `um`, `fr`, `de`, `re`, `nr`, `pa`, `md`, `dm`, `dv`, `mu`, `ap`, `pm`, `oc`, `pr`.
 - Puntos: `10` base + hasta `+10` por racha + `+5` extra cada 5 aciertos seguidos. Medallas por módulo: 5 (bronce), 15 (plata), 40 (oro).
-- Historial centralizado: cada respuesta se guarda en `mod.<clave>.hist` como `{ t, ok, l }` (marca de tiempo, acierto y líneas de texto).
+- Historial centralizado: cada respuesta se guarda en `mod.<clave>.hist` como `{ t, ok, l }` (marca de tiempo, acierto y líneas de texto), con hasta 1000 entradas por juego. Si el módulo aporta `extra`, la entrada incluye además `tipo`, `enunciado`, `respuesta`, `correcta`, `tiempoMs` e `intento`.
 - Toasts (`#toast`) y confeti se gestionan aquí; los módulos solo llaman a `MatesCore`.
-- El panel de inicio también gestiona **Reiniciar puntos**, descarga del historial (HTML/JSON) e importación desde JSON.
+- El panel de inicio gestiona **Reiniciar puntos**, **Borrar todos los datos**, descarga de la copia completa (HTML/JSON) e importación desde JSON.
 
 ### Módulos de juego
 
@@ -95,11 +103,12 @@ Algunos módulos mantienen un historial propio además del centralizado:
 
 ## Comprobación de cambios
 
-No hay tests, linter ni proceso de build. Para validar:
+No hay proceso de build. Para validar:
 
 - Abre `Matematicas_Primaria.html` en el navegador y prueba el módulo tocado.
 - Comprueba navegación con `?modulo=...`, recarga (F5), puntos, racha, historial y exportación/importación.
 - Revisa que no aparezcan errores en la consola del navegador y que el diseño siga siendo responsive.
+- Con Node 20 o superior: `node --check js/*.js` y `node --test tests/*.test.js`. El flujo `.github/workflows/ci.yml` ejecuta ambas comprobaciones en cada push y pull request a `main`.
 
 ## Documentación del proyecto
 

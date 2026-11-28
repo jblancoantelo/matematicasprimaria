@@ -1,6 +1,7 @@
 
     (function(){
-      var KEY = 'mates_v3_progreso';
+      var KEY = 'mates_v4_progreso';
+      var KEY_ANTERIOR = 'mates_v3_progreso';
       var HIST_MAX = 1000;          // respuestas guardadas por juego (las más recientes)
 
       var MODULOS = {
@@ -36,7 +37,16 @@
       }
       function load(){
         try { s = JSON.parse(localStorage.getItem(KEY)); } catch(e){ s = null; }
-        if (!s || typeof s !== 'object') s = defaultState();
+        if (!s || typeof s !== 'object') {
+          // Migración desde v3: se copia el progreso y se conserva el original.
+          try { s = JSON.parse(localStorage.getItem(KEY_ANTERIOR)); } catch(e){ s = null; }
+          if (s && typeof s === 'object') {
+            if (!s.mod || typeof s.mod !== 'object') s.mod = {};
+            save();
+          } else {
+            s = defaultState();
+          }
+        }
       }
       var avisoGuardado = false;
       function save(){
@@ -73,7 +83,9 @@
         return mod + (ok ? '-correcto' : '-incorrecto');
       }
 
+      // Utilidades compartidas: si existe js/comun.js se usa su implementación.
       function escaparHtml(txt){
+        if (window.Comun && window.Comun.escaparHtml) return window.Comun.escaparHtml(txt);
         return String(txt == null ? '' : txt)
           .replace(/&/g, '&amp;')
           .replace(/</g, '&lt;')
@@ -279,21 +291,76 @@
         pintar();
       }
 
+      // Borra absolutamente todo lo que la aplicación guarda en este navegador.
+      function borrarTodo(){
+        if (!confirm('¿Borrar TODOS los datos de Aventuras Matemáticas?\n' +
+            'Se eliminan puntos, medallas, historiales y las tandas propias de Problemas y Unidades.\n' +
+            'Esta acción no se puede deshacer.')) return false;
+        var claves = [
+          KEY,
+          KEY_ANTERIOR,
+          'problemas_matematicas_primaria_historial_v2',
+          'problemas_matematicas_3primaria_historial_v1',
+          'metricHistory'
+        ];
+        try {
+          // Cualquier otra clave de la app con el prefijo mates_.
+          for (var i = localStorage.length - 1; i >= 0; i--) {
+            var k = localStorage.key(i);
+            if (k && k.indexOf('mates_') === 0 && claves.indexOf(k) === -1) claves.push(k);
+          }
+          for (var j = 0; j < claves.length; j++) localStorage.removeItem(claves[j]);
+        } catch (e) {
+          alert('No se pudieron borrar los datos del navegador.');
+          return false;
+        }
+        s = defaultState();
+        pintar();
+        for (var kk in MODULOS) pintarHistorial(kk);
+        brindis('🧨 Datos borrados · recargando…');
+        setTimeout(function(){ window.location.reload(); }, 700);
+        return true;
+      }
+
+      function leerExtra(clave){
+        try {
+          var datos = JSON.parse(localStorage.getItem(clave) || 'null');
+          return (datos && typeof datos === 'object') ? datos : null;
+        } catch (e) {
+          return null;
+        }
+      }
+
       function datosHistorial(){
         var modulos = {};
         for (var k in MODULOS) {
           var m = s.mod[k] || {};
           modulos[k] = {
             hist: Array.isArray(m.hist) ? m.hist : [],
-            dias: (m.dias && typeof m.dias === 'object') ? m.dias : {}
+            dias: (m.dias && typeof m.dias === 'object') ? m.dias : {},
+            a: m.a || 0,
+            e: m.e || 0,
+            ultimo: m.ultimo || 0,
+            borrado: !!m.borrado
           };
         }
         return {
           app: 'Aventuras Matemáticas',
-          tipo: 'historial',
-          version: 1,
+          tipo: 'copia-completa',
+          version: 2,
           exportado: new Date().toISOString(),
-          modulos: modulos
+          progreso: {
+            puntos: s.puntos,
+            racha: s.racha,
+            mejorRacha: s.mejorRacha,
+            aciertos: s.aciertos,
+            errores: s.errores
+          },
+          modulos: modulos,
+          extras: {
+            problemas: leerExtra('problemas_matematicas_primaria_historial_v2'),
+            unidades: leerExtra('metricHistory')
+          }
         };
       }
 
@@ -405,7 +472,11 @@
           alert('El JSON no tiene el formato de historial esperado.');
           return;
         }
-        if (!confirm('¿Reemplazar TODO el historial actual por el del archivo?\nLos puntos se mantienen y los aciertos y las medallas se recalculan desde el historial importado.')) return;
+        var esCopia = !!(datos.progreso && typeof datos.progreso === 'object');
+        var aviso = esCopia
+          ? '¿Restaurar esta copia de seguridad?\nSe reemplazan puntos, racha, historiales y los historiales propios de Problemas y Unidades.'
+          : '¿Reemplazar TODO el historial actual por el del archivo?\nLos puntos se mantienen y los aciertos y las medallas se recalculan desde el historial importado.';
+        if (!confirm(aviso)) return;
 
         for (var k in MODULOS) {
           var m = s.mod[k] || { a: 0, e: 0 };
@@ -419,7 +490,14 @@
               if (Array.isArray(e.l)) {
                 for (var j = 0; j < e.l.length; j++) l.push(e.l[j] == null ? '' : String(e.l[j]));
               }
-              hist.push({ t: e.t, ok: !!e.ok, l: l });
+              var item = { t: e.t, ok: !!e.ok, l: l, mod: typeof e.mod === 'string' ? e.mod : k };
+              if (e.tipo != null) item.tipo = String(e.tipo);
+              if (e.enunciado != null) item.enunciado = String(e.enunciado);
+              if (e.respuesta != null) item.respuesta = String(e.respuesta);
+              if (e.correcta != null) item.correcta = String(e.correcta);
+              if (typeof e.tiempoMs === 'number' && isFinite(e.tiempoMs)) item.tiempoMs = Math.round(e.tiempoMs);
+              if (typeof e.intento === 'number' && isFinite(e.intento)) item.intento = e.intento;
+              hist.push(item);
             }
           }
           hist.sort(function(a, b){ return a.t - b.t; });
@@ -433,29 +511,41 @@
             }
           }
 
-          m.hist = hist;
-          m.dias = dias;
-          m.borrado = hist.length === 0 && !Object.keys(dias).length;
-          m.ultimo = hist.length ? hist[hist.length - 1].t : 0;
-
           // Recalcula los contadores del módulo para que coincidan con el historial.
           var ca = 0, ce = 0, i2;
           if (hist.length) {
             for (i2 = 0; i2 < hist.length; i2++) {
               if (hist[i2].ok) ca++; else ce++;
             }
-          } else {
+          } else if (Object.keys(dias).length) {
             for (var dk2 in dias) {
               ca += dias[dk2].a || 0;
               ce += dias[dk2].e || 0;
             }
+          } else {
+            // Copias antiguas: conserva los contadores sin detalle.
+            ca = Math.max(0, Number(entrada.a) || 0);
+            ce = Math.max(0, Number(entrada.e) || 0);
           }
+          m.hist = hist;
+          m.dias = dias;
           m.a = ca;
           m.e = ce;
+          m.borrado = !(hist.length || Object.keys(dias).length || ca || ce);
+          m.ultimo = hist.length ? hist[hist.length - 1].t : Math.max(0, Number(entrada.ultimo) || 0);
           s.mod[k] = m;
         }
 
-        // Los totales globales también se recalculan a partir de los módulos.
+        // Copia completa: restaura también puntos y racha.
+        if (esCopia) {
+          var p = datos.progreso;
+          function num0(v){ return (typeof v === 'number' && isFinite(v) && v >= 0) ? Math.floor(v) : 0; }
+          s.puntos = num0(p.puntos);
+          s.racha = num0(p.racha);
+          s.mejorRacha = Math.max(num0(p.mejorRacha), s.racha);
+        }
+
+        // Los totales globales se recalculan a partir de los módulos.
         var totA = 0, totE = 0;
         for (var k2 in MODULOS) {
           if (s.mod[k2]) {
@@ -466,10 +556,29 @@
         s.aciertos = totA;
         s.errores = totE;
 
+        // Historiales propios de Problemas y Unidades.
+        var extras = datos.extras;
+        var extrasRestaurados = false;
+        if (extras && typeof extras === 'object') {
+          try {
+            if (extras.problemas && typeof extras.problemas === 'object') {
+              localStorage.setItem('problemas_matematicas_primaria_historial_v2', JSON.stringify(extras.problemas));
+              extrasRestaurados = true;
+            }
+            if (Array.isArray(extras.unidades)) {
+              localStorage.setItem('metricHistory', JSON.stringify(extras.unidades));
+              extrasRestaurados = true;
+            }
+          } catch (e2) {
+            brindis('⚠️ No se pudieron restaurar los historiales propios.');
+          }
+        }
+
         save();
         pintar();
         for (var kk in MODULOS) pintarHistorial(kk);
-        brindis('📥 Historial importado');
+        brindis(extrasRestaurados ? '📥 Copia restaurada · recargando…' : '📥 Historial importado');
+        if (extrasRestaurados) setTimeout(function(){ window.location.reload(); }, 800);
       }
 
       function confetti(){
@@ -496,7 +605,7 @@
         toastTemporizador = setTimeout(function(){ el.classList.remove('show'); }, 2400);
       }
 
-      function registrar(mod, ok, lineas){
+      function registrar(mod, ok, lineas, extra){
         ok = !!ok;
         var ahora = Date.now();
 
@@ -528,7 +637,21 @@
           var arr = Array.isArray(lineas) ? lineas : [lineas];
           var l = [];
           for (var i = 0; i < arr.length; i++) l.push(arr[i] == null ? '' : String(arr[i]));
-          m.hist.push({ t: ahora, ok: ok, l: l });
+          var entrada = { t: ahora, ok: ok, l: l, mod: mod };
+          // Detalle estructurado opcional (historial v4).
+          if (extra && typeof extra === 'object') {
+            if (extra.tipo != null) entrada.tipo = String(extra.tipo);
+            if (extra.enunciado != null) entrada.enunciado = String(extra.enunciado);
+            if (extra.respuesta != null) entrada.respuesta = String(extra.respuesta);
+            if (extra.correcta != null) entrada.correcta = String(extra.correcta);
+            if (typeof extra.tiempoMs === 'number' && isFinite(extra.tiempoMs) && extra.tiempoMs >= 0) {
+              entrada.tiempoMs = Math.round(extra.tiempoMs);
+            }
+            if (typeof extra.intento === 'number' && isFinite(extra.intento)) {
+              entrada.intento = extra.intento;
+            }
+          }
+          m.hist.push(entrada);
           if (m.hist.length > HIST_MAX) m.hist.splice(0, m.hist.length - HIST_MAX);
           m.borrado = false;
         }
@@ -560,6 +683,11 @@
           setTimeout(function(){ window.location.reload(); }, 700);
         }
       });
+
+      var btnBorrarTodo = document.getElementById('btn-borrar-todo');
+      if (btnBorrarTodo) {
+        btnBorrarTodo.addEventListener('click', borrarTodo);
+      }
 
       var listaLogros = document.getElementById('ini-logros');
       if (listaLogros) {
@@ -688,6 +816,7 @@
         pintar: pintar,
         pintarHistorial: pintarHistorial,
         borrarHistorial: borrarHistorial,
+        borrarTodo: borrarTodo,
         exportarHistorialJson: exportarHistorialJson,
         exportarHistorialHtml: exportarHistorialHtml,
         importarHistorial: importarHistorial,

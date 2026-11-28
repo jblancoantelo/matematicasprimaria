@@ -26,7 +26,7 @@
       box-shadow: var(--pr-shadow);
       margin-bottom: 22px;
     }
-    .pr-hero h1 { margin: 0 0 10px; font-size: 2rem; }
+    .pr-hero .titulo-modulo { margin: 0 0 10px; font-size: 2rem; }
     .pr-hero p { margin: 0; font-size: 1.02rem; line-height: 1.5; }
     .pr-panel {
       background: var(--pr-card);
@@ -145,7 +145,7 @@
 
     @media (max-width: 760px) {
       .pr-method, .pr-history-grid { grid-template-columns: 1fr; }
-      .pr-hero h1 { font-size: 1.6rem; }
+      .pr-hero .titulo-modulo { font-size: 1.6rem; }
       .pr-problem-text { font-size: 1.06rem; }
       .pr-student-area { grid-template-columns: 1fr; }
       .um-ex { grid-template-columns: 1fr; }

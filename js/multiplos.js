@@ -4,6 +4,7 @@
       let aciertos = 0;
       let errores = 0;
       let respondido = true;
+      let inicioPregunta = 0;
 
       function randInt(min, max){ return Math.floor(Math.random()*(max-min+1))+min; }
 
@@ -64,6 +65,7 @@
           });
         }
         respondido = false;
+        inicioPregunta = Date.now();
       }
 
       function elegir(bot, valor){
@@ -93,7 +95,13 @@
         const lineas = esCorrecto
           ? ['✅ ' + actual.texto + ' · Tú: ' + elegido]
           : ['❌ Tú: ' + elegido, '✔️ Correcto: ' + actual.texto];
-        window.MatesCore.registrar('md', esCorrecto, lineas);
+        window.MatesCore.registrar('md', esCorrecto, lineas, {
+          tipo: actual.tipo,
+          enunciado: actual.texto,
+          respuesta: elegido,
+          correcta: String(actual.correcta),
+          tiempoMs: Date.now() - inicioPregunta
+        });
       }
 
       document.getElementById('md-generar').addEventListener('click', function(){ generar(); });

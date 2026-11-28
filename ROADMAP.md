@@ -188,9 +188,7 @@ Reglas:
 ## 3. 🎨 Experiencia de uso y accesibilidad ⭐ · M
 
 - [ ] Revisar **contraste y tamaño de letra** (WCAG AA).
-- [ ] **Navegación completa con teclado** y foco visible en todos los botones.
 - [ ] **Etiquetas ARIA** en los juegos con interacción compleja (columnas, fracciones, combinadas).
-- [ ] Respetar `prefers-reduced-motion` (desactivar confeti y animaciones).
 - [ ] **Modo oscuro**.
 - [ ] **Alto contraste** para aulas con proyectores.
 - [ ] Textos en **lectura fácil**: frases cortas, sin abreviaturas raras.
@@ -205,10 +203,9 @@ Reglas:
 
 ## 4. ⚙️ Técnico y calidad ⭐ · M
 
-- [ ] **Pruebas automáticas** de los generadores de ejercicios (que no produzcan restas negativas, divisiones inexactas, etc.).
-- [ ] **Comprobación de sintaxis y estilo** en CI (ESLint + Prettier) y despliegue automático a GitHub Pages.
+- [ ] **Ampliar las pruebas automáticas** a los generadores de ejercicios (que no produzcan restas negativas, divisiones inexactas, etc.). Ya hay CI con `node --check` y `node --test`.
+- [ ] **Estilo automático** en CI (ESLint + Prettier) y despliegue automático a GitHub Pages.
 - [ ] Separar el HTML en **plantillas por módulo** o generar las secciones con JS para que el archivo no crezca sin control.
-- [ ] **Versionado del formato de `localStorage`** con migraciones (`mates_v4_progreso` → …).
 - [ ] **Exportación/importación** más robusta, con validación y mensajes de error claros.
 - [ ] Servir los JS como **módulos ES** y eliminar variables globales.
 - [ ] Medir rendimiento en móviles antiguos (los juegos con dibujos en canvas son los más pesados).
@@ -340,19 +337,13 @@ Regla práctica: nada entra en la versión publicada sin funcionar **sin conexi�
 
 #### P1 — Arquitectura y datos (3–5 días)
 
-- [ ] **Historial estructurado** en lugar de solo texto: `{ t, ok, mod, tipo, enunciado, respuesta, correcta, tiempoMs, intento }`, manteniendo `l` para compatibilidad y migrando de `mates_v3_progreso` a `mates_v4_progreso`.
-- [ ] **Renderizado perezoso del historial**: pintar solo los `details` abiertos y mostrar los últimos 50 con “Ver más”.
-- [ ] **Gestión de cuota**: límite por módulo o compactación de resúmenes, `try/catch` en `save()` y aviso al usuario si no se puede guardar.
-- [ ] **Copia de seguridad completa**: exportar e importar puntos, racha, medallas, historiales y ajustes; añadir **Borrar todos los datos**.
-- [ ] **Utilidades compartidas** en `js/comun.js`: `parseNum`, `fmt`, `randInt`, `escaparHtml`, `crearId`, `programarSiguiente` y `bloquearPregunta`. Hoy `randInt`, `parseNum` y `separar` están duplicados en casi todos los módulos.
-- [ ] **Generador aleatorio con semilla** (`mulberry32` o similar): permite tests deterministas y retos por URL.
-- [ ] **Tests sin build**: `node --test` para los generadores (divisiones exactas, restas no negativas, redondeo, romanos, fracciones equivalentes, problemas sin resultados negativos) y `node --check` en GitHub Actions.
+- [ ] **Ampliar `js/comun.js`**: ya concentra `escaparHtml`, `separarMiles`, `randInt`, `elegir`, `barajar` y la semilla; faltan `parseNum`, `fmt`, `crearId`, `programarSiguiente` y `bloquearPregunta`, que siguen duplicados en casi todos los módulos.
+- [ ] **Tests de los generadores**: `node --test` para divisiones exactas, restas no negativas, redondeo, romanos, fracciones equivalentes y problemas sin resultados negativos. Ya existen pruebas de `js/comun.js`, de la estructura del HTML y del flujo de integración continua.
 - [ ] **Configuración centralizada de módulos**: `MODULOS` y `TAB` están duplicados en `core.js` y en las tarjetas del HTML.
 
 #### P2 — Calidad, accesibilidad y plataforma (1–2 semanas)
 
-- [ ] **Accesibilidad**: `label`/`aria-label` en todos los inputs, `:focus-visible` global, objetivos táctiles de 44 px, `aria-live` en resultados, `prefers-reduced-motion`, un solo `h1` por página y `h2` en los módulos.
-- [ ] **Responsive real**: probar a 320, 360, 768 y 1024 px; envolver divisiones y multiplicaciones en un contenedor con `overflow-x: auto` y usar variables CSS para el tamaño de celda.
+- [ ] **Repaso responsive manual**: probar a 320, 360, 768 y 1024 px y usar variables CSS para el tamaño de celda en divisiones y multiplicaciones (el `overflow-x: auto` ya está).
 - [ ] **PWA instalable**: `manifest.json`, iconos y service worker (funciona en GitHub Pages por HTTPS; en `file://` no se instala).
 - [ ] **CSP y seguridad**: escapar todo contenido de usuario, evitar inyección de fórmulas en CSV y añadir CSP después de quitar los `onclick` inline de sumas y tablas.
 - [ ] **Limpieza**: quitar funciones muertas en `divisiones.js` (`filaProducto`, `filaGuion`, `dashSpan`, `filaGuionPuntitos`), añadir `'use strict'`, unificar `var`/`let`/`const` y estilos con tokens comunes.
@@ -363,7 +354,7 @@ Regla práctica: nada entra en la versión publicada sin funcionar **sin conexi�
 | Fase | Contenido | Duración |
 | --- | --- | --- |
 | **0. Estabilidad** ✅ | Arreglos P0: doble puntuación, temporizadores, contrarreloj de tablas, cambio de tipo en unidades, coma decimal y confirmaciones (hecha el 25/11/2026) | 1–2 días |
-| **1. Base para 4.º** | Historial estructurado, renderizado perezoso, copia de seguridad completa, utilidades compartidas y primeros tests | 3–5 días |
+| **1. Base para 4.º** ✅ | Historial estructurado, renderizado perezoso, copia de seguridad completa, utilidades compartidas, semilla y primeros tests (hecha el 28/11/2026) | 3–5 días |
 | **2. Contenido de 4.º** | Modo 4.º, cálculo mental y estimación, fracción de cantidad, decimales y problemas con datos que sobran o faltan | 1 semana |
 | **3. Plataforma** | PWA, perfiles locales, lectura en voz alta, pizarra y modo profe | 2 semanas |
 
@@ -379,8 +370,8 @@ Regla práctica: nada entra en la versión publicada sin funcionar **sin conexi�
 
 ### 11.1 🔍 Apuntes sobre el estado actual del roadmap
 
-- **Ya completado pero aún listado como pendiente:** en `js/core.js` ya funcionan `mates_v4_progreso` (con migración desde `mates_v3_progreso`), el aviso de almacenamiento lleno (`quota`), el renderizado perezoso de `<details>` abiertos y el botón **Ver más** de 50 en 50. También se completaron P0 (Fase 0) y parte de P2 (`:focus-visible`, `aria-label` en casillas de 6 módulos y `overflow-x: auto` en divisiones/multiplicaciones). Conviene marcarlos como hechos y actualizar las referencias a `mates_v3_progreso` en `README.md` y `AGENTS.md`.
-- **Hook ya preparado:** `js/core.js` consulta `window.Comun.escaparHtml`, aunque `js/comun.js` aún no se ha creado.
+- **Estado actualizado (28/11/2026):** el historial estructurado, la migración a `mates_v4_progreso`, el renderizado perezoso, la gestión de cuota, la copia de seguridad completa, `js/comun.js` y el generador con semilla ya están implementados. También están hechos casi todos los puntos de accesibilidad de P2 y `ROADMAP.md`, `README.md` y `AGENTS.md` están al día.
+- **Pendiente de una próxima limpieza:** ampliar `js/comun.js` con `parseNum`, `fmt`, `crearId`, `programarSiguiente` y `bloquearPregunta`, añadir tests de los generadores y centralizar `MODULOS`/`TAB` frente a las tarjetas del HTML.
 - **Duplicidades y tensiones a consolidar en una próxima limpieza:** varias ideas aparecen repetidas entre las secciones 1–7 y la 10 (*Detective de errores*, *Repetición espaciada*, *Cálculo mental*, *Reto diario*, *Perfiles locales*, *Retos por URL*, *Modo proyector/profe*, *Modo sin puntos*, *Lectura en voz alta*, *Pizarra*, *PWA* y *Tests*). Además, conviene alinear la propuesta de *módulos ES* (sección 4) con la restricción de doble clic `file://` (10.3 P2), y revisar si *cuentas opcionales* / *telemetría* encajan con la política de privacidad cero-servidor (sección 6).
 - **Enfoque para la IA (sección 1.1):** antes de conectar un LLM con clave o proxy, conviene implementar primero la **opción D (explicaciones deterministas por reglas)** según el error típico (llevadas, decimales, orden de operaciones), garantizando uso 100 % offline y sin riesgos de exposición de claves.
 

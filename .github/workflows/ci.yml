@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  comprobar:
+    name: Sintaxis y pruebas
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar el repositorio
+        uses: actions/checkout@v4
+
+      - name: Preparar Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Comprobar sintaxis de los scripts
+        run: |
+          for f in js/*.js; do
+            node --check "$f"
+          done
+
+      - name: Ejecutar las pruebas
+        run: node --test tests/*.test.js

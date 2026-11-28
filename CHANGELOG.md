@@ -2,11 +2,29 @@
 
 Todos los cambios relevantes de **Matemáticas Primaria**. Las entradas están ordenadas por fecha, de la más reciente a la más antigua.
 
+## [2026-11-28]
+
+### Añadido
+- `js/comun.js` con utilidades compartidas (`escaparHtml`, `separarMiles`, `randInt`, `elegir` y `barajar`) y `module.exports` para las pruebas.
+- Generador pseudoaleatorio `mulberry32` con semilla: añadiendo `?semilla=...` a la URL, un mismo enlace repite los mismos ejercicios.
+- Historial estructurado en los 16 juegos con tipo, enunciado, respuesta, solución, tiempo empleado e intento.
+- Copia de seguridad completa en JSON: incluye puntos, racha, medallas, historiales centrales y los historiales propios de **problemas** y **unidades**.
+- Botón **Borrar todos los datos** en el panel de inicio.
+- Pruebas con `node --test` para `js/comun.js` y la estructura del HTML, y flujo de integración continua en `.github/workflows/ci.yml`.
+
+### Cambiado
+- La clave de almacenamiento pasa a `mates_v4_progreso`, con migración automática desde `mates_v3_progreso`.
+- Los títulos de los 16 juegos pasan de `h1` a `h2` con la clase `titulo-modulo`, dejando un único `h1` en la página.
+- Las zonas de resultado y los historiales propios anuncian los cambios con `aria-live`.
+- Se añadieron variables CSS en `:root`, objetivos táctiles de 44 px en pantallas táctiles y respeto por `prefers-reduced-motion`.
+- `ROADMAP.md` marca como hechos los puntos de P1 y P2 ya aplicados y deja solo los pendientes; `README.md` y `AGENTS.md` reflejan la nueva estructura.
+
 ## [2026-11-26]
 
 ### Añadido
 - `:focus-visible` global para navegar con teclado por botones, enlaces, campos, casillas y resúmenes de detalle.
 - `aria-label` en las casillas generadas de **sumas**, **descomponer**, **divisiones**, **multiplicaciones**, **propiedades** y **combinadas**, y en el campo de segundos del contrarreloj de **tablas**.
+- Nueva sección **11. Nuevas propuestas — Gemini 4 Hydrogen** en `ROADMAP.md` con apuntes de estado y 13 nuevas ideas detalladas.
 
 ### Cambiado
 - Se retiró del `ROADMAP.md` la lista de fallos ya corregidos para dejar solo las propuestas pendientes.

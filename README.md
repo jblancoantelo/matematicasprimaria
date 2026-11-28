@@ -48,7 +48,7 @@ Cada juego guarda un historial completo de sus respuestas:
 - La **respuesta correcta** cuando falla, con la operación o solución completa.
 - En algunos juegos se indica también la operación resuelta paso a paso.
 
-El historial se guarda solo en el navegador del dispositivo, dentro del mismo almacenamiento que los puntos y medallas (`mates_v3_progreso`). Cada juego conserva **todas sus respuestas, sin límite**. En *Problemas* y *Unidades* se mantiene además su historial detallado propio, con botón para borrarlo. Desde el panel de inicio se puede descargar todo el historial en **HTML** o **JSON**, e importar un JSON para reemplazarlo por completo sin tocar puntos ni medallas.
+El historial se guarda solo en el navegador del dispositivo, dentro del mismo almacenamiento que los puntos y medallas (`mates_v4_progreso`, con migración automática desde `mates_v3_progreso`). Cada juego conserva **hasta 1000 respuestas** (las más recientes) y cada intento guarda también datos estructurados: tipo de ejercicio, enunciado, respuesta, solución y tiempo empleado. En *Problemas* y *Unidades* se mantiene además su historial detallado propio, con botón para borrarlo. Desde el panel de inicio se puede descargar una **copia completa en HTML o JSON**, importarla para restaurar puntos, racha e historiales, y usar **Borrar todos los datos** para dejar la aplicación como nueva.
 
 ---
 
@@ -173,6 +173,11 @@ Aprende y practica el **orden de las operaciones** con sumas, restas, multiplica
 ```
 mates/
 ├── Matematicas_Primaria.html   # Página principal (estructura y módulos)
+├── tests/
+│   ├── comun.test.js           # Pruebas de las utilidades compartidas
+│   └── estructura.test.js      # Comprobaciones del HTML y del núcleo
+├── .github/
+│   └── workflows/ci.yml        # Integración continua (Node + node --test)
 ├── css/
 │   ├── base.css                # Estilos base
 │   ├── global.css              # Estilos globales v3 (panel, cabecera, logros)
@@ -189,7 +194,8 @@ mates/
 │   └── combinadas.css          # Operaciones combinadas
 └── js/
     ├── navegacion.js           # Cambio de pestañas y URL
-    ├── core.js                 # Puntos, racha, medallas, logros, confeti, toast
+    ├── comun.js                # Utilidades compartidas y semilla determinista
+    ├── core.js                 # Puntos, racha, medallas, logros, historial, copias
     ├── sumas.js                # Módulo 1
     ├── tablas.js               # Módulo 2
     ├── unidades.js             # Módulo 3
@@ -217,6 +223,25 @@ mates/
 3. En la pantalla principal, elige un juego, resuelve los ejercicios y gana puntos y medallas.
 
 > No requiere instalación, servidor ni conexión a internet. Todo el progreso se guarda localmente en el navegador del dispositivo.
+
+> Añadiendo `?semilla=algo` a la URL (por ejemplo `?modulo=sumas&semilla=reto-1`) los generadores usan una secuencia pseudoaleatoria reproducible: el mismo enlace produce los mismos ejercicios.
+
+---
+
+## ✅ Comprobación
+
+No hay build ni dependencias. Para validar los cambios:
+
+1. Abre `Matematicas_Primaria.html` en el navegador y prueba el módulo tocado.
+2. Comprueba navegación con `?modulo=...`, recarga (F5), puntos, racha, historial y exportación/importación.
+3. Revisa que no aparezcan errores en la consola del navegador y que el diseño siga siendo responsive.
+
+Opcionalmente, con Node 20 o superior:
+
+```bash
+node --check js/*.js
+node --test tests/*.test.js
+```
 
 ---
 

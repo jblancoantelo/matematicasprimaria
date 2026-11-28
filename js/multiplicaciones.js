@@ -7,6 +7,7 @@
       let errores = 0;
       let comprobado = true;
       let timerSiguiente = null;
+      let inicioPregunta = 0;
 
       function cancelarSiguiente(){
         if (timerSiguiente) { clearTimeout(timerSiguiente); timerSiguiente = null; }
@@ -173,6 +174,7 @@
         const filas = filasRellenables();
         const primero = filas.length ? ultimaCaja(filas[0]) : null;
         if (primero) primero.focus();
+        inicioPregunta = Date.now();
       }
 
       function leerFila(ident){
@@ -254,7 +256,13 @@
           ? ['✅ ' + aTxt + ' × ' + bTxt + ' = ' + pTxt + ' · Tú: ' + tuTxt]
           : ['❌ Tú: ' + aTxt + ' × ' + bTxt + ' = ' + tuTxt,
              '✔️ Correcto: ' + aTxt + ' × ' + bTxt + ' = ' + pTxt];
-        window.MatesCore.registrar('mu', todoBien, lineas);
+        window.MatesCore.registrar('mu', todoBien, lineas, {
+          tipo: 'multiplicacion',
+          enunciado: aTxt + ' × ' + bTxt,
+          respuesta: tuTxt,
+          correcta: pTxt,
+          tiempoMs: Date.now() - inicioPregunta
+        });
 
         if (todoBien) programarSiguiente(generar, 3000);
       }

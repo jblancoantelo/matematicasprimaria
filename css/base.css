@@ -1,10 +1,19 @@
 
     * { box-sizing: border-box; }
+    :root {
+      --color-texto: #1f2937;
+      --color-primario: #2563eb;
+      --color-ok: #15803d;
+      --color-ko: #b91c1c;
+      --radio: 12px;
+      --toque-min: 44px;
+      --espacio: 16px;
+    }
     body {
       margin: 0;
       font-family: Arial, Helvetica, sans-serif;
       background: linear-gradient(160deg, #eef3f9 0%, #fdfefe 100%);
-      color: #1f2937;
+      color: var(--color-texto);
     }
     .app-header {
       text-align: center;
@@ -17,6 +26,13 @@
     }
     .tab-panel { display: none; }
     .tab-panel.active { display: block; }
+
+    /* Un único h1 en la página: los títulos de cada juego son h2. */
+    .tab-panel .titulo-modulo {
+      font-size: clamp(1.5rem, 3.6vw, 2rem);
+      line-height: 1.2;
+      margin: 0.4rem 0 1rem;
+    }
 
     /* Foco visible para navegar con teclado */
     button:focus-visible,
@@ -49,5 +65,36 @@
     .hist-detalle {
       font-size: 0.94em;
       opacity: 0.95;
+    }
+
+    /* Objetivos táctiles cómodos en pantallas táctiles. */
+    @media (pointer: coarse) {
+      .tab-panel button,
+      .tab-panel summary,
+      .tab-panel select,
+      .card-modulo,
+      .btn-tool,
+      .btn-reset {
+        min-height: var(--toque-min);
+      }
+    }
+
+    /* Pantallas pequeñas: menos relleno y títulos algo más compactos. */
+    @media (max-width: 640px) {
+      .wrap-app { padding: 6px 10px 32px; }
+      .app-header { padding: 14px 10px 4px; }
+      .tab-panel .titulo-modulo { margin: 0.2rem 0 0.75rem; }
+    }
+
+    /* Respeta la preferencia de reducir animaciones. */
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+        scroll-behavior: auto !important;
+      }
     }
   

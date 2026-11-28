@@ -102,6 +102,7 @@
         <div class="ini-logros" id="ini-logros"></div>
         <div class="ini-tools">
           <button class="btn-reset" id="btn-reset" type="button">🗑️ Reiniciar puntos</button>
+          <button class="btn-reset" id="btn-borrar-todo" type="button">🧨 Borrar todos los datos</button>
           <div class="ini-menu">
             <button class="btn-tool" id="btn-export" type="button" aria-haspopup="true" aria-expanded="false">⬇️ Descargar historial ▴</button>
             <div class="ini-menu-lista" id="ini-menu-export" hidden>
@@ -120,7 +121,7 @@
          ============================================================ -->
     <section id="tab-sumas" class="tab-panel">
       <div class="sy-module">
-        <h1>🧮 Sumas y Restas Verticales por Cifras</h1>
+        <h2 class="titulo-modulo">🧮 Sumas y Restas Verticales por Cifras</h2>
 
         <label for="sy-tipo">Operación:</label>
         <select id="sy-tipo">
@@ -149,7 +150,7 @@
         <div id="sy-respuestaContainer" style="margin-top: 1rem;"></div>
         <button onclick="sy_verificar()">Verificar</button>
 
-        <div id="sy-resultado"></div>
+        <div id="sy-resultado" aria-live="polite"></div>
 
         <div id="sy-contador">
           ✅ Aciertos: <span id="sy-aciertos">0</span> |
@@ -168,7 +169,7 @@
          ============================================================ -->
     <section id="tab-tablas" class="tab-panel">
       <div class="tm-module">
-        <h1>🧠 Práctica de Tablas de Multiplicar</h1>
+        <h2 class="titulo-modulo">🧠 Práctica de Tablas de Multiplicar</h2>
 
         <label for="tm-tabla">Elige una tabla:</label>
         <select id="tm-tabla">
@@ -188,7 +189,7 @@
           <span id="tm-reloj" style="font-weight:bold; margin-left:.5rem;"></span>
         </div>
 
-        <div id="tm-resultado"></div>
+        <div id="tm-resultado" aria-live="polite"></div>
 
         <div id="tm-contador">
           ✅ Aciertos: <span id="tm-aciertos">0</span> |
@@ -208,7 +209,7 @@
     <section id="tab-unidades" class="tab-panel">
       <div class="um-module">
         <div class="um-wrap">
-          <h1>Práctica de Medidas: Longitud, Masa, Capacidad y Tiempo</h1>
+          <h2 class="titulo-modulo">Práctica de Medidas: Longitud, Masa, Capacidad y Tiempo</h2>
           <p class="um-sub" id="um-sub">Convierte unidades. Ideal para 4º de primaria, con historial para familias.</p>
 
           <!-- Controles -->
@@ -248,7 +249,7 @@
               <button id="um-genBtn" title="Generar nuevos ejercicios">🎲 Generar ejercicios</button>
               <button id="um-checkBtn" class="secondary" disabled title="Comprueba tus respuestas">✅ Comprobar resultados</button>
               <button id="um-toggleHintBtn" class="ghost" title="Muestra/oculta la pista">💡 Mostrar pista</button>
-              <span class="um-pill" id="um-scorePill" style="display:none;"></span>
+              <span class="um-pill" id="um-scorePill" style="display:none;" aria-live="polite"></span>
             </div>
 
             <!-- PISTA GLOBAL (oculta por defecto, visible con el botón) -->
@@ -290,7 +291,7 @@
     <section id="tab-problemas" class="tab-panel">
       <div class="pr-wrap">
         <section class="pr-hero">
-          <h1>🧮 Problemas de Matemáticas para 4º de Primaria</h1>
+          <h2 class="titulo-modulo">🧮 Problemas de Matemáticas para 4º de Primaria</h2>
           <p>
             Genera problemas con <strong>suma, resta, multiplicación y división</strong>.
             Puedes elegir cuántas operaciones hacen falta para resolverlos. Después,
@@ -348,7 +349,7 @@
               </div>
               <button class="pr-btn-light" id="pr-checkBtn">Comprobar respuesta</button>
             </div>
-            <div class="pr-feedback" id="pr-feedback"></div>
+            <div class="pr-feedback" id="pr-feedback" aria-live="polite"></div>
 
             <div class="pr-actions">
               <button class="pr-btn-secondary" id="pr-showAnswerBtn" aria-expanded="false">Mostrar solución</button>
@@ -391,7 +392,7 @@
          ============================================================ -->
     <section id="tab-fracciones" class="tab-panel">
       <div class="fr-module">
-        <h1>🍕 Fracciones</h1>
+        <h2 class="titulo-modulo">🍕 Fracciones</h2>
         <p style="margin:0.5rem 0;">Pinta, suma, resta y compara fracciones con apoyo visual.</p>
 
         <label for="fr-tipo">Tipo de ejercicio:</label>
@@ -409,7 +410,7 @@
           <input type="text" id="fr-respuesta" placeholder="Tu respuesta" aria-label="Respuesta de fracción" autocomplete="off" />
           <button id="fr-verificar">Verificar</button>
         </div>
-        <div id="fr-resultado"></div>
+        <div id="fr-resultado" aria-live="polite"></div>
 
         <div id="fr-contador">
           ✅ Aciertos: <span id="fr-aciertos">0</span> |
@@ -428,7 +429,7 @@
          ============================================================ -->
     <section id="tab-decimales" class="tab-panel">
       <div class="de-module">
-        <h1>💰 Decimales y dinero</h1>
+        <h2 class="titulo-modulo">💰 Decimales y dinero</h2>
         <p style="margin:0.5rem 0;">Décimas, centésimas, céntimos y euros con apoyo visual.</p>
 
         <label for="de-tipo">Tipo de ejercicio:</label>
@@ -447,7 +448,7 @@
           <input type="text" id="de-respuesta" placeholder="Tu respuesta" aria-label="Respuesta de decimales" autocomplete="off" />
           <button id="de-verificar">Verificar</button>
         </div>
-        <div id="de-resultado"></div>
+        <div id="de-resultado" aria-live="polite"></div>
 
         <div id="de-contador">
           ✅ Aciertos: <span id="de-aciertos">0</span> |
@@ -466,7 +467,7 @@
          ============================================================ -->
     <section id="tab-reloj" class="tab-panel">
       <div class="re-module">
-        <h1>🕐 El Reloj</h1>
+        <h2 class="titulo-modulo">🕐 El Reloj</h2>
         <p style="margin:0.5rem 0;">Lee la hora y calcula horas en el reloj de agujas.</p>
 
         <label for="re-tipo">Tipo de ejercicio:</label>
@@ -480,7 +481,7 @@
         <div id="re-visual"></div>
         <div id="re-enunciado" class="re-enunciado"></div>
         <div id="re-opciones"></div>
-        <div id="re-resultado"></div>
+        <div id="re-resultado" aria-live="polite"></div>
 
         <div id="re-contador">
           ✅ Aciertos: <span id="re-aciertos">0</span> |
@@ -499,7 +500,7 @@
          ============================================================ -->
     <section id="tab-romanos" class="tab-panel">
       <div class="nr-module">
-        <h1>🏛️ Números Romanos</h1>
+        <h2 class="titulo-modulo">🏛️ Números Romanos</h2>
         <p style="margin:0.5rem 0;">Convierte entre números romanos y números normales.</p>
 
         <label for="nr-tipo">Tipo de ejercicio:</label>
@@ -515,7 +516,7 @@
           <input type="text" id="nr-respuesta" placeholder="Tu respuesta" aria-label="Respuesta en números romanos o normales" autocomplete="off" />
           <button id="nr-verificar">Verificar</button>
         </div>
-        <div id="nr-resultado"></div>
+        <div id="nr-resultado" aria-live="polite"></div>
 
         <div id="nr-contador">
           ✅ Aciertos: <span id="nr-aciertos">0</span> |
@@ -534,7 +535,7 @@
          ============================================================ -->
     <section id="tab-figuras" class="tab-panel">
       <div class="pa-module">
-        <h1>📐 Perímetro y Área</h1>
+        <h2 class="titulo-modulo">📐 Perímetro y Área</h2>
         <p style="margin:0.5rem 0;">Calcula el contorno y la superficie que ocupan las figuras.</p>
 
         <label for="pa-tipo">Tipo de ejercicio:</label>
@@ -551,7 +552,7 @@
           <input type="text" id="pa-respuesta" placeholder="Tu respuesta" aria-label="Respuesta de perímetro o área" autocomplete="off" />
           <button id="pa-verificar">Verificar</button>
         </div>
-        <div id="pa-resultado"></div>
+        <div id="pa-resultado" aria-live="polite"></div>
 
         <div id="pa-contador">
           ✅ Aciertos: <span id="pa-aciertos">0</span> |
@@ -570,7 +571,7 @@
          ============================================================ -->
     <section id="tab-multiplos" class="tab-panel">
       <div class="md-module">
-        <h1>🔢 Múltiplos y Divisores</h1>
+        <h2 class="titulo-modulo">🔢 Múltiplos y Divisores</h2>
         <p style="margin:0.5rem 0;">Piensa en múltiplos, divisores, m.c.m. y m.c.d.</p>
 
         <label for="md-tipo">Tipo de ejercicio:</label>
@@ -583,7 +584,7 @@
 
         <div id="md-enunciado"></div>
         <div id="md-opciones"></div>
-        <div id="md-resultado"></div>
+        <div id="md-resultado" aria-live="polite"></div>
 
         <div id="md-contador">
           ✅ Aciertos: <span id="md-aciertos">0</span> |
@@ -602,7 +603,7 @@
          ============================================================ -->
     <section id="tab-descomponer" class="tab-panel">
       <div class="dm-module">
-        <h1>🧩 Descomponer números</h1>
+        <h2 class="titulo-modulo">🧩 Descomponer números</h2>
         <p style="margin:0.5rem 0;">Escribe cuántas unidades vale cada cifra del número.</p>
 
         <label for="dm-cifras">Cifras del número:</label>
@@ -624,7 +625,7 @@
         <div id="dm-rows"></div>
         <button id="dm-comprobar">✔️ Comprobar</button>
 
-        <div id="dm-resultado"></div>
+        <div id="dm-resultado" aria-live="polite"></div>
 
         <div id="dm-contador">
           ✅ Aciertos: <span id="dm-aciertos">0</span> |
@@ -643,7 +644,7 @@
          ============================================================ -->
     <section id="tab-divisiones" class="tab-panel">
       <div class="dv-module">
-        <h1>➗ Divisiones por cifras</h1>
+        <h2 class="titulo-modulo">➗ Divisiones por cifras</h2>
         <p style="margin:0.5rem 0;">Resuelve la división y escribe el cociente y el resto en las cajitas.</p>
 
         <label for="dv-dvdCifras">Cifras del dividendo:</label>
@@ -674,7 +675,7 @@
           <button id="dv-paso">✔️ Comprobar paso</button>
         </div>
 
-        <div id="dv-resultado"></div>
+        <div id="dv-resultado" aria-live="polite"></div>
 
         <div id="dv-contador">
           ✅ Aciertos: <span id="dv-aciertos">0</span> |
@@ -693,7 +694,7 @@
          ============================================================ -->
     <section id="tab-aproximar" class="tab-panel">
       <div class="ap-module">
-        <h1>🎯 Aproximaciones (redondeo)</h1>
+        <h2 class="titulo-modulo">🎯 Aproximaciones (redondeo)</h2>
         <p style="margin:0.5rem 0;">Aproxima números enteros a la unidad, decena, centena…</p>
 
         <label for="ap-cifras">Cifras del número:</label>
@@ -721,7 +722,7 @@
           <input type="text" id="ap-respuesta" placeholder="Tu respuesta" aria-label="Respuesta de aproximación" autocomplete="off" />
           <button id="ap-comprobar">✔️ Comprobar</button>
         </div>
-        <div id="ap-resultado"></div>
+        <div id="ap-resultado" aria-live="polite"></div>
 
         <div id="ap-contador">
           ✅ Aciertos: <span id="ap-aciertos">0</span> |
@@ -740,7 +741,7 @@
          ============================================================ -->
     <section id="tab-multiplicaciones" class="tab-panel">
       <div class="mu-module">
-        <h1>✖️ Multiplicaciones en columna</h1>
+        <h2 class="titulo-modulo">✖️ Multiplicaciones en columna</h2>
         <p style="margin:0.5rem 0;">Elige las cifras y multiplica como en el papel: escribe cada producto en su fila de casillas y luego haz la suma final.</p>
 
         <div class="mu-bloque">
@@ -788,7 +789,7 @@
           <button id="mu-comprobar">✔️ Comprobar</button>
         </div>
 
-        <div id="mu-resultado"></div>
+        <div id="mu-resultado" aria-live="polite"></div>
 
         <div id="mu-contador">
           ✅ Aciertos: <span id="mu-aciertos">0</span> |
@@ -807,7 +808,7 @@
          ============================================================ -->
     <section id="tab-propiedades" class="tab-panel">
       <div class="pm-module">
-        <h1>🔁 Propiedades de las operaciones</h1>
+        <h2 class="titulo-modulo">🔁 Propiedades de las operaciones</h2>
         <p class="pm-sub">
           Practica las propiedades <strong>conmutativa</strong>, <strong>asociativa</strong> y
           <strong>distributiva</strong>. Escribe tú los números, elige × o + en cada paso, coloca los
@@ -858,7 +859,7 @@
          ============================================================ -->
     <section id="tab-combinadas" class="tab-panel">
       <div class="oc-module">
-        <h1>🧠 Operaciones combinadas</h1>
+        <h2 class="titulo-modulo">🧠 Operaciones combinadas</h2>
         <p class="oc-sub">
           Aprende qué operación se resuelve primero: los <strong>paréntesis</strong>, después las
           <strong>multiplicaciones y divisiones</strong> y, al final, las <strong>sumas y restas</strong>.
@@ -921,7 +922,10 @@
   <script src="js/navegacion.js"></script>
 
 
-  <!-- ============ CORE V3: PUNTOS, RACHA, MEDALLAS, TEMA, NOMBRE ============ -->
+  <!-- ============ UTILIDADES COMPARTIDAS (ANTES QUE CORE) ============ -->
+  <script src="js/comun.js"></script>
+
+  <!-- ============ CORE V4: PUNTOS, RACHA, MEDALLAS, HISTORIAL ============ -->
   <script src="js/core.js"></script>
 
 

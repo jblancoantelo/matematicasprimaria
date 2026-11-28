@@ -4,6 +4,7 @@
       let aciertos = 0;
       let errores = 0;
       let respondido = true;
+      let inicioPregunta = 0;
 
       function randInt(min, max){ return Math.floor(Math.random()*(max-min+1))+min; }
 
@@ -56,7 +57,9 @@
           actual = { tipo, correcta: String(n), texto: rom + ' = ' + n };
           enunciado.innerHTML = '¿Qué número normal es <strong>' + rom + '</strong>?';
         }
+        if (actual) actual.enunciado = enunciado.textContent;
         respondido = false;
+        inicioPregunta = Date.now();
       }
 
       function verificar(){
@@ -90,7 +93,13 @@
         const lineas = esCorrecto
           ? ['✅ ' + actual.texto + ' · Tú: ' + tu]
           : ['❌ Tú: ' + (tu || '(vacío)'), '✔️ Correcto: ' + actual.texto];
-        window.MatesCore.registrar('nr', esCorrecto, lineas);
+        window.MatesCore.registrar('nr', esCorrecto, lineas, {
+          tipo: actual.tipo,
+          enunciado: actual.enunciado,
+          respuesta: tu,
+          correcta: actual.correcta,
+          tiempoMs: Date.now() - inicioPregunta
+        });
       }
 
       document.getElementById('nr-generar').addEventListener('click', function(){ generar(); });

@@ -11,6 +11,7 @@
       let crFin = false;
       let respondido = true;
       let timerSiguiente = null;
+      let inicioPregunta = 0;
 
       function cancelarSiguiente(){
         if (timerSiguiente) { clearTimeout(timerSiguiente); timerSiguiente = null; }
@@ -83,6 +84,7 @@
         document.getElementById('tm-resultado').className = '';
         respuesta.value = '';
         respuesta.focus();
+        inicioPregunta = Date.now();
       };
 
       window.tm_verificar = function() {
@@ -117,7 +119,13 @@
           ? ['✅ ' + operacion + ' = ' + resultadoCorrecto + ' · Tú: ' + respuestaUsuario]
           : ['❌ Tú: ' + operacion + ' = ' + respuestaUsuario,
              '✔️ Correcto: ' + operacion + ' = ' + resultadoCorrecto];
-        window.MatesCore.registrar('tm', esCorrecto, lineas);
+        window.MatesCore.registrar('tm', esCorrecto, lineas, {
+          tipo: modo,
+          enunciado: '¿Cuánto es ' + numTabla + ' x ' + numAleatorio + '?',
+          respuesta: String(respuestaUsuario),
+          correcta: String(resultadoCorrecto),
+          tiempoMs: Date.now() - inicioPregunta
+        });
 
         programarSiguiente(tm_generarPregunta, crActivo ? 800 : 1500);
       };

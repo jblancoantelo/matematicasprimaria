@@ -4,6 +4,7 @@
       let aciertos = 0;
       let errores = 0;
       let respondido = true;
+      let inicioPregunta = 0;
 
       function mostrarFraccion(){ return document.getElementById('tab-fracciones').classList.contains('active'); }
 
@@ -99,7 +100,9 @@
           visual.innerHTML = `<div class="fr-fila"><div class="fr-bloque"><p>${n1}/${d1}</p>${barra(n1, d1)}</div><div class="fr-bloque"><p>${n2}/${d2}</p>${barra(n2, d2)}</div></div>`;
           enunciado.innerHTML = `¿Qué símbolo va en el hueco? <strong>${n1}/${d1} [ ] ${n2}/${d2}</strong>. Escribe <strong>&gt;</strong>, <strong>&lt;</strong> o <strong>=</strong>.`;
         }
+        if (actual) actual.enunciado = enunciado.textContent;
         respondido = false;
+        inicioPregunta = Date.now();
       }
 
       function verificar(){
@@ -136,7 +139,13 @@
         const lineas = esCorrecto
           ? ['✅ Tú: ' + entrada + ' · ' + actual.texto]
           : ['❌ Tú: ' + entrada, '✔️ Correcto: ' + correcta + ' · ' + actual.texto];
-        window.MatesCore.registrar('fr', esCorrecto, lineas);
+        window.MatesCore.registrar('fr', esCorrecto, lineas, {
+          tipo: actual.tipo,
+          enunciado: actual.enunciado,
+          respuesta: entrada,
+          correcta: correcta,
+          tiempoMs: Date.now() - inicioPregunta
+        });
       }
     })();
   

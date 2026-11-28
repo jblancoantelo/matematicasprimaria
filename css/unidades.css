@@ -10,7 +10,7 @@
       max-width:980px; margin:0 auto; padding:10px 16px 8px;
     }
     .um-wrap *{box-sizing:border-box}
-    .um-wrap h1{ margin:.2rem 0; font-size:clamp(20px,3.5vw,32px); color:#0f172a; text-align:center; }
+    .um-wrap .titulo-modulo{ margin:.2rem 0; font-size:clamp(20px,3.5vw,32px); color:#0f172a; text-align:center; }
     .um-wrap .um-sub{ margin:.3rem 0 1rem; color:var(--um-muted); font-size:clamp(14px,2.3vw,16px); text-align:center; }
     .um-panel{
       background:var(--um-card); border-radius:var(--um-radius); box-shadow:var(--um-shadow); padding:18px; margin:14px 0;

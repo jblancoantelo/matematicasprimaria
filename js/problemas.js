@@ -25,6 +25,7 @@
       const clearHistoryBtn = document.getElementById('pr-clearHistoryBtn');
 
       let currentProblem = null;
+      let inicioProblema = 0;
       let currentHistoryId = null;
       let history = [];
       let problemCounter = 0;
@@ -210,6 +211,7 @@
 
       function renderProblem(problem, historyId = null) {
         currentProblem = problem;
+        inicioProblema = Date.now();
         currentHistoryId = historyId;
         problemTextEl.textContent = problem.text;
         problemTagEl.textContent = `${problem.label} · ${problem.opsCount} operacion${problem.opsCount > 1 ? 'es' : ''} · ${problem.nivel === 'nivel4' ? '4º' : '3º'}`;
@@ -301,15 +303,23 @@
           ? currentProblem.text.slice(0, 140) + '…'
           : currentProblem.text;
         const solucion = currentProblem.answerText || String(currentProblem.answer);
+        const extra = {
+          tipo: 'problema',
+          enunciado: currentProblem.text,
+          respuesta: studentAnswerEl.value,
+          correcta: solucion,
+          tiempoMs: Date.now() - inicioProblema,
+          intento: (currentProblem.userAnswers || []).length
+        };
         if (value === currentProblem.answer) {
           if (!currentProblem.solvedOnce) {
             currentProblem.solvedOnce = true;
-            window.MatesCore.registrar('pr', true, ['✅ ' + texto, '✔️ Solución: ' + solucion]);
+            window.MatesCore.registrar('pr', true, ['✅ ' + texto, '✔️ Solución: ' + solucion], extra);
           }
           feedbackEl.textContent = '¡Muy bien! La respuesta es correcta. 🎉';
           feedbackEl.style.color = '#18884b';
         } else {
-          window.MatesCore.registrar('pr', false, ['❌ ' + texto, '✔️ Solución: ' + solucion]);
+          window.MatesCore.registrar('pr', false, ['❌ ' + texto, '✔️ Solución: ' + solucion], extra);
           feedbackEl.textContent = 'Todavía no. Inténtalo otra vez o mira la solución.';
           feedbackEl.style.color = '#c0392b';
           markCurrentAsFailed();

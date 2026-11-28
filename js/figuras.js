@@ -4,6 +4,7 @@
       let aciertos = 0;
       let errores = 0;
       let respondido = true;
+      let inicioPregunta = 0;
 
       function randInt(min, max){ return Math.floor(Math.random()*(max-min+1))+min; }
 
@@ -58,7 +59,9 @@
         document.getElementById('pa-enunciado').innerHTML =
           'Un ' + figura + '.' +
           (tipo === 'perimetro' ? '<br>¿Cuál es su <strong>perímetro</strong> (en cm)?' : '<br>¿Cuál es su <strong>área</strong> (en cm²)?');
+        if (actual) actual.enunciado = document.getElementById('pa-enunciado').textContent;
         respondido = false;
+        inicioPregunta = Date.now();
       }
 
       function verificar(){
@@ -84,7 +87,13 @@
         const lineas = esCorrecto
           ? ['✅ ' + actual.texto + ' · Tú: ' + entrada]
           : ['❌ Tú: ' + (entrada || '(vacío)'), '✔️ Correcto: ' + actual.texto];
-        window.MatesCore.registrar('pa', esCorrecto, lineas);
+        window.MatesCore.registrar('pa', esCorrecto, lineas, {
+          tipo: actual.tipo,
+          enunciado: actual.enunciado,
+          respuesta: entrada,
+          correcta: String(actual.correcta),
+          tiempoMs: Date.now() - inicioPregunta
+        });
       }
 
       document.getElementById('pa-generar').addEventListener('click', function(){ generar(); });

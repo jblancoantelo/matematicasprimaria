@@ -8,6 +8,7 @@
       let errores = 0;
       let comprobado = true;
       let timerSiguiente = null;
+      let inicioPregunta = 0;
 
       function cancelarSiguiente(){
         if (timerSiguiente) { clearTimeout(timerSiguiente); timerSiguiente = null; }
@@ -108,6 +109,7 @@
         boton.textContent = '✔️ Comprobar paso';
         boton.disabled = false;
         rend();
+        inicioPregunta = Date.now();
       }
 
       function pasoDeCol(col){
@@ -331,7 +333,13 @@
         const lineas = bien
           ? ['✅ ' + correcta + ' · Tú: ' + tuQ + ' r ' + tuR]
           : ['❌ Tú: ' + tu, '✔️ Correcto: ' + correcta];
-        window.MatesCore.registrar('dv', bien, lineas);
+        window.MatesCore.registrar('dv', bien, lineas, {
+          tipo: 'division',
+          enunciado: separar(dividendo) + ' ÷ ' + divisor,
+          respuesta: tuQ + ' r ' + tuR,
+          correcta: cociente + ' r ' + resto,
+          tiempoMs: Date.now() - inicioPregunta
+        });
 
         programarSiguiente(generar, 3000);
       }

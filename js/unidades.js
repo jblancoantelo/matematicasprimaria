@@ -214,10 +214,17 @@
           if (!ex.scored) {
             ex.scored = true;
             const correcta = fmt(ex.value) + ' ' + ex.fromU + ' = ' + fmt(ex.correct) + ' ' + ex.toU;
+            const extra = {
+              tipo: 'conversion',
+              enunciado: fmt(ex.value) + ' ' + ex.fromU + ' → ' + ex.toU,
+              respuesta: raw,
+              correcta: fmt(ex.correct) + ' ' + ex.toU,
+              tiempoMs: Date.now() - (roundStartedAt || Date.now())
+            };
             if (isOk) {
-              window.MatesCore.registrar('um', true, ['✅ ' + correcta + ' · Tú: ' + raw]);
+              window.MatesCore.registrar('um', true, ['✅ ' + correcta + ' · Tú: ' + raw], extra);
             } else {
-              window.MatesCore.registrar('um', false, ['❌ Tú: ' + raw + ' ' + ex.toU, '✔️ Correcto: ' + correcta]);
+              window.MatesCore.registrar('um', false, ['❌ Tú: ' + raw + ' ' + ex.toU, '✔️ Correcto: ' + correcta], extra);
             }
           }
         });

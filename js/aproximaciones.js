@@ -11,6 +11,7 @@
       let errores = 0;
       let respondido = true;
       let timerSiguiente = null;
+      let inicioPregunta = 0;
 
       function cancelarSiguiente(){
         if (timerSiguiente) { clearTimeout(timerSiguiente); timerSiguiente = null; }
@@ -50,6 +51,7 @@
         document.getElementById('ap-resultado').className = '';
         document.getElementById('ap-respuesta').focus();
         respondido = false;
+        inicioPregunta = Date.now();
       }
 
       function comprobar(){
@@ -76,7 +78,13 @@
         const lineas = esCorrecto
           ? ['✅ ' + separar(numero) + ' ≈ ' + separar(correcta) + ' · Tú: ' + txt]
           : ['❌ Tú: ' + txt, '✔️ Correcto: ' + separar(numero) + ' ≈ ' + separar(correcta)];
-        window.MatesCore.registrar('ap', esCorrecto, lineas);
+        window.MatesCore.registrar('ap', esCorrecto, lineas, {
+          tipo: 'redondeo',
+          enunciado: 'Aproxima ' + separar(numero) + ' a la ' + ORDENES[String(orden)],
+          respuesta: txt,
+          correcta: separar(correcta),
+          tiempoMs: Date.now() - inicioPregunta
+        });
 
         programarSiguiente(generar, 2600);
       }

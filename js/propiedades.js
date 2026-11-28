@@ -30,6 +30,7 @@
       };
 
       let actual = null;
+      let inicioPregunta = 0;
       let aciertos = 0;
       let errores = 0;
 
@@ -154,8 +155,16 @@
         r.className = 'pm-resultado pm-aviso';
       }
 
-      function agregarHistorial(lineas, correcto){
-        window.MatesCore.registrar('pm', correcto, lineas);
+      function agregarHistorial(lineas, correcto, extra){
+        var datos = {
+          tipo: actual ? actual.prop : 'propiedad',
+          enunciado: actual ? (actual.completa || actual.texto || actual.izquierda || '') : '',
+          correcta: actual ? (actual.completa + ' = ' + actual.resultado) : '',
+          tiempoMs: Date.now() - inicioPregunta
+        };
+        if (extra) for (var k in extra) datos[k] = extra[k];
+        if (datos.respuesta == null) datos.respuesta = (lineas && lineas[0]) || '';
+        window.MatesCore.registrar('pm', correcto, lineas, datos);
       }
 
       function actualizarContadores(){
@@ -311,6 +320,7 @@
         else datos = genDistributiva();
 
         actual = datos;
+        inicioPregunta = Date.now();
         const info = PROPIEDADES[datos.prop];
 
         el('pm-tarjeta').setAttribute('data-prop', datos.prop);

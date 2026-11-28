@@ -9,6 +9,7 @@
       let totalErrores = 0;
       let respondido = true;
       let timerSiguiente = null;
+      let inicioPregunta = 0;
 
       function cancelarSiguiente(){
         if (timerSiguiente) { clearTimeout(timerSiguiente); timerSiguiente = null; }
@@ -164,6 +165,7 @@
 
         sy_generarInputsRespuesta();
         respondido = false;
+        inicioPregunta = Date.now();
       };
 
       function resultadoCorrecto() {
@@ -269,7 +271,13 @@
         const lineas = esCorrecto
           ? ['✅ ' + expresion + ' = ' + usr]
           : ['❌ Tú: ' + expresion + ' = ' + usr, '✔️ Correcto: ' + expresion + ' = ' + correctoMostrar];
-        window.MatesCore.registrar('sy', esCorrecto, lineas);
+        window.MatesCore.registrar('sy', esCorrecto, lineas, {
+          tipo: operacion,
+          enunciado: expresion,
+          respuesta: usr,
+          correcta: correctoMostrar,
+          tiempoMs: Date.now() - inicioPregunta
+        });
 
         programarSiguiente(sy_generarPregunta, 2000);
       };

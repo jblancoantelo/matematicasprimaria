@@ -9,6 +9,7 @@
       var aciertos = 0;
       var errores = 0;
       var temporizador = null;
+      var inicioPregunta = 0;
 
       MatesCore.registrarCancelador(function(){
         if (temporizador) {
@@ -350,8 +351,14 @@
           '<span class="oc-ejemplo">Ejemplo: 3 + 4 × 2 → primero 4 × 2 = 8 → después 3 + 8 = 11.</span>';
       }
 
-      function agregarHistorial(lineas, correcto){
-        window.MatesCore.registrar('oc', correcto, lineas);
+      function agregarHistorial(lineas, correcto, extra){
+        var datos = {
+          tipo: 'combinada',
+          enunciado: actual ? actual.enunciado : '',
+          tiempoMs: Date.now() - inicioPregunta
+        };
+        if (extra) for (var k in extra) datos[k] = extra[k];
+        window.MatesCore.registrar('oc', correcto, lineas, datos);
       }
 
       function actualizarContadores(){
@@ -398,6 +405,8 @@
           paso: null,
           resuelto: false
         };
+        actual.enunciado = actual.cadena[0];
+        inicioPregunta = Date.now();
 
         var tarjeta = el('oc-tarjeta');
         tarjeta.setAttribute('data-nivel', creado.nivel);
@@ -539,7 +548,10 @@
           agregarHistorial([
             '❌ Tú: ' + calculo,
             '✔️ Correcto: ' + p.a + ' ' + p.op + ' ' + p.b + ' = ' + p.resultado
-          ], false);
+          ], false, {
+            respuesta: calculo,
+            correcta: p.a + ' ' + p.op + ' ' + p.b + ' = ' + p.resultado
+          });
           actualizarContadores();
 
           var error = el('oc-resultado');
@@ -570,7 +582,7 @@
         res.className = 'oc-resultado oc-ok';
 
         aciertos++;
-        agregarHistorial(['✅ ' + cadena], true);
+        agregarHistorial(['✅ ' + cadena], true, { respuesta: String(total), correcta: String(total) });
         actualizarContadores();
 
         temporizador = setTimeout(generar, 1800);
