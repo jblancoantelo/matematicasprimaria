@@ -17,7 +17,7 @@ Todos los cambios relevantes de **Matemáticas Primaria**. Las entradas están o
 - Los títulos de los 16 juegos pasan de `h1` a `h2` con la clase `titulo-modulo`, dejando un único `h1` en la página.
 - Las zonas de resultado y los historiales propios anuncian los cambios con `aria-live`.
 - Se añadieron variables CSS en `:root`, objetivos táctiles de 44 px en pantallas táctiles y respeto por `prefers-reduced-motion`.
-- `ROADMAP.md` marca como hechos los puntos de P1 y P2 ya aplicados y deja solo los pendientes; `README.md` y `AGENTS.md` reflejan la nueva estructura.
+- Se retiraron del `ROADMAP.md` los puntos de P0, P1 y P2 ya aplicados, dejando solo los pendientes; `README.md` y `AGENTS.md` reflejan la nueva estructura.
 
 ## [2026-11-26]
 

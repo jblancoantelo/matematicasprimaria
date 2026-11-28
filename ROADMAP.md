@@ -181,14 +181,12 @@ Reglas:
 - [ ] **Más niveles** en *Problemas* (5º–6º) y *Operaciones combinadas* (potencias, corchetes).
 - [ ] **Nuevos módulos** candidatos: porcentajes, medidas de ángulos, simetría, coordenadas, estadística básica, ecuaciones sencillas.
 - [ ] **Pista visual** en más juegos (como ya ocurre en *Unidades*).
-- [ ] **Tiempo por ejercicio** en el historial, para ver evolución.
 
 ---
 
 ## 3. 🎨 Experiencia de uso y accesibilidad ⭐ · M
 
 - [ ] Revisar **contraste y tamaño de letra** (WCAG AA).
-- [ ] **Etiquetas ARIA** en los juegos con interacción compleja (columnas, fracciones, combinadas).
 - [ ] **Modo oscuro**.
 - [ ] **Alto contraste** para aulas con proyectores.
 - [ ] Textos en **lectura fácil**: frases cortas, sin abreviaturas raras.
@@ -206,7 +204,6 @@ Reglas:
 - [ ] **Ampliar las pruebas automáticas** a los generadores de ejercicios (que no produzcan restas negativas, divisiones inexactas, etc.). Ya hay CI con `node --check` y `node --test`.
 - [ ] **Estilo automático** en CI (ESLint + Prettier) y despliegue automático a GitHub Pages.
 - [ ] Separar el HTML en **plantillas por módulo** o generar las secciones con JS para que el archivo no crezca sin control.
-- [ ] **Exportación/importación** más robusta, con validación y mensajes de error claros.
 - [ ] Servir los JS como **módulos ES** y eliminar variables globales.
 - [ ] Medir rendimiento en móviles antiguos (los juegos con dibujos en canvas son los más pesados).
 - [ ] **PWA instalable** con service worker: icono en el móvil y uso offline real.
@@ -289,7 +286,7 @@ Regla práctica: nada entra en la versión publicada sin funcionar **sin conexi�
 
 ## 10. 🔍 Revisión completa de la aplicación (24/11/2026)
 
-> Revisión estática de los 16 juegos, `core.js`, `navegacion.js`, el HTML y los 18 ficheros JavaScript (`node --check` sin errores). No se probó en navegador. Esta sección recoge las propuestas que **no estaban ya** en el roadmap; cuando una idea se solapa con otra, se indica.
+> Revisión estática de los 16 juegos, `core.js`, `navegacion.js`, el HTML y los 19 ficheros JavaScript (`node --check` sin errores). No se probó en navegador. Esta sección recoge las propuestas que **no estaban ya** en el roadmap; cuando una idea se solapa con otra, se indica.
 
 **Conclusión general:** la base es buena y no necesita frameworks. El margen de mejora está en tres frentes: **fiabilidad** (no perder datos ni puntuar dos veces), **feedback que enseñe** (explicar el error, no solo marcarlo) y **progresión real de 4.º** (algunos módulos permiten niveles de 6.º y otros se quedan cortos).
 
@@ -321,19 +318,12 @@ Regla práctica: nada entra en la versión publicada sin funcionar **sin conexi�
 - [ ] **Modo tranquilo / sin puntos.** Ocultar puntos, rachas, confeti y cronómetro para quien se bloquea con la competición.
 - [ ] **Medallas de constancia y de revisar errores.** No solo por acertar: 7 días seguidos, corregir un fallo, explicar una estrategia.
 - [ ] **Perfiles locales.** Varios hermanos o alumnos en el mismo dispositivo, sin cuentas ni servidor.
-- [ ] **Retos por URL con semilla.** Un enlace genera los mismos 10 ejercicios en otro dispositivo; requiere un generador aleatorio con semilla.
+- [ ] **Retos por URL con semilla.** El generador determinista ya existe (`?semilla=...`); falta una pantalla que cree el enlace del reto y lo comparta.
 - [ ] **Modo profe / pizarra digital.** Pantalla grande, ayudas ocultas, temporizador y reinicio bloqueado por PIN.
 
 ### 10.3 ⚙️ Mejoras técnicas
 
-#### P0 — Estabilidad (1–2 días)
-
-1. **Ciclo de vida único de pregunta** en todos los módulos: `respondido`, `timerSiguiente` y `clearTimeout` al generar, con guardia para no registrar dos veces.
-2. **Quitar el borrado de historial del contrarreloj** y separar las estadísticas de la sesión de las acumuladas.
-3. **Cancelar temporizadores** al cambiar de pestaña, al pulsar **Generar** y al cambiar de configuración.
-4. **Arreglar unidades**: regenerar al cambiar de tipo, guardar los ajustes usados y escapar el HTML del historial.
-5. **Aceptar coma decimal** en problemas y unificar el parseo numérico.
-6. **Confirmación antes de borrar** historiales propios y antes de generar una tanda nueva si hay respuestas.
+> Los seis arreglos de estabilidad de P0 ya están aplicados (ver **Fase 0** en el plan por fases).
 
 #### P1 — Arquitectura y datos (3–5 días)
 
@@ -360,7 +350,7 @@ Regla práctica: nada entra en la versión publicada sin funcionar **sin conexi�
 
 **Criterios de aceptación de la fase 0:** una misma respuesta no puede puntuar dos veces; cambiar de pestaña o generar no deja temporizadores vivos; el contrarreloj no borra historial; cambiar el tipo de unidad no rompe los ejercicios; no hay scroll horizontal a 320 px; todos los inputs tienen nombre accesible.
 
-**Recomendación:** empezar por la fase 0. El repaso de fallos necesita un historial fiable.
+**Recomendación:** las fases 0 y 1 ya están completas. El siguiente paso natural es la fase 2 (contenido de 4.º), empezando por el cálculo mental y la fracción de cantidad.
 
 ---
 
@@ -472,3 +462,4 @@ Regla práctica: nada entra en la versión publicada sin funcionar **sin conexi�
 | 25/11/2026 | Fase 0 y las tres prioridades de la revisión aplicadas en el código. |
 | 26/11/2026 | Retirada del roadmap la lista de fallos ya corregidos. |
 | 26/11/2026 | Añadida la sección 11 con la revisión de estado y 13 nuevas propuestas detalladas (Gemini 4 Hydrogen). |
+| 28/11/2026 | Limpieza del roadmap: retirados P0 y los puntos de P1/P2 ya aplicados; documentados historial estructurado, copia completa, semilla, tests y accesibilidad. |
